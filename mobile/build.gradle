@@ -1,0 +1,26 @@
+
+description = 'Fennec Mobile'
+dependencies {
+    compile slf4j
+    compile jersey_client
+    compile (jfennecDriverUi) {
+        exclude group: jfennecGroup, module: 'core'
+    }
+    compile (jfennecCoreInterop) {
+        exclude group: jfennecGroup, module: 'core'
+    }
+    compile seetest
+    compile apache_commons
+    compile jaxb
+    compile activation
+    
+    testCompile powermock
+    testCompile mockito
+}
+
+
+test {
+    exclude '**'
+}
+
+test.useTestNG()

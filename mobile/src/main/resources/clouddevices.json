@@ -1,0 +1,30 @@
+
+{
+    "cloudDevices":
+    [
+            {"Name":"PF28_One_X",             "OperatingSystem":"Android",  "OperatingSystemVersion":"4.2.2",  "Manufacturer":"HTC",    "model":"One X"},
+            {"Name":"PF28_Desire_X",          "OperatingSystem":"Android",  "OperatingSystemVersion":"4.1.1",  "Manufacturer":"HTC",    "model":"Desire X"},
+            {"Name":"PF28_Xperia_Z",          "OperatingSystem":"Android",  "OperatingSystemVersion":"4.4.4",  "Manufacturer":"Sony",   "model":"Xperia Z"},
+            {"Name":"PF28_One_mini",          "OperatingSystem":"Android",  "OperatingSystemVersion":"4.4.2",  "Manufacturer":"HTC",    "model":"One Mini"},
+            {"Name":"PF28_Xperia_S",          "OperatingSystem":"Android",  "OperatingSystemVersion":"4.2.2",  "Manufacturer":"Sony",   "model":"One X"},
+            {"Name":"Galaxy_Tab_3",           "OperatingSystem":"Android",  "OperatingSystemVersion":"4.2.2",  "Manufacturer":"Samsung","model":"Galaxy Tab 3"},
+            {"Name":"PF28_One_S",             "OperatingSystem":"Android",  "OperatingSystemVersion":"4.1.1",  "Manufacturer":"HTC",    "model":"One S"},
+            {"Name":"XperiaZ",                "OperatingSystem":"Android",  "OperatingSystemVersion":"4.4.4",  "Manufacturer":"Sony",   "model":"Xperia Z"},
+            {"Name":"Nexus_7",                "OperatingSystem":"Android",  "OperatingSystemVersion":"5.1",    "Manufacturer":"Google", "model":"Nexus 7"},
+            {"Name":"Galaxy_S5_D",            "OperatingSystem":"Android",  "OperatingSystemVersion":"5.0",    "Manufacturer":"Samsung","model":"Galaxy S5"},
+            {"Name":"Galaxy_Tab4",            "OperatingSystem":"Android",  "OperatingSystemVersion":"4.4.2",  "Manufacturer":"Samsung","model":"Galaxy Tab 4"},
+            {"Name":"PF28_Galaxy_S2",         "OperatingSystem":"Android",  "OperatingSystemVersion":"4.1.2",  "Manufacturer":"Samsung","model":"Galaxy S2"},
+            {"Name":"PF22_Galaxy_S4mini_A",   "OperatingSystem":"Android",  "OperatingSystemVersion":"4.4.2",  "Manufacturer":"Samsung","model":"Galaxy S4 mini"},
+            {"Name":"PF28_Desire_S",          "OperatingSystem":"Android",  "OperatingSystemVersion":"2.3.5",  "Manufacturer":"HTC",    "model":"Desire S"},
+            {"Name":"PF64_Nexus_9",           "OperatingSystem":"Android",  "OperatingSystemVersion":"5.1.1",  "Manufacturer":"Google", "model":"Nexus 9"},
+            {"Name":"TIC_iPhone_4_F",         "OperatingSystem":"iOS",      "OperatingSystemVersion":"6.1.3",  "Manufacturer":"Apple",  "model":"iPhone 4"},
+            {"Name":"PF28_iPad_Air2",         "OperatingSystem":"iOS",      "OperatingSystemVersion":"8.1.2",  "Manufacturer":"Apple",  "model":"iPad Air 2"},
+            {"Name":"TIC_iPhone_3GS_B",       "OperatingSystem":"iOS",      "OperatingSystemVersion":"6.1.6",  "Manufacturer":"Apple",  "model":"iPhone 3GS"},
+            {"Name":"TIC_iPhone_5_A",         "OperatingSystem":"iOS",      "OperatingSystemVersion":"8.1.2",  "Manufacturer":"Apple",  "model":"iPhone 5"},
+            {"Name":"TIC_iPhone_4_I",         "OperatingSystem":"iOS",      "OperatingSystemVersion":"6.1.3",  "Manufacturer":"Apple",  "model":"iPhone 4"},
+            {"Name":"PF28_iPhone_6",          "OperatingSystem":"iOS",      "OperatingSystemVersion":"8.3",    "Manufacturer":"Apple",  "model":"iPhone 6"},
+            {"Name":"TIC_iPhone_6P",          "OperatingSystem":"iOS",      "OperatingSystemVersion":"8.1.2",  "Manufacturer":"Apple",  "model":"iPhone 6"},
+            {"Name":"TIC_iPhone_5S_A",        "OperatingSystem":"iOS",      "OperatingSystemVersion":"8.2",    "Manufacturer":"Apple",  "model":"iPhone 5S"},
+            {"Name":"PF28_iPhone_4S",         "OperatingSystem":"iOS",      "OperatingSystemVersion":"7.0.3",  "Manufacturer":"Apple",  "model":"iPhone 4S"}
+    ]
+}
