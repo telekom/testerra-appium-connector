@@ -20,7 +20,7 @@ public class Screenshot {
      */
     @Test
     public void T01_Screenshot_Quality() {
-        System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://mobiledevicecloud.t-systems-mms.eu");
+        System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "localhost");
         System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest");
         System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
@@ -34,21 +34,21 @@ public class Screenshot {
             TimerUtils.sleep(5000);
         }
     }
-
-    private void prep(MobileDriver md) {
-        String capturePath = md.seeTestClient().capture();
-        if (capturePath == null || capturePath.equals("")) {
-            return;
-        }
-        String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-        Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-        File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
-        if (!screenshotFolder.exists()) {
-            screenshotFolder.mkdirs();
-        }
-        try {
-            md.seeTestClient().getRemoteFile(capturePath, 10000, screenshotDestinationPath.toAbsolutePath().toString());
-        } catch (Exception e) {
-        }
-    }
+//    TODO do we need this anywhere?
+//    private void prep(MobileDriver md) {
+//        String capturePath = md.seeTestClient().capture();
+//        if (capturePath == null || capturePath.equals("")) {
+//            return;
+//        }
+//        String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
+//        Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
+//        File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
+//        if (!screenshotFolder.exists()) {
+//            screenshotFolder.mkdirs();
+//        }
+//        try {
+//            md.seeTestClient().getRemoteFile(capturePath, 10000, screenshotDestinationPath.toAbsolutePath().toString());
+//        } catch (Exception e) {
+//        }
+//    }
 }

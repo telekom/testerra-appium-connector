@@ -1,12 +1,13 @@
 package eu.tsystems.mms.tic.testframework.mobile.device;
 
 import eu.tsystems.mms.tic.testframework.constants.Browsers;
+import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 
 /**
  * Created by rnhb on 17.04.2015.
  */
 public enum MobileOperatingSystem {
-    ANDROID("adb:", Browsers.mobile_chrome) {
+    ANDROID("adb:", MobileBrowsers.mobile_chrome) {
         @Override
         public String getClassPrefix() {
             return "Android";
@@ -19,7 +20,7 @@ public enum MobileOperatingSystem {
             return "Windows";
         }
     },
-    IOS("ios_app:", Browsers.mobile_safari) {
+    IOS("ios_app:", MobileBrowsers.mobile_safari) {
         @Override
         public String getClassPrefix() {
             return "Ios";

@@ -5,7 +5,7 @@ import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableExcepti
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
-import eu.tsystems.mms.tic.testframework.report.XetaListener;
+import eu.tsystems.mms.tic.testframework.report.FennecListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
 import org.testng.annotations.Listeners;
@@ -14,8 +14,8 @@ import org.testng.annotations.Test;
 /**
  * Created by rnhb on 16.06.2017.
  */
-//FIXME
-@Listeners({MobileTestListener.class, XetaListener.class})
+//FIXME use different listener?
+@Listeners({MobileTestListener.class, FennecListener.class})
 public class ReportTest {
 
     @BeforeTest

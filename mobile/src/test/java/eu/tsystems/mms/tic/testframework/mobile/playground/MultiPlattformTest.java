@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
-import eu.tsystems.mms.tic.testframework.constants.Browser;
+import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
@@ -8,7 +8,7 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Page;
-import eu.tsystems.mms.tic.testframework.report.XetaListener;
+import eu.tsystems.mms.tic.testframework.report.FennecListener;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,13 +20,13 @@ import org.testng.annotations.Test;
  * Created by rnhb on 12.02.2016.
  */
 //FIXME
-@Listeners({MobileTestListener.class,XetaListener.class})
+@Listeners({MobileTestListener.class, FennecListener.class})
 public class MultiPlattformTest {
 
     @Test
     public void testT01() throws Exception {
 
-        WebDriverManager.config().setBrowser(Browser.mobile_chrome);
+        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -58,7 +58,7 @@ public class MultiPlattformTest {
             }
         }
 
-        WebDriverManager.config().setBrowser(Browser.mobile_chrome);
+        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -88,7 +88,7 @@ public class MultiPlattformTest {
             }
         }
 
-        WebDriverManager.config().setBrowser(Browser.mobile_chrome);
+        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -102,8 +102,7 @@ public class MultiPlattformTest {
     public void testT04() throws Exception {
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER+".chrome","os.type=android");
 
-
-        WebDriverManager.config().setBrowser(Browser.mobile_chrome);
+        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();

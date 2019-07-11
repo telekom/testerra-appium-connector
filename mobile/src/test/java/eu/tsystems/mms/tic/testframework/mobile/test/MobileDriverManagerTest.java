@@ -53,7 +53,7 @@ public class MobileDriverManagerTest extends PowerMockTestCase {
      * TODO is failing due IllegalArgumentException
      * @throws Exception
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testGridDriver() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://");
 
@@ -76,7 +76,7 @@ public class MobileDriverManagerTest extends PowerMockTestCase {
      * TODO is failing due ConnectivityException
      * @throws Exception
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testExecutorDriver() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "localhost");
 

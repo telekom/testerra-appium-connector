@@ -4,10 +4,10 @@ dependencies {
     compile slf4j
     compile jersey_client
     compile (jfennecDriverUi) {
-        exclude group: jfennecGroup, module: 'core'
+//        exclude group: jfennecGroup, module: 'core'
     }
     compile (jfennecCoreInterop) {
-        exclude group: jfennecGroup, module: 'core'
+//        exclude group: jfennecGroup, module: 'core'
     }
     compile seetest
     compile apache_commons
@@ -20,7 +20,26 @@ dependencies {
 
 
 test {
-    exclude '**'
+    String[] s = [
+            'src/test/resources/MobileTestSuite.xml'
+    ]
+
+    def nr = findProperty("nr")
+    if (nr) {
+        setFailureCorridor(nr)
+        setCloseWindows()
+        setReportDir("report-testsundertest-0" + nr)
+        s = ['src/test/resources/testng/ReportTestsUnderTest' + nr + '.xml']
+    }
+
+    useTestNG() {
+        suites s
+        configFailurePolicy "continue"
+    }
+    options {
+        systemProperties(System.getProperties())
+    }
 }
+
 
 test.useTestNG()

@@ -12,6 +12,8 @@ import eu.tsystems.mms.tic.testframework.mobile.device.*;
 import eu.tsystems.mms.tic.testframework.mobile.monitor.AppMonitor;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
+import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.openqa.selenium.Dimension;
@@ -294,7 +296,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 }
             } else {
                 if (delayBetweenScreenshotsInMs > 0) {
-                    TestUtils.sleep(delayBetweenScreenshotsInMs);
+                    TimerUtils.sleep(delayBetweenScreenshotsInMs);
                 }
                 String afterScreenshot = prepareNewScreenshot();
                 //        TODO rework with jfennec

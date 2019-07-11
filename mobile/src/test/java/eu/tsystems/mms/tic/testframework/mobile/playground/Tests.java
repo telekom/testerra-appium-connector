@@ -1,7 +1,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
 import com.experitest.client.MobileListener;
-import eu.tsystems.mms.tic.testframework.constants.XetaProperties;
+import eu.tsystems.mms.tic.testframework.constants.FennecProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.api.Cloud;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.applications.Applications;
@@ -11,7 +11,7 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.*;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.*;
-import eu.tsystems.mms.tic.testframework.report.utils.ReportUtils;
+import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -395,7 +395,7 @@ public class Tests {
         System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
-        System.setProperty(XetaProperties.XETA_PROXY_SETTINGS_LOAD, "false");
+        System.setProperty(FennecProperties.PROXY_SETTINGS_LOAD, "false");
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
         prep(mobileDriver);
@@ -410,8 +410,9 @@ public class Tests {
             return;
         } else {
             String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-            Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-            File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
+            //TODO check if this works
+            Path screenshotDestinationPath = Paths.get(Report.SCREENSHOTS_DIRECTORY.getAbsolutePath() + imageFile);
+            File screenshotFolder = Report.SCREENSHOTS_DIRECTORY;
             if (!screenshotFolder.exists()) {
                 screenshotFolder.mkdirs();
             }
