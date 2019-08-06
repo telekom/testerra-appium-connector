@@ -1,5 +1,5 @@
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Xeta Mobile Unit Test Suite" verbose="10" configfailurepolicy="continue" thread-count="10" parallel="false">
+<suite name="Testerra Mobile Unit Test Suite" verbose="10" configfailurepolicy="continue" thread-count="10" parallel="false">
 
     <listeners>
         <listener class-name="eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener"/>
