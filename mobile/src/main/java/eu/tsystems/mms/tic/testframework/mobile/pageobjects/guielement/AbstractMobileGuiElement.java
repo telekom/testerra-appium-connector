@@ -12,7 +12,6 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.MobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
-//import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.openqa.selenium.Point;
 import org.slf4j.Logger;
@@ -20,6 +19,8 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.*;
 import java.util.Map;
+
+//import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
 
 /**
  * The Class MobileAbstractGuiElement.
@@ -31,10 +32,6 @@ import java.util.Map;
 public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileGuiElement.class);
-
-    static {
-//        XetaLicense.checkLicense();
-    }
 
     private MobileGuiElementStrategy strategy;
 

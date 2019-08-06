@@ -30,7 +30,6 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
     private static final boolean cacheGuiElements;
 
     static {
-//        XetaLicense.checkLicense();
         cacheGuiElements = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_CACHE_GUI_ELEMENTS, false);
         LoggerFactory.getLogger("MobileGuiElement").info("Using cache: " + cacheGuiElements);
     }
