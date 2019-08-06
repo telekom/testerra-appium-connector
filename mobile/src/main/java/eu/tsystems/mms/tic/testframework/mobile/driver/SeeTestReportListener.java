@@ -1,5 +1,17 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
+import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
+import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.utils.FileUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.IConfigurationListener;
+import org.testng.ITestContext;
+import org.testng.ITestListener;
+import org.testng.ITestResult;
+
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -8,19 +20,6 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.IConfigurationListener;
-import org.testng.ITestContext;
-import org.testng.ITestListener;
-import org.testng.ITestResult;
-
-import eu.tsystems.mms.tic.testframework.common.FennecCommons;
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
-import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
-import eu.tsystems.mms.tic.testframework.utils.FileUtils;
 
 /**
  * Created by rnhb on 13.05.2015.
@@ -46,7 +45,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     {
         //FIXME where to do init?
-        FennecCommons.init();
+        TesterraCommons.init();
 
         String localReportPathProperty =
                 PropertyManager.getProperty(MobileProperties.MOBILE_LOCAL_REPORT_PATH, DefaultParameter.MOBILE_LOCAL_REPORT_PATH);

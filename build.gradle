@@ -10,7 +10,7 @@ repositories {
 
 allprojects {
 
-    group 'eu.tsystems.mms.tic.jfennec'
+    group 'eu.tsystems.mms.tic.testerra'
     version '1-SNAPSHOT'
 
     apply plugin: 'maven'
@@ -51,10 +51,10 @@ ext {
            'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
     ]
 
-    jfennecVersion = '1-SNAPSHOT'
-    jfennecGroup = 'eu.tsystems.mms.tic.jfennec'
-    jfennecDriverUi = jfennecGroup + ":driver-ui:" + jfennecVersion
-    jfennecCoreInterop = jfennecGroup + ":core-interop:" + jfennecVersion
+    testerraVersion = '1-SNAPSHOT'
+    testerraGroup = 'eu.tsystems.mms.tic.testerra'
+    testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
+    testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
 
     powermockVersion = '1.7.3'
     powermock = [

@@ -1,17 +1,13 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
-import eu.tsystems.mms.tic.testframework.constants.FennecProperties;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-//FIXME
-import eu.tsystems.mms.tic.testframework.report.utils.ReportUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Test;
 
-import java.io.File;
-import java.nio.file.Path;
-import java.nio.file.Paths;
+//FIXME
 
 public class Screenshot {
 
@@ -26,7 +22,7 @@ public class Screenshot {
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
         System.setProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, "100");
-        System.setProperty(FennecProperties.PROXY_SETTINGS_LOAD, "false");
+        System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
         for (int i = 0; i < 20; i++) {

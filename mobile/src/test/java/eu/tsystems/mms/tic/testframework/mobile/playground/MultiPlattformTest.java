@@ -1,14 +1,14 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
-import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
+import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Page;
-import eu.tsystems.mms.tic.testframework.report.FennecListener;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
@@ -20,7 +20,7 @@ import org.testng.annotations.Test;
  * Created by rnhb on 12.02.2016.
  */
 //FIXME
-@Listeners({MobileTestListener.class, FennecListener.class})
+@Listeners({MobileTestListener.class, TesterraListener.class})
 public class MultiPlattformTest {
 
     @Test

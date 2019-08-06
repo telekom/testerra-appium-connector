@@ -1,13 +1,12 @@
 package eu.tsystems.mms.tic.testframework.mobile.device;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.ReservationStatus;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.HashMap;
-import java.util.concurrent.locks.Lock;
 
 /**
  * Created by rnhb on 17.04.2015.
@@ -199,7 +198,7 @@ public class TestDevice {
         public TestDevice build() {
             // make sure that the device is not modified after building
             if (testDevice.name == null || testDevice.operatingSystem == null) {
-                throw new FennecSystemException("Name and operatingSystem of TestDevice have to be set.");
+                throw new TesterraSystemException("Name and operatingSystem of TestDevice have to be set.");
             }
             TestDevice deviceToReturn = testDevice;
             testDevice = null;

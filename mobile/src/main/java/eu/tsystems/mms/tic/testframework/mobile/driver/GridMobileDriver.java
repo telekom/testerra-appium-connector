@@ -3,18 +3,14 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import com.experitest.client.GridClient;
 import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceType;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
-//        TODO rework with jfennec
-//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
-//import eu.tsystems.mms.tic.testframework.report.model.TestClassContainer;
-//import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
@@ -22,6 +18,11 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.concurrent.TimeUnit;
+
+//        TODO rework with jfennec
+//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
+//import eu.tsystems.mms.tic.testframework.report.model.TestClassContainer;
+//import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 
 /**
  * Created by rnhb on 12.07.2017.
@@ -84,7 +85,7 @@ public class GridMobileDriver extends BaseMobileDriver {
                     deviceStore.addDevice(testDevice);
                     ReservationStatus reservationStatus = parseReservationStatus(deviceElement);
                     testDevice.setReservationStatus(reservationStatus);
-                } catch (FennecSystemException e) {
+                } catch (TesterraSystemException e) {
                     LOGGER.error("Failed to create testDevice from attributes " + attributes);
                 }
             }
@@ -153,7 +154,7 @@ public class GridMobileDriver extends BaseMobileDriver {
     @Override
     public void switchToDevice(TestDevice testDevice) {
         if (testDevice == null) {
-            throw new FennecRuntimeException("TestDevice cannot be null!");
+            throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
 
         if (testDevice == activeDevice) {
@@ -162,7 +163,7 @@ public class GridMobileDriver extends BaseMobileDriver {
         }
 
         if (!reservedDevices.contains(testDevice)) {
-            throw new FennecRuntimeException("Cannot switch to Device " + testDevice +
+            throw new TesterraRuntimeException("Cannot switch to Device " + testDevice +
                     ". It was not successfully reserved before.");
         }
 

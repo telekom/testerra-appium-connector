@@ -1,27 +1,13 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
-import eu.tsystems.mms.tic.testframework.mobile.worker.MobileScreenshotWorker;
-import eu.tsystems.mms.tic.testframework.mobile.worker.MobileVideoWorker;
-import eu.tsystems.mms.tic.testframework.report.FennecListener;
-import eu.tsystems.mms.tic.testframework.report.TestStatusController;
-import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
-import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
-import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
-import eu.tsystems.mms.tic.testframework.utils.FileUtils;
-import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.IConfigurationListener;
 import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
-
-import java.io.File;
-import java.nio.file.Files;
-import java.nio.file.Path;
 
 /**
  * Created by rnhb on 06.04.2016.
@@ -71,12 +57,14 @@ public class MobileTestListener implements ITestListener, IConfigurationListener
 
     @Override
     public void onStart(ITestContext context) {
+
         if (!registeredInXetaListener) {
             registeredInXetaListener = true;
             MobileDriverManager.registerWebDriverFactory();
-//            FennecListener.registerAfterMethodWorker(MobileVideoWorker.class);
 
-            FennecListener.registerAfterMethodWorker(MobileScreenshotWorker.class);
+            // TODO - this cant work anymore  with testerra
+            //TesterraListener.registerAfterMethodWorker(MobileVideoWorker.class);
+            //TesterraListener.registerAfterMethodWorker(MobileScreenshotGrabber.class);
         }
     }
 

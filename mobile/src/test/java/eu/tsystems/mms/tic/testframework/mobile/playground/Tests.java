@@ -1,16 +1,24 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
 import com.experitest.client.MobileListener;
-import eu.tsystems.mms.tic.testframework.constants.FennecProperties;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.api.Cloud;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.applications.Applications;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
-import eu.tsystems.mms.tic.testframework.mobile.driver.*;
+import eu.tsystems.mms.tic.testframework.mobile.driver.DeviceReservationPolicy;
+import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
-import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.*;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ImageMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.testng.annotations.Test;
@@ -395,7 +403,7 @@ public class Tests {
         System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
-        System.setProperty(FennecProperties.PROXY_SETTINGS_LOAD, "false");
+        System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
         prep(mobileDriver);

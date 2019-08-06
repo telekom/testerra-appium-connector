@@ -1,8 +1,8 @@
 package eu.tsystems.mms.tic.testframework.mobile;
 
 import eu.tsystems.mms.tic.testframework.exceptions.PageNotFoundException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.exceptions.TimeoutException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
@@ -93,7 +93,7 @@ public class PageFactory {
         }
 
         if (!pageInstance.getClass().isAssignableFrom(concretePageClass)) {
-            throw new FennecSystemException("Internal Error: Class of created page instance " + pageInstance.getClass() +
+            throw new TesterraSystemException("Internal Error: Class of created page instance " + pageInstance.getClass() +
                     " should be assignable from concrete page class " + concretePageClass);
         }
 

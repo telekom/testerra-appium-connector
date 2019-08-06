@@ -1,13 +1,13 @@
 
-description = 'Fennec Mobile'
+description = 'Testerra Mobile'
 dependencies {
     compile slf4j
     compile jersey_client
-    compile (jfennecDriverUi) {
-//        exclude group: jfennecGroup, module: 'core'
+    compile (testerraDriverUi) {
+//        exclude group: testerraGroup, module: 'core'
     }
-    compile (jfennecCoreInterop) {
-//        exclude group: jfennecGroup, module: 'core'
+    compile (testerraCoreInterop) {
+//        exclude group: testerraGroup, module: 'core'
     }
     compile seetest
     compile apache_commons

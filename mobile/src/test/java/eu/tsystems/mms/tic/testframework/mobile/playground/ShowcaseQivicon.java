@@ -7,7 +7,7 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
-import eu.tsystems.mms.tic.testframework.report.FennecListener;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import org.testng.Assert;
 import org.testng.annotations.Listeners;
@@ -17,7 +17,7 @@ import org.testng.annotations.Test;
  * Created by rnhb on 13.07.2016.
  */
 //FIXME use different listener?
-@Listeners(FennecListener.class)
+@Listeners(TesterraListener.class)
 public class ShowcaseQivicon {
 
     @Test

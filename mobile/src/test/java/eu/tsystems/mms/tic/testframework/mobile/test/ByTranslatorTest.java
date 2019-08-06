@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.test;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.adapter.ByTranslator;
 import org.openqa.selenium.By;
 import org.openqa.selenium.support.pagefactory.ByAll;
@@ -75,7 +75,7 @@ public class ByTranslatorTest {
         Assert.assertEquals(translatedXPath, "xpath=.//*[contains(@class,'class') or xpath or @href='linkText' or xpath]");
     }
 
-    @Test(expectedExceptions = FennecRuntimeException.class)
+    @Test(expectedExceptions = TesterraRuntimeException.class)
     public void T10_byall_nested_Byalls() {
         ByAll byall = new ByAll(new ByAll(By.className("class"), By.xpath("xpath")), By.linkText("linkText"));
         ByTranslator.translateForSeeTest(byall);
