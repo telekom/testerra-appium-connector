@@ -16,7 +16,6 @@ import org.testng.annotations.Test;
 /**
  * Created by rnhb on 13.07.2016.
  */
-//FIXME use different listener?
 @Listeners(TesterraListener.class)
 public class ShowcaseQivicon {
 

@@ -10,16 +10,14 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
-import eu.tsystems.mms.tic.testframework.testing.FennecTest;
-import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import org.testng.Assert;
-import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
 /**
  * Created by rnhb on 14.06.2016.
  */
-public class ShowcaseMms extends FennecTest {
+public class ShowcaseMms extends TesterraTest {
 
     @Test(enabled = false)
     public void testMmsWeb1() throws Exception {
@@ -44,6 +42,7 @@ public class ShowcaseMms extends FennecTest {
 
         test(testDevice, "com.apple.safari", "safari");
     }
+
     @Test
     public void testMmsWeb3() throws Exception {
         TestDevice testDevice = TestDevice.builder("Apple iPhone 6 (Nr 6)", MobileOperatingSystem.IOS).build();
@@ -69,22 +68,22 @@ public class ShowcaseMms extends FennecTest {
         Assert.fail("This test must fail");
     }
 
-//    @AfterMethod
-//    public void releaseDevice(){
-//
-//        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
-//        mobileDriver.release();
-//    }
+    //    @AfterMethod
+    //    public void releaseDevice(){
+    //
+    //        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+    //        mobileDriver.release();
+    //    }
 
     private void test(TestDevice testDevice, String packageName, String browserName) throws DeviceNotAvailableException {
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
-        if(mobileDriver.getActiveDevice() == null){
+        if (mobileDriver.getActiveDevice() == null) {
             mobileDriver.reserveDevice(testDevice);
             mobileDriver.switchToDevice(testDevice);
             mobileDriver.openDevice();
         }
 
-//        TestDevice testDevice1 = mobileDriver.reserveDeviceByFilter();
+        //        TestDevice testDevice1 = mobileDriver.reserveDeviceByFilter();
 
         for (int i = 1; i < 3; i++) {
             TestStep.begin("Teststep " + i);
@@ -104,16 +103,16 @@ public class ShowcaseMms extends FennecTest {
             digInnoLab.click();
 
             WebMobileGuiElement digInnoLabHeadline = new WebMobileGuiElement("xpath=//*[@text='Cloud Computing & Agile Softwareentwicklung']]");
-            digInnoLabHeadline.swipeWhileNotFound(Direction.DOWN.toString(),500, 250, 250, 5, false);
-//            digInnoLabHeadline.click();
-//            mobileDriver.swipe(Direction.DOWN, 300, 1000);
-//            TestUtils.sleep(1000);
-//            mobileDriver.swipe(Direction.DOWN, 300, 1000);
-//            TestUtils.sleep(1000);
-//            mobileDriver.swipe(Direction.DOWN, 300, 1000);
+            digInnoLabHeadline.swipeWhileNotFound(Direction.DOWN.toString(), 500, 250, 250, 5, false);
+            //            digInnoLabHeadline.click();
+            //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
+            //            TestUtils.sleep(1000);
+            //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
+            //            TestUtils.sleep(1000);
+            //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
 
             WebMobileGuiElement cloudApplicationServicesLink = new WebMobileGuiElement("xpath=//*[@text='Zum Fachartikel']");
-            cloudApplicationServicesLink.swipeWhileNotFound(Direction.DOWN.toString(),500, 250, 250, 5, false);
+            cloudApplicationServicesLink.swipeWhileNotFound(Direction.DOWN.toString(), 500, 250, 250, 5, false);
             cloudApplicationServicesLink.click();
         }
     }

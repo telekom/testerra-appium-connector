@@ -60,10 +60,8 @@ public final class MobileDriverManager {
 
     public static void registerWebDriverFactory() {
         MobileGuiElementCoreFactory mobileGuiElementCoreFactory = new MobileGuiElementCoreFactory();
-        GuiElement.registerGuiElementCoreFactory(mobileGuiElementCoreFactory, MobileBrowsers.mobile_chrome,
-                MobileBrowsers.mobile_safari);
-        WebDriverManager.registerWebDriverFactory(new WebDriverAdapterFactory(), MobileBrowsers.mobile_chrome,
-                MobileBrowsers.mobile_safari);
+        GuiElement.registerGuiElementCoreFactory(mobileGuiElementCoreFactory, MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
+        WebDriverManager.registerWebDriverFactory(new WebDriverAdapterFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }
 
     public static boolean hasActiveMobileDriver() {

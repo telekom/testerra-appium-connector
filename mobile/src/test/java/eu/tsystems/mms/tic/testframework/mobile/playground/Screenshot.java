@@ -7,8 +7,6 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Test;
 
-//FIXME
-
 public class Screenshot {
 
     /**

@@ -19,8 +19,10 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLoc
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -38,6 +40,7 @@ import java.nio.file.Paths;
 /**
  * Created by rnhb on 17.11.2015.
  */
+@Listeners(TesterraListener.class)
 public class Tests {
 
     private final String visualDum = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -399,12 +402,15 @@ public class Tests {
     @Test
     public void T01_Screenshot_Quality() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://mobiledevicecloud.t-systems-mms.eu");
-        System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest");
-        System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
+        System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest"); //
+        System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#"); // pAL7bKB
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
+        //        System.setProperty(MobileProperties.MOBILE_REPORT_SAVE_VIDEO, "true");
+
         System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
-        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+
+        final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
         prep(mobileDriver);
         prep(mobileDriver);
@@ -418,7 +424,6 @@ public class Tests {
             return;
         } else {
             String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-            //TODO check if this works
             Path screenshotDestinationPath = Paths.get(Report.SCREENSHOTS_DIRECTORY.getAbsolutePath() + imageFile);
             File screenshotFolder = Report.SCREENSHOTS_DIRECTORY;
             if (!screenshotFolder.exists()) {

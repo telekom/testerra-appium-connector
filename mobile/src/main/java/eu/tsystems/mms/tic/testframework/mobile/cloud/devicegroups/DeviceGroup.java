@@ -1,13 +1,11 @@
 package eu.tsystems.mms.tic.testframework.mobile.cloud.devicegroups;
 
-//TODO rework to core-interop
-//import eu.tsystems.mms.tic.testframework.internal.DataContainer;
+import eu.tsystems.mms.tic.testframework.internal.DataContainer;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.Nameable;
 
 import java.util.Objects;
 
-public class DeviceGroup implements Nameable
-        /*TODO rework to core-interop , DataContainer*/ {
+public class DeviceGroup implements Nameable, DataContainer {
 
     public String id;
 

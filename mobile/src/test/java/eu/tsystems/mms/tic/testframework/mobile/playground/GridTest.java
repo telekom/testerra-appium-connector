@@ -5,7 +5,7 @@ import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -13,10 +13,8 @@ import org.testng.annotations.Test;
 /**
  * Created by rnhb on 12.07.2017.
  */
-//FIXME
-@Listeners({MobileTestListener.class})
+@Listeners({TesterraListener.class})
 public class GridTest extends TesterraTest {
-
 
     //    protected static final Logger LOGGER = LoggerFactory.getLogger(GridTest.class);
 

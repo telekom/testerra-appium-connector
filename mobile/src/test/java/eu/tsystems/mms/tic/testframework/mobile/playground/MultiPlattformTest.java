@@ -4,7 +4,7 @@ import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Page;
@@ -19,14 +19,15 @@ import org.testng.annotations.Test;
 /**
  * Created by rnhb on 12.02.2016.
  */
-//FIXME
-@Listeners({MobileTestListener.class, TesterraListener.class})
+@Listeners({TesterraListener.class})
 public class MultiPlattformTest {
 
     @Test
     public void testT01() throws Exception {
 
-        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
+        MobileWebDriverRequest mobileWebDriverRequest = new MobileWebDriverRequest();
+        mobileWebDriverRequest.browser = MobileBrowsers.mobile_chrome;
+        //        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -45,6 +46,7 @@ public class MultiPlattformTest {
     public void testT02() throws Exception {
 
         class GooglePage extends Page {
+
             GuiElement searchField = new GuiElement(driver, By.xpath(".//*[@id='lst-ib']"));
             GuiElement searchButton = new GuiElement(driver, By.tagName("button"));
 
@@ -58,7 +60,9 @@ public class MultiPlattformTest {
             }
         }
 
-        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
+        MobileWebDriverRequest mobileWebDriverRequest = new MobileWebDriverRequest();
+        mobileWebDriverRequest.browser = MobileBrowsers.mobile_chrome;
+        //        WebDriverManager.config().browser() = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -72,6 +76,7 @@ public class MultiPlattformTest {
     public void testT03() throws Exception {
 
         class GooglePage extends Page {
+
             @Check
             GuiElement searchField = new GuiElement(driver, By.xpath(".//*[@id='lst-ib']"));
             @Check
@@ -88,7 +93,9 @@ public class MultiPlattformTest {
             }
         }
 
-        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
+        MobileWebDriverRequest mobileWebDriverRequest = new MobileWebDriverRequest();
+        mobileWebDriverRequest.browser = MobileBrowsers.mobile_chrome;
+        //        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();
@@ -100,9 +107,11 @@ public class MultiPlattformTest {
 
     @Test
     public void testT04() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER+".chrome","os.type=android");
+        System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER + ".chrome", "os.type=android");
 
-        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
+        MobileWebDriverRequest mobileWebDriverRequest = new MobileWebDriverRequest();
+        mobileWebDriverRequest.browser = MobileBrowsers.mobile_chrome;
+        //        WebDriverManager.config().browser = MobileBrowsers.mobile_chrome;
         //WebDriverManager.config().setBrowser(Browser.firefox);
 
         WebDriver webDriver = WebDriverManager.getWebDriver();

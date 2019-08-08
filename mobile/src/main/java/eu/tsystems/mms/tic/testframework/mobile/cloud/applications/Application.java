@@ -1,10 +1,8 @@
 package eu.tsystems.mms.tic.testframework.mobile.cloud.applications;
 
 import com.google.gson.annotations.SerializedName;
-//TODO rework to core-interop
-//import eu.tsystems.mms.tic.testframework.internal.DataContainer;
+import eu.tsystems.mms.tic.testframework.internal.DataContainer;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.Nameable;
-import eu.tsystems.mms.tic.testframework.mobile.cloud.projects.Project;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.projects.Projects;
 
 import java.util.Objects;
@@ -12,8 +10,7 @@ import java.util.Objects;
 /**
  * Created by rnhb on 09.12.2016.
  */
-public class Application implements Nameable
-        /*TODO rework to core-interop , DataContainer*/ {
+public class Application implements Nameable, DataContainer {
 
     @SerializedName("id")
     public String id;

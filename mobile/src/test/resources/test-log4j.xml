@@ -2,7 +2,7 @@
 <!DOCTYPE log4j:configuration SYSTEM "log4j.dtd">
 <log4j:configuration xmlns:log4j='http://jakarta.apache.org/log4j/'>
     <appender name="TestReportAppender"
-        class="eu.tsystems.mms.tic.testframework.report.FennecLogger">
+        class="eu.tsystems.mms.tic.testframework.report.TesterraLogger">
         <layout class="org.apache.log4j.PatternLayout">
             <param name="ConversionPattern" value="%d{dd.MM.yyyy HH:mm:ss} [%t] [%-5p]: %c{2} - %m%n" />
         </layout>

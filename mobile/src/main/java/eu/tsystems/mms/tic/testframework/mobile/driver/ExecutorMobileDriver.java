@@ -6,6 +6,7 @@ import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
@@ -23,8 +24,6 @@ import org.jsoup.select.Elements;
 
 import java.util.concurrent.TimeUnit;
 
-//        TODO rework with jfennec
-//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
 
 /**
  * Created by rnhb on 12.07.2017.
@@ -199,8 +198,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
             }
             activeDeviceIndex++;
             String osString = activeDevice.getOperatingSystem().toString() + " " + activeDevice.getOperatingSystemVersion();
-            //        TODO rework with jfennec
-            //        ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
+            ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
 
             reportedDeviceNames.add(deviceName);
         }

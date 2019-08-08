@@ -4,7 +4,6 @@ import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import org.testng.Assert;
 import org.testng.annotations.BeforeTest;
@@ -14,8 +13,7 @@ import org.testng.annotations.Test;
 /**
  * Created by rnhb on 16.06.2017.
  */
-//FIXME use different listener?
-@Listeners({MobileTestListener.class, TesterraListener.class})
+@Listeners({TesterraListener.class})
 public class ReportTest {
 
     @BeforeTest

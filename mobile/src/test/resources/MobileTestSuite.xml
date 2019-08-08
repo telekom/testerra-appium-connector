@@ -2,7 +2,7 @@
 <suite name="Testerra Mobile Unit Test Suite" verbose="10" configfailurepolicy="continue" thread-count="10" parallel="false">
 
     <listeners>
-        <listener class-name="eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener"/>
+        <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>
     </listeners>
 
     <test name="Mobile Unit Test">

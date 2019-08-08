@@ -6,6 +6,7 @@ import com.experitest.client.MobileListener;
 import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.By;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
@@ -15,6 +16,11 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import eu.tsystems.mms.tic.testframework.mobile.monitor.AppMonitor;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
+import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Document;
@@ -63,7 +69,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     boolean openReflectionScreen = PropertyManager.getBooleanProperty(
             MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN,
             DefaultParameter.MOBILE_OPEN_REFLECTION_SCREEN);
-    String beforeScreenshot;
+    Screenshot beforeScreenshot;
 
     int activeDeviceIndex;
 
@@ -205,8 +211,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         }
 
         LOGGER.info("SeeTest Java Client Version: " + clientVersion);
-        //TODO core-interop
-        //        ReportInfo.getRunInfo().addInfo("Client Version:", clientVersion);
+        ReportInfo.getRunInfo().addInfo("Client Version:", clientVersion);
     }
 
     @Override
@@ -232,8 +237,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             }
             try {
                 for (DeviceTest deviceTest : deviceTests) {
-                    //        TODO rework with jfennec
-                    //        TestStep.begin("Device Test " + deviceTest);
+                    TestStep.begin("Device Test " + deviceTest);
                     LOGGER.info("Starting Device Test " + deviceTest);
                     boolean pass = deviceTest.doDeviceTest(this, testDevice);
                     LOGGER.info("Device Test " + deviceTest + " has pass status: " + pass);
@@ -241,11 +245,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
                         String errorMessage = String.format(
                                 "DeviceTest \"%s\" failed on device \"%s\". Please check device or report to administrator.",
                                 deviceTest.toString(), testDevice.getName());
-                        if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING,
-                                DefaultParameter.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING)) {
-                            //TODO core interop
-                            //                            ReportInfo.getDashboardWarning().addInfoWithDefaultPrio(
-                            //                                    errorMessage);
+                        if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING, DefaultParameter.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING)) {
+                            ReportInfo.getDashboardWarning().addInfoWithDefaultPrio(errorMessage);
                         }
                         throw new DeviceNotAvailableException(testDevice, errorMessage);
                     }
@@ -267,9 +268,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 }
             }
         }
-        throw new DeviceNotAvailableException(TestDevice.NONE,
-                "No device of allowed devices available. Allowed devices: " + foundDevices);
-
+        throw new DeviceNotAvailableException(TestDevice.NONE, "No device of allowed devices available. Allowed devices: " + foundDevices);
     }
 
     @Override
@@ -286,9 +285,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     private void takeScreenshot() {
         if (takeScreenshots && !screenshotsDisabled) {
-            String screenshot = prepareNewScreenshot();
-            //        TODO rework with jfennec
-            //        TestStepController.addScreenshotsToCurrentAction(screenshot, null);
+            Screenshot screenshot = prepareNewScreenshot();
+            TestStepController.addScreenshotsToCurrentAction(screenshot, null);
         }
     }
 
@@ -297,16 +295,14 @@ public abstract class BaseMobileDriver implements MobileDriver {
         if (takeScreenshots && !screenshotsDisabled) {
             if (takeOnlyBeforeScreenshots) {
                 if (beforeScreenshot != null) {
-                    //        TODO rework with jfennec
-                    //        TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, null);
+                    TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, null);
                 }
             } else {
                 if (delayBetweenScreenshotsInMs > 0) {
                     TimerUtils.sleep(delayBetweenScreenshotsInMs);
                 }
-                String afterScreenshot = prepareNewScreenshot();
-                //        TODO rework with jfennec
-                //        TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, afterScreenshot);
+                Screenshot afterScreenshot = prepareNewScreenshot();
+                TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, afterScreenshot);
             }
 
             beforeScreenshot = null;
@@ -314,45 +310,41 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     @Override
-    public String prepareNewScreenshot() {
+    public Screenshot prepareNewScreenshot() {
+
         //TODO Workaround: Though initially set screenshot quality still varyies, but not if it is set right before capturing the screen, somehow.
         //TODO When this is fixed, with the next seetest version, please remove it again.
-        seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(
-                MobileProperties.MOBILE_SCREENSHOT_QUALITY,
-                DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
-        String capturePath = seeTestClient().capture();
+        seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
+        final String capturePath = seeTestClient().capture();
         if (capturePath == null) {
             return null;
-        } else {
-            String imageFile = activeDevice.getName() + "_"
-                    + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-
-            //        TODO rework with jfennec
-            //         Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-
-            // TODO This is probably not the intended way to publish screenshots
-            //            File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
-            //            if (!screenshotFolder.exists()) {
-            //                LOGGER.warn("Folder for screenshots was not found, creating it: " + screenshotFolder);
-            //                screenshotFolder.mkdirs();
-            //            }
-            //
-            //            if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, screenshotDestinationPath)) {
-            //                return null;
-            //            }
-            //            ScreenshotTracker.setCurrentScreenshot(screenshotDestinationPath);
-
-            // todo imageFile.subString(1) cut off the s from screen and destroyed order of image files in xeta report
-            String screenshotPathForReport = "../../screenshots/" + imageFile;
-
-            //TODO rework analogue to @Desktop
-            //            TestMethodContainer testMethodContainer = ExecutionContextController
-            //                    .getTestMethodContainerForCurrentTestResult();
-            //            if (testMethodContainer != null && showAllScreenshotsInSlider) {
-            //                testMethodContainer.addScreenshotPath(screenshotPathForReport, imageFile);
-            //            }
-            return screenshotPathForReport;
         }
+
+        final String imageFile = activeDevice.getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
+        final Path screenshotDestinationPath = Paths.get(Report.SCREENSHOTS_DIRECTORY.getAbsolutePath(), imageFile);
+
+        // TODO This is probably not the intended way to publish screenshots
+        if (!Report.SCREENSHOTS_DIRECTORY.exists()) {
+            LOGGER.warn("Folder for screenshots was not found, creating it: " + Report.SCREENSHOTS_DIRECTORY);
+            Report.SCREENSHOTS_DIRECTORY.mkdirs();
+        }
+
+        if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, screenshotDestinationPath)) {
+            return null;
+        }
+        ScreenshotTracker.setCurrentScreenshot(screenshotDestinationPath);
+
+        // todo imageFile.subString(1) cut off the s from screen and destroyed order of image files in xeta report
+        String screenshotPathForReport = "../../screenshots/" + imageFile;
+
+        //TODO rework analogue to @Desktop
+        //            TestMethodContainer testMethodContainer = ExecutionContextController.getTestMethodContainerForCurrentTestResult();
+        //            if (testMethodContainer != null && showAllScreenshotsInSlider) {
+        //                testMethodContainer.addScreenshotPath(screenshotPathForReport, imageFile);
+        //            }
+
+        //return screenshotPathForReport;
+        return new Screenshot();
     }
 
     @Override
@@ -450,8 +442,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         if (!installedApplications.contains(fullPathOfApp)) {
             String suffix = fullPathOfApp.isEmpty() ? "" : " " + (installedApplications.size() + 1);
-            //        TODO rework with jfennec
-            //         ReportInfo.getRunInfo().addInfo("Application" + suffix + ":", fullPathOfApp);
+            ReportInfo.getRunInfo().addInfo("Application" + suffix + ":", fullPathOfApp);
             installedApplications.add(fullPathOfApp);
         }
 
@@ -739,16 +730,12 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 + "s.", true);
 
         if (applicationString.contains("safari:") || applicationString.contains("chrome:")) {
-            //        TODO rework with jfennec?
-            //        ReportInfo.getRunInfo().addInfo("Browser:",
-            //        applicationString.substring(0, applicationString.indexOf(":")));
+            ReportInfo.getRunInfo().addInfo("Browser:", applicationString.substring(0, applicationString.indexOf(":")));
         } else if (applicationString.startsWith("http")) {
             if (activeDevice.getOperatingSystem() == MobileOperatingSystem.ANDROID) {
-                //        TODO rework with jfennec?
-                //        ReportInfo.getRunInfo().addInfo("Browser:", "Chrome");
+                ReportInfo.getRunInfo().addInfo("Browser:", "Chrome");
             } else if (activeDevice.getOperatingSystem() == MobileOperatingSystem.IOS) {
-                //        TODO rework with jfennec?
-                //        ReportInfo.getRunInfo().addInfo("Browser:", "Safari");
+                ReportInfo.getRunInfo().addInfo("Browser:", "Safari");
             }
         }
     }
@@ -967,12 +954,9 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.clientHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
-                isBottom = this.seeTestClient().hybridRunJavascript("", 0,
-                        "var result = document.documentElement.scrollTop+document.documentElement.clientHeight>=document.documentElement.offsetHeight;");
-                this.seeTestClient().hybridRunJavascript("", 0,
-                        "window.scrollBy(0,document.documentElement.clientHeight);");
-                //        TODO remove since unnecessary with jfennec?
-                //        TestUtils.sleep(1000);
+                isBottom = this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop+document.documentElement.clientHeight>=document.documentElement.offsetHeight;");
+                this.seeTestClient().hybridRunJavascript("", 0, "window.scrollBy(0,document.documentElement.clientHeight);");
+                TestUtils.sleep(1000);
                 maxTries--;
             } else {
                 break;
@@ -1132,15 +1116,11 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 if ("1".equals(value)) {
                     wifiSwitch.click();
                     // wait a little for the switch animation to finish
-                    //        TODO rework with jfennec?
-                    //        TestUtils.sleep(1000);
+                    TestUtils.sleep(1000);
                 }
                 wifiSwitch.click();
-
                 // wait some seconds so the device has the chance to reconnect to the wifi before continuing
-
-                //        TODO rework with jfennec?
-                //        TestUtils.sleep(4000);
+                TestUtils.sleep(4000);
                 return true;
             }
         }

@@ -5,6 +5,7 @@ import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceType;
@@ -18,11 +19,6 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.concurrent.TimeUnit;
-
-//        TODO rework with jfennec
-//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
-//import eu.tsystems.mms.tic.testframework.report.model.TestClassContainer;
-//import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 
 /**
  * Created by rnhb on 12.07.2017.
@@ -114,21 +110,21 @@ public class GridMobileDriver extends BaseMobileDriver {
 
         //        TODO rework with jfennec
         //        TestClassContainer testResult = null;
-//        try {
-//            testResult = ExecutionContextController.getTestClassContainerFromCurrentTestResult();
-//        } catch (Exception e) {
-//            LOGGER.error("Failed to retrieve TestClassContainer. This is needed to set the name of the test in the MDC-Grid automatically.", e);
-//        }
+        //        try {
+        //            testResult = ExecutionContextController.getTestClassContainerFromCurrentTestResult();
+        //        } catch (Exception e) {
+        //            LOGGER.error("Failed to retrieve TestClassContainer. This is needed to set the name of the test in the MDC-Grid automatically.", e);
+        //        }
         String projectName = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT, "T");
 
         String testName;
         //        TODO rework with jfennec
-//        if (testResult == null) {
-            testName = projectName + " Test";
+        //        if (testResult == null) {
+        testName = projectName + " Test";
         //        TODO rework with jfennec
-//        } else {
-//            testName = projectName + " " + testResult.getTestName();
-//        }
+        //        } else {
+        //            testName = projectName + " " + testResult.getTestName();
+        //        }
 
         int maximumLockingAttempts = Math.max(1, 1 + PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_RETRIES, 1));
         LOGGER.info("Trying to lock device with " + query + " for grid execution of " + testName + ". Timeout: "
@@ -180,8 +176,7 @@ public class GridMobileDriver extends BaseMobileDriver {
             }
             activeDeviceIndex++;
             String osString = activeDevice.getOperatingSystem().toString() + " " + activeDevice.getOperatingSystemVersion();
-            //        TODO rework with jfennec
-            //        ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
+            ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
 
             reportedDeviceNames.add(deviceName);
         }
