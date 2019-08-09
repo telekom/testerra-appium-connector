@@ -336,14 +336,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         // todo imageFile.subString(1) cut off the s from screen and destroyed order of image files in xeta report
         String screenshotPathForReport = "../../screenshots/" + imageFile;
-
-        //TODO rework analogue to @Desktop
-        //            TestMethodContainer testMethodContainer = ExecutionContextController.getTestMethodContainerForCurrentTestResult();
-        //            if (testMethodContainer != null && showAllScreenshotsInSlider) {
-        //                testMethodContainer.addScreenshotPath(screenshotPathForReport, imageFile);
-        //            }
-
-        //return screenshotPathForReport;
+        final Screenshot screenshot = new Screenshot();
+        screenshot.sourceFilename = screenshotPathForReport;
         return new Screenshot();
     }
 
@@ -969,7 +963,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             LOGGER.error("Failed to stitch screenshots.", e);
             return null;
         }
-        //        TODO remove since unnecessary with jfennec?
+        //        TODO remove since unnecessary with testerra?
         //        TestStepController.addScreenshotsToCurrentAction(out.toAbsolutePath().toString(), null);
         return (X) out.toFile();
     }

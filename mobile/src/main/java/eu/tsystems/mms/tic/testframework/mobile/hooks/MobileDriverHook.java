@@ -1,5 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.hooks;
 
+import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.interop.TestEvidenceCollector;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
@@ -21,6 +22,8 @@ public class MobileDriverHook implements ModuleHook {
 
     @Override
     public void init() {
+
+        TesterraCommons.init();
 
         MobileDriverManager.registerWebDriverFactory();
 

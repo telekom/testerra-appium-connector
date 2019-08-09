@@ -12,6 +12,8 @@ import eu.tsystems.mms.tic.testframework.mobile.device.DeviceType;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
@@ -104,27 +106,20 @@ public class GridMobileDriver extends BaseMobileDriver {
 
     @Override
     protected void waitForDevice(TestDevice testDevice) {
+
         String query = "@name='" + testDevice.getName() + "'";
         int timeoutInSeconds = PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_TIMEOUT_IN_SECONDS, DefaultParameter.MOBILE_DEVICE_RESERVATION_TIMEOUT_IN_SECONDS);
         int durationInMinutes = PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_GRID_RESERVATION_DURATION_IN_MINUTES, DefaultParameter.MOBILE_DEVICE_GRID_RESERVATION_DURATION_IN_MINUTES);
 
-        //        TODO rework with jfennec
-        //        TestClassContainer testResult = null;
-        //        try {
-        //            testResult = ExecutionContextController.getTestClassContainerFromCurrentTestResult();
-        //        } catch (Exception e) {
-        //            LOGGER.error("Failed to retrieve TestClassContainer. This is needed to set the name of the test in the MDC-Grid automatically.", e);
-        //        }
-        String projectName = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT, "T");
+        final String projectName = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT, "T");
+        final MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
 
         String testName;
-        //        TODO rework with jfennec
-        //        if (testResult == null) {
-        testName = projectName + " Test";
-        //        TODO rework with jfennec
-        //        } else {
-        //            testName = projectName + " " + testResult.getTestName();
-        //        }
+        if (currentMethodContext == null) {
+            testName = projectName + " Test";
+        } else {
+            testName = currentMethodContext.getName();
+        }
 
         int maximumLockingAttempts = Math.max(1, 1 + PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_RETRIES, 1));
         LOGGER.info("Trying to lock device with " + query + " for grid execution of " + testName + ". Timeout: "

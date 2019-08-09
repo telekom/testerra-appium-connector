@@ -1,7 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.utils.FileUtils;
@@ -44,9 +43,6 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
     private boolean reportDirectoryCreationResult;
 
     {
-        //FIXME where to do init?
-        TesterraCommons.init();
-
         String localReportPathProperty =
                 PropertyManager.getProperty(MobileProperties.MOBILE_LOCAL_REPORT_PATH, DefaultParameter.MOBILE_LOCAL_REPORT_PATH);
         String remoteReportPathProperty =
