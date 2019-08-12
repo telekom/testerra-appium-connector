@@ -12,12 +12,11 @@ import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
-import eu.tsystems.mms.tic.testframework.utils.FileUtils;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
@@ -61,32 +60,16 @@ public class MobileVideoGrabber implements VideoCollector {
                         }
 
                         if (tempFile != null) {
+
                             LOGGER.info("Created temp file for video \"" + tempFile + "\".");
                             MobileDriverUtils.getRemoteOrLocalFile(mobileDriver, pathFromSeeTest, tempFile);
 
-                            final File videoDirectory = Report.VIDEO_DIRECTORY;
-                            if (!videoDirectory.exists()) {
-                                LOGGER.warn("Directory for videos was not found, creating it: " + videoDirectory);
-                                videoDirectory.mkdirs();
-                            }
-
-                            final String testName = methodContext.getName();
-                            final String fileName = testName + ".ogg";
-                            final String renamedVideoDestinationFileString = videoDirectory.getAbsolutePath() + fileName;
-                            final File renamedVideoDestinationFile = new File(renamedVideoDestinationFileString);
-                            LOGGER.debug("Final destination of video file in xeta report is \"" + renamedVideoDestinationFileString + "\".");
                             try {
-                                FileUtils.copyFile(tempFile.toFile(), renamedVideoDestinationFile);
-                            } catch (Exception e) {
-                                LOGGER.error("Failed to move Video. Origin: " + tempFile + ". Destination: " + renamedVideoDestinationFileString, e);
-                                return null;
+                                final Video video = Report.provideVideo(tempFile.toFile(), Report.Mode.MOVE);
+                                videos.add(video);
+                            } catch (IOException e) {
+                                LOGGER.error("Error generating and providing video.", e);
                             }
-
-                            final String videoPathForReport = "../../" + renamedVideoDestinationFileString;
-                            //                            testMethodContainer.addVideoPath(videoPathForReport);
-                            final Video video = new Video();
-                            video.filename = videoPathForReport;
-                            videos.add(video);
                         }
                     }
                 } else {
