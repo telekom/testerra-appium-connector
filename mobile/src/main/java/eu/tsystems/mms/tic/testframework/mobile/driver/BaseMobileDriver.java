@@ -321,24 +321,22 @@ public abstract class BaseMobileDriver implements MobileDriver {
         }
 
         final String imageFile = activeDevice.getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-        final Path screenshotDestinationPath = Paths.get(Report.SCREENSHOTS_DIRECTORY.getAbsolutePath(), imageFile);
+        final Path tempScreenshotPath = Paths.get(System.getProperty("java.io.tmpdir"), imageFile);
 
-        // TODO This is probably not the intended way to publish screenshots
-        if (!Report.SCREENSHOTS_DIRECTORY.exists()) {
-            LOGGER.warn("Folder for screenshots was not found, creating it: " + Report.SCREENSHOTS_DIRECTORY);
-            Report.SCREENSHOTS_DIRECTORY.mkdirs();
+        try {
+
+            if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, tempScreenshotPath)) {
+                return null;
+            }
+
+            ScreenshotTracker.setCurrentScreenshot(tempScreenshotPath);
+            return Report.provideScreenshot(tempScreenshotPath.toFile(), null, Report.Mode.MOVE, null);
+
+        } catch (IOException e) {
+            LOGGER.error("Error taking and providing screenshot.", e);
         }
 
-        if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, screenshotDestinationPath)) {
-            return null;
-        }
-        ScreenshotTracker.setCurrentScreenshot(screenshotDestinationPath);
-
-        // todo imageFile.subString(1) cut off the s from screen and destroyed order of image files in xeta report
-        String screenshotPathForReport = "../../screenshots/" + imageFile;
-        final Screenshot screenshot = new Screenshot();
-        screenshot.sourceFilename = screenshotPathForReport;
-        return new Screenshot();
+        return null;
     }
 
     @Override

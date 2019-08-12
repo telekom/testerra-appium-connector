@@ -19,8 +19,9 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLoc
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.worker.MobileScreenshotGrabber;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
-import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -32,10 +33,10 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.List;
 
 /**
  * Created by rnhb on 17.11.2015.
@@ -412,28 +413,8 @@ public class Tests {
 
         final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
-        prep(mobileDriver);
-        prep(mobileDriver);
-        prep(mobileDriver);
-        prep(mobileDriver);
-    }
 
-    private void prep(MobileDriver md) {
-        String capturePath = md.seeTestClient().capture();
-        if (capturePath == null) {
-            return;
-        } else {
-            String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-            Path screenshotDestinationPath = Paths.get(Report.SCREENSHOTS_DIRECTORY.getAbsolutePath() + imageFile);
-            File screenshotFolder = Report.SCREENSHOTS_DIRECTORY;
-            if (!screenshotFolder.exists()) {
-                screenshotFolder.mkdirs();
-            }
-            try {
-                md.seeTestClient().getRemoteFile(capturePath, 10000, screenshotDestinationPath.toAbsolutePath().toString());
-            } catch (Exception e) {
-            }
-        }
+        List<Screenshot> screenshots = new MobileScreenshotGrabber().takeScreenshots();
     }
 
     @Test

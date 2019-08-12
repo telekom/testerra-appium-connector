@@ -28,21 +28,4 @@ public class Screenshot {
             TimerUtils.sleep(5000);
         }
     }
-//    TODO do we need this anywhere?
-//    private void prep(MobileDriver md) {
-//        String capturePath = md.seeTestClient().capture();
-//        if (capturePath == null || capturePath.equals("")) {
-//            return;
-//        }
-//        String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-//        Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-//        File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
-//        if (!screenshotFolder.exists()) {
-//            screenshotFolder.mkdirs();
-//        }
-//        try {
-//            md.seeTestClient().getRemoteFile(capturePath, 10000, screenshotDestinationPath.toAbsolutePath().toString());
-//        } catch (Exception e) {
-//        }
-//    }
 }
