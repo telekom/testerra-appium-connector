@@ -66,9 +66,9 @@ ext {
 
     jaxbVersion = '2.2.11'
     jaxb = [
-           'javax.xml.bind:jaxb-api:'+ jaxbVersion,
-           'com.sun.xml.bind:jaxb-core:'+ jaxbVersion,
-           'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
+            'javax.xml.bind:jaxb-api:' + jaxbVersion,
+            'com.sun.xml.bind:jaxb-core:' + jaxbVersion,
+            'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
     ]
 
     testerraVersion = '1-SNAPSHOT'
@@ -79,9 +79,9 @@ ext {
     powermockVersion = '1.7.3'
     powermock = [
             'org.powermock:powermock-module-testng:' + powermockVersion,
-            'org.powermock:powermock-api-mockito2:'+ powermockVersion
+            'org.powermock:powermock-api-mockito2:' + powermockVersion
     ]
-    
+
     mockito = 'org.mockito:mockito-core:2.8.9'
 }
 
@@ -103,17 +103,6 @@ subprojects {
                 password "$mavenPassword"
             }
             url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom"
-//        url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom-snapshot"
-//            url "https://artifacts.mms-at-work.de/artifactory/shared-ticautom-snapshot"
-        }
-        maven {
-            credentials {
-                username "$mavenUser"
-                password "$mavenPassword"
-            }
-          url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom"
-//        url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom-snapshot"
-//            url "https://artifacts.mms-at-work.de/artifactory/shared-ticautom-release"
         }
 
         jcenter()
