@@ -30,6 +30,11 @@ public class MobileDriverHook implements ModuleHook {
         TesterraListener.registerBeforeMethodWorker(MobileBeforeMethodWorker.class);
         TestEvidenceCollector.registerScreenshotCollector(new MobileScreenshotGrabber());
         TestEvidenceCollector.registerVideoCollector(new MobileVideoGrabber());
+
+        // TODO
+        // Add a concrete implementation of AbstractEvidenceWorker (first implement this conectrete class)
+        // Take a look at TakeInSessionEvidencesWorker in testerra-prep (driver-ui module, should be similar)
+        //TesterraListener.registerAfterMethodWorker(YourMobileEvidenceWorker.class);
     }
 
     @Override
