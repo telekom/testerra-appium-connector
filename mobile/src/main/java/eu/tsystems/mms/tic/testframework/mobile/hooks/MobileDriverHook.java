@@ -8,6 +8,7 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenshotTracker;
 import eu.tsystems.mms.tic.testframework.mobile.worker.MobileBeforeMethodWorker;
 import eu.tsystems.mms.tic.testframework.mobile.worker.MobileScreenshotGrabber;
+import eu.tsystems.mms.tic.testframework.mobile.worker.MobileTakeInSessionEvidencesWorker;
 import eu.tsystems.mms.tic.testframework.mobile.worker.MobileVideoGrabber;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import org.slf4j.Logger;
@@ -31,10 +32,8 @@ public class MobileDriverHook implements ModuleHook {
         TestEvidenceCollector.registerScreenshotCollector(new MobileScreenshotGrabber());
         TestEvidenceCollector.registerVideoCollector(new MobileVideoGrabber());
 
-        // TODO
-        // Add a concrete implementation of AbstractEvidenceWorker (first implement this conectrete class)
-        // Take a look at TakeInSessionEvidencesWorker in testerra-prep (driver-ui module, should be similar)
-        //TesterraListener.registerAfterMethodWorker(YourMobileEvidenceWorker.class);
+        TesterraListener.registerAfterMethodWorker(MobileTakeInSessionEvidencesWorker.class);
+        // TODO ERKU - probably we need a VideoEvidenceWorker as well - videos are provided after shutdown. use it then.
     }
 
     @Override
