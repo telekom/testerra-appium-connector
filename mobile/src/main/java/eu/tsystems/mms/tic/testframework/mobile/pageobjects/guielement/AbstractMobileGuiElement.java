@@ -15,11 +15,15 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 //import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
@@ -384,7 +388,41 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
     }
 
     public File takeScreenshot(){
-        return mobileDriver.getScreenshotAs(OutputType.FILE);
+
+        final boolean isSelenium4 = false;
+
+        if (isSelenium4) {
+            return mobileDriver.getScreenshotAs(OutputType.FILE);
+        } else {
+            try {
+                //find();
+                final TakesScreenshot driver = mobileDriver;
+                final MobileGuiElement element = this;
+
+                File screenshot = driver.getScreenshotAs(OutputType.FILE);
+                BufferedImage fullImg = ImageIO.read(screenshot);
+
+//                Point point = element.getLocation();
+
+                int propertyX = Integer.parseInt(element.getProperty("x"));
+                int propertyY = Integer.parseInt(element.getProperty("y"));
+                int eleWidth = Integer.parseInt(element.getProperty("width"));
+                int eleHeight = Integer.parseInt(element.getProperty("height"));
+
+                BufferedImage eleScreenshot = fullImg.getSubimage(
+                        propertyX,
+                        propertyY,
+                        eleWidth,
+                        eleHeight
+                );
+                ImageIO.write(eleScreenshot, "png", screenshot);
+                return screenshot;
+            } catch (IOException e) {
+                LOGGER.error(String.format("%s unable to take screenshot: %s ", this.name, e)); //TODO JOBI: hier stand vorher this.guiElementData, was ist der Gegenpart in Mobile?
+            }
+        }
+
+        return null;
         //TODO fallunterscheidung wie beim richtigen takescreenshoit
     }
 }
