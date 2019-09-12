@@ -19,7 +19,7 @@ public class ReportTest {
     @BeforeTest
     public void a() throws DeviceNotAvailableException {
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
-        System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "name=*alaxy S7*");
+        System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "name=*alaxy S8*");
         mobileDriver.reserveDeviceByFilter();
     }
 

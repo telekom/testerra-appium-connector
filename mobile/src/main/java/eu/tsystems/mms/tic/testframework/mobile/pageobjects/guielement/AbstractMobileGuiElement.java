@@ -13,11 +13,13 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.MobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.*;
+import java.io.File;
 import java.util.Map;
 
 //import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
@@ -379,5 +381,10 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
             }
         }
         LOGGER.warn("Failed to center element vertically.");
+    }
+
+    public File takeScreenshot(){
+        return mobileDriver.getScreenshotAs(OutputType.FILE);
+        //TODO fallunterscheidung wie beim richtigen takescreenshoit
     }
 }
