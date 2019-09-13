@@ -1,18 +1,15 @@
 package eu.tsystems.mms.tic.testframework.mobile.cloud.projects;
 
 import com.google.gson.annotations.SerializedName;
-//TODO rework to core-interop
-//import eu.tsystems.mms.tic.testframework.internal.DataContainer;
+import eu.tsystems.mms.tic.testframework.internal.DataContainer;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.Nameable;
 
-import java.io.Serializable;
 import java.util.Objects;
 
 /**
  * Created by rnhb on 09.12.2016.
  */
-public class Project implements Nameable
-        /*TODO rework to core-interop , DataContainer*/ {
+public class Project implements Nameable, DataContainer {
 
     @SerializedName("created")
     public String created;

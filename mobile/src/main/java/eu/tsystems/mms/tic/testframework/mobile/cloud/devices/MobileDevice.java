@@ -1,8 +1,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.cloud.devices;
 
 import com.google.gson.annotations.SerializedName;
-//TODO rework to core-interop
-//import eu.tsystems.mms.tic.testframework.internal.DataContainer;
+import eu.tsystems.mms.tic.testframework.internal.DataContainer;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.Nameable;
 
 import java.util.Objects;
@@ -10,8 +9,7 @@ import java.util.Objects;
 /**
  * Created by rnhb on 12.12.2016.
  */
-public class MobileDevice implements Nameable
-        /*TODO rework to core-interop , DataContainer*/  {
+public class MobileDevice implements Nameable, DataContainer {
 
 
     @SerializedName("iosUdid")

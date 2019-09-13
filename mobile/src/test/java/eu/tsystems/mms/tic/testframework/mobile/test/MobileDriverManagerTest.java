@@ -7,16 +7,19 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.test;
 
-import static org.mockito.Mockito.when;
-
-import java.lang.reflect.Method;
-
-import eu.tsystems.mms.tic.testframework.annotations.Fails;
+import com.experitest.client.Client;
+import com.experitest.client.GridClient;
+import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
+import eu.tsystems.mms.tic.testframework.mobile.driver.ExecutorMobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.GridMobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.utils.FileUtils;
+import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jdom2.Document;
 import org.jdom2.output.XMLOutputter;
 import org.mockito.Mockito;
 import org.powermock.api.mockito.PowerMockito;
-import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.testng.PowerMockObjectFactory;
 import org.powermock.modules.testng.PowerMockTestCase;
 import org.testng.Assert;
@@ -25,20 +28,13 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.ObjectFactory;
 import org.testng.annotations.Test;
 
-import com.experitest.client.Client;
-import com.experitest.client.GridClient;
+import java.lang.reflect.Method;
 
-import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
-import eu.tsystems.mms.tic.testframework.mobile.driver.ExecutorMobileDriver;
-import eu.tsystems.mms.tic.testframework.mobile.driver.GridMobileDriver;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.utils.FileUtils;
-import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
+import static org.mockito.Mockito.when;
 
 /**
  * BaseMobileDriverTest
- * 
+ *
  * @author sepr
  */
 //@PrepareForTest(MobileDriverManager.class)
@@ -51,9 +47,10 @@ public class MobileDriverManagerTest extends PowerMockTestCase {
 
     /**
      * TODO is failing due IllegalArgumentException
+     *
      * @throws Exception
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testGridDriver() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://");
 
@@ -74,9 +71,10 @@ public class MobileDriverManagerTest extends PowerMockTestCase {
 
     /**
      * TODO is failing due ConnectivityException
+     *
      * @throws Exception
      */
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testExecutorDriver() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "localhost");
 

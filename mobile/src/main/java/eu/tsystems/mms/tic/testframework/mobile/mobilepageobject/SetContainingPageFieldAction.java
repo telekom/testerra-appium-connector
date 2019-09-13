@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.mobilepageobject;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileGuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.AbstractPage;
@@ -36,7 +36,7 @@ public class SetContainingPageFieldAction extends FieldAction {
                     mobileGuiElement.setContainingPage((MobilePage) declaringPage);
                 } else {
                     // Another Page added this FieldAction, that should only be used by MobileGuiElement
-                    throw new FennecSystemException("Internal Error.");
+                    throw new TesterraSystemException("Internal Error.");
                 }
             }
         }

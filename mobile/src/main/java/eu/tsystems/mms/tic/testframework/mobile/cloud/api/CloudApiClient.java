@@ -4,15 +4,21 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import eu.tsystems.mms.tic.testframework.common.FennecCommons;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLConnection;
@@ -35,8 +41,7 @@ public class CloudApiClient {
     private static final String BASIC = "Basic ";
 
     static {
-        //TODO check if all of init is needed
-        FennecCommons.init();
+        TesterraCommons.init();
     }
 
     private Map<String, Integer> deviceNameToIdMap;
@@ -133,7 +138,9 @@ public class CloudApiClient {
      *
      * @param deviceName name of device to get screenshot from.
      * @param time       Time to get screeshot from, null for current.
+     *
      * @return absolut path to screenshot file.
+     *
      * @deprecated
      */
     @Deprecated
@@ -187,7 +194,7 @@ public class CloudApiClient {
 
     String post(String entity, String... parameters) {
         try {
-            return doPost(entity, createQuery(parameters),"POST");
+            return doPost(entity, createQuery(parameters), "POST");
         } catch (IOException e) {
             throw new RuntimeException("", e);
         }
@@ -195,7 +202,7 @@ public class CloudApiClient {
 
     String put(String entity, String... parameters) {
         try {
-            return doPost(entity, createQuery(parameters),"PUT");
+            return doPost(entity, createQuery(parameters), "PUT");
         } catch (IOException e) {
             throw new RuntimeException("", e);
         }
@@ -203,7 +210,7 @@ public class CloudApiClient {
 
     String delete(String entity, String... parameters) {
         try {
-            return doPost(entity, createQuery(parameters),"DELETE");
+            return doPost(entity, createQuery(parameters), "DELETE");
         } catch (IOException e) {
             throw new RuntimeException("", e);
         }
@@ -272,6 +279,7 @@ public class CloudApiClient {
      *
      * @param deviceName name of device to get screenshot from.
      * @param time       Time to get screeshot from
+     *
      * @return path to screenshot file.
      */
     @Deprecated
@@ -307,6 +315,7 @@ public class CloudApiClient {
      * Get device info from api for device name.
      *
      * @param deviceName Name to lookup
+     *
      * @return device info as json object.
      */
     @Deprecated

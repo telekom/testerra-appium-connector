@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -70,7 +70,7 @@ public class ScreenDump {
         try {
             documentBuilder = documentBuilderFactory.newDocumentBuilder();
         } catch (ParserConfigurationException e) {
-            throw new FennecRuntimeException("Failed to prepare " + this.getClass() + ".", e);
+            throw new TesterraRuntimeException("Failed to prepare " + this.getClass() + ".", e);
         }
     }
 
@@ -83,10 +83,10 @@ public class ScreenDump {
                 return documentBuilder.parse(new InputSource(new StringReader(nativeScreenDump)));
             } catch (Exception e1) {
                 LOGGER.debug(e1.getMessage());
-                throw new FennecRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
+                throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
             }
         } catch (IOException e) {
-            throw new FennecRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
+            throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
         }
     }
 
@@ -98,7 +98,7 @@ public class ScreenDump {
         try {
             return xPathFactory.newXPath().compile(xPath);
         } catch (XPathExpressionException e) {
-            throw new FennecRuntimeException("Failed to compile xpath \"" + xPath + "\".", e);
+            throw new TesterraRuntimeException("Failed to compile xpath \"" + xPath + "\".", e);
         }
     }
 
@@ -106,7 +106,7 @@ public class ScreenDump {
         try {
             return xPathExpression.evaluate(document, returnType);
         } catch (XPathExpressionException e) {
-            throw new FennecRuntimeException("Failed to evaluate xPath \"" + xPathExpression + "\" against " + document, e);
+            throw new TesterraRuntimeException("Failed to evaluate xPath \"" + xPathExpression + "\" against " + document, e);
         }
     }
 

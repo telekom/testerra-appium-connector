@@ -4,8 +4,9 @@ import com.experitest.client.Client;
 import com.experitest.client.InternalException;
 import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
@@ -13,8 +14,6 @@ import eu.tsystems.mms.tic.testframework.mobile.device.DeviceType;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
-//        TODO rework with jfennec
-//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import eu.tsystems.mms.tic.testframework.utils.Timer;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
@@ -24,6 +23,7 @@ import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
 import java.util.concurrent.TimeUnit;
+
 
 /**
  * Created by rnhb on 12.07.2017.
@@ -124,7 +124,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
                     deviceStore.addDevice(testDevice);
                     ReservationStatus reservationStatus = parseReservationStatus(deviceElement);
                     testDevice.setReservationStatus(reservationStatus);
-                } catch (FennecSystemException e) {
+                } catch (TesterraSystemException e) {
                     LOGGER.error("Failed to create testDevice from attributes " + attributes);
                 }
             }
@@ -169,7 +169,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
     @Override
     public void switchToDevice(TestDevice testDevice) {
         if (testDevice == null) {
-            throw new FennecRuntimeException("TestDevice cannot be null!");
+            throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
 
         if (testDevice == activeDevice) {
@@ -178,7 +178,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
         }
 
         if (!reservedDevices.contains(testDevice)) {
-            throw new FennecRuntimeException("Cannot switch to Device " + testDevice +
+            throw new TesterraRuntimeException("Cannot switch to Device " + testDevice +
                     ". It was not successfully reserved before.");
         }
 
@@ -198,8 +198,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
             }
             activeDeviceIndex++;
             String osString = activeDevice.getOperatingSystem().toString() + " " + activeDevice.getOperatingSystemVersion();
-            //        TODO rework with jfennec
-            //        ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
+            ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
 
             reportedDeviceNames.add(deviceName);
         }
@@ -233,7 +232,7 @@ public class ExecutorMobileDriver extends BaseMobileDriver {
     @Override
     public void releaseDevice(TestDevice testDevice) {
         if (testDevice == null) {
-            throw new FennecRuntimeException("TestDevice cannot be null!");
+            throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
 
         try {

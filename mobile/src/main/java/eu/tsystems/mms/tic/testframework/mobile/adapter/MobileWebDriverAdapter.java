@@ -1,28 +1,12 @@
 package eu.tsystems.mms.tic.testframework.mobile.adapter;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-
-import org.openqa.selenium.By;
-import org.openqa.selenium.JavascriptExecutor;
-import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
-import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
-import org.openqa.selenium.WebElement;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.w3c.dom.NodeList;
-
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.constants.Browser;
-import eu.tsystems.mms.tic.testframework.constants.XetaProperties;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
+import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.DefaultParameter;
@@ -34,6 +18,21 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMob
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.TextMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
+import org.openqa.selenium.By;
+import org.openqa.selenium.JavascriptExecutor;
+import org.openqa.selenium.OutputType;
+import org.openqa.selenium.TakesScreenshot;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
+import org.openqa.selenium.WebElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.w3c.dom.NodeList;
+
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 /**
  * Created by rnhb on 09.02.2016.
@@ -59,18 +58,19 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
     @Override
     public void get(String urlToLaunch) {
         TestDevice activeDevice = mobileDriver.getActiveDevice();
-        Browser browser = Browser.valueOf(PropertyManager.getProperty(XetaProperties.BROWSER));
-        if (browser == null || !browser.isMobile()) {
-            throw new FennecSystemException("Internal error: Somehow tried to start mobile browser test without properly set mobile browser.");
+        String browserName = PropertyManager.getProperty(TesterraProperties.BROWSER);
+        if (browserName == null ||
+                !(MobileBrowsers.mobile_chrome.equals(browserName)
+                        || MobileBrowsers.mobile_safari.equals(browserName))) {
+            throw new TesterraSystemException("Internal error: Somehow tried to start mobile browser test without properly set mobile browser.");
         }
-        String browserName = browser.name();
         String filterProperty = MobileProperties.MOBILE_DEVICE_FILTER + "." + browserName.substring(browserName.lastIndexOf("_") + 1);
 
         if (activeDevice == null) {
             try {
                 mobileDriver.reserveDeviceByFilter(filterProperty);
             } catch (DeviceNotAvailableException e) {
-                throw new FennecRuntimeException(e);
+                throw new TesterraRuntimeException(e);
             }
         }
 
@@ -83,9 +83,9 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
     private void skipUntrustedWebsiteWarning() {
         TestDevice activeDevice = mobileDriver.getActiveDevice();
         if (activeDevice != null) {
-            Browser browser = activeDevice.getOperatingSystem().getAssociatedBrowser();
+            String browser = activeDevice.getOperatingSystem().getAssociatedBrowser();
             switch (browser) {
-                case mobile_chrome:
+                case MobileBrowsers.mobile_chrome:
                     TextMobileGuiElement expandButton = new TextMobileGuiElement("ERWEITERT");
                     if (expandButton.isDisplayed()) {
                         TextMobileGuiElement continueButton = new TextMobileGuiElement("WEITER ZU");
@@ -96,7 +96,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
                         }
                     }
                     break;
-                case mobile_safari:
+                case MobileBrowsers.mobile_safari:
                     TextMobileGuiElement ignoreWarning = new TextMobileGuiElement("Warnhinweis ignorieren");
 
                     if (ignoreWarning.isDisplayed()) {
@@ -124,9 +124,9 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getCurrentUrl() {
-        Browser browser = Browser.valueOf(PropertyManager.getProperty(XetaProperties.BROWSER));
+        String browser = PropertyManager.getProperty(TesterraProperties.BROWSER);
         switch (browser) {
-            case mobile_chrome: {
+            case MobileBrowsers.mobile_chrome: {
                 NativeMobileGuiElement urlInputField = new NativeMobileGuiElement("xpath=//*[@id='url_bar']");
                 if (urlInputField.waitForIsPresent()) {
                     return urlInputField.getText();
@@ -134,7 +134,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
                     return "url_field_not_found";
                 }
             }
-            case mobile_safari: {
+            case MobileBrowsers.mobile_safari: {
                 NativeMobileGuiElement urlInputField = new NativeMobileGuiElement("xpath=//*[@accessibilityLabel='URL']");
                 if (urlInputField.waitForIsPresent()) {
                     return urlInputField.getProperty("value");

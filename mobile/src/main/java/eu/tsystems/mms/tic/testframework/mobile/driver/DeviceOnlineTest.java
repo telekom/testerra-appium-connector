@@ -7,13 +7,12 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Checks if the device is connected to WIFI by checking an element for a given url (by default xeta mobiles internal
@@ -64,7 +63,7 @@ public class DeviceOnlineTest extends DeviceTest {
             mobileDriver.launchApplication(testPageUrl);
             WebMobileGuiElement webMobileGuiElement = new WebMobileGuiElement(testPageElementLocator);
             found = webMobileGuiElement.waitForIsDisplayed();
-        } catch (FennecRuntimeException xre) {
+        } catch (TesterraRuntimeException xre) {
             LOGGER.warn("Launching test page url failed", xre);
         }
         if (!found) {

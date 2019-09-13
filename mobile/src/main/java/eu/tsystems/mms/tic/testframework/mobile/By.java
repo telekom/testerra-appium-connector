@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
@@ -74,7 +74,7 @@ public class By {
                 }
                 return new By("xpath=//*[@accessibilityIdentifier='" + id + "'" + additionalXpath + "]");
             default:
-                throw new FennecRuntimeException(mobileOperatingSystem + " not supported for By.id locator");
+                throw new TesterraRuntimeException(mobileOperatingSystem + " not supported for By.id locator");
         }
     }
 
@@ -86,7 +86,7 @@ public class By {
             case IOS:
                 return new By("xpath=//*[@accessibilityIdentifier='" + parentId + "']//*[@accessibilityIdentifier='" + childId + "']");
             default:
-                throw new FennecRuntimeException(mobileOperatingSystem + " not supported for By.id locator");
+                throw new TesterraRuntimeException(mobileOperatingSystem + " not supported for By.id locator");
         }
     }
 

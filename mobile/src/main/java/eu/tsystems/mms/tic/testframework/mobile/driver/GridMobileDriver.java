@@ -3,18 +3,17 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import com.experitest.client.GridClient;
 import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceType;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
-//        TODO rework with jfennec
-//        import eu.tsystems.mms.tic.testframework.report.info.ReportInfo;
-//import eu.tsystems.mms.tic.testframework.report.model.TestClassContainer;
-//import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Attributes;
 import org.jsoup.nodes.Document;
@@ -84,7 +83,7 @@ public class GridMobileDriver extends BaseMobileDriver {
                     deviceStore.addDevice(testDevice);
                     ReservationStatus reservationStatus = parseReservationStatus(deviceElement);
                     testDevice.setReservationStatus(reservationStatus);
-                } catch (FennecSystemException e) {
+                } catch (TesterraSystemException e) {
                     LOGGER.error("Failed to create testDevice from attributes " + attributes);
                 }
             }
@@ -107,27 +106,20 @@ public class GridMobileDriver extends BaseMobileDriver {
 
     @Override
     protected void waitForDevice(TestDevice testDevice) {
+
         String query = "@name='" + testDevice.getName() + "'";
         int timeoutInSeconds = PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_TIMEOUT_IN_SECONDS, DefaultParameter.MOBILE_DEVICE_RESERVATION_TIMEOUT_IN_SECONDS);
         int durationInMinutes = PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_GRID_RESERVATION_DURATION_IN_MINUTES, DefaultParameter.MOBILE_DEVICE_GRID_RESERVATION_DURATION_IN_MINUTES);
 
-        //        TODO rework with jfennec
-        //        TestClassContainer testResult = null;
-//        try {
-//            testResult = ExecutionContextController.getTestClassContainerFromCurrentTestResult();
-//        } catch (Exception e) {
-//            LOGGER.error("Failed to retrieve TestClassContainer. This is needed to set the name of the test in the MDC-Grid automatically.", e);
-//        }
-        String projectName = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT, "T");
+        final String projectName = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT, "T");
+        final MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
 
         String testName;
-        //        TODO rework with jfennec
-//        if (testResult == null) {
+        if (currentMethodContext == null) {
             testName = projectName + " Test";
-        //        TODO rework with jfennec
-//        } else {
-//            testName = projectName + " " + testResult.getTestName();
-//        }
+        } else {
+            testName = currentMethodContext.getName();
+        }
 
         int maximumLockingAttempts = Math.max(1, 1 + PropertyManager.getIntProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_RETRIES, 1));
         LOGGER.info("Trying to lock device with " + query + " for grid execution of " + testName + ". Timeout: "
@@ -153,7 +145,7 @@ public class GridMobileDriver extends BaseMobileDriver {
     @Override
     public void switchToDevice(TestDevice testDevice) {
         if (testDevice == null) {
-            throw new FennecRuntimeException("TestDevice cannot be null!");
+            throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
 
         if (testDevice == activeDevice) {
@@ -162,7 +154,7 @@ public class GridMobileDriver extends BaseMobileDriver {
         }
 
         if (!reservedDevices.contains(testDevice)) {
-            throw new FennecRuntimeException("Cannot switch to Device " + testDevice +
+            throw new TesterraRuntimeException("Cannot switch to Device " + testDevice +
                     ". It was not successfully reserved before.");
         }
 
@@ -179,8 +171,7 @@ public class GridMobileDriver extends BaseMobileDriver {
             }
             activeDeviceIndex++;
             String osString = activeDevice.getOperatingSystem().toString() + " " + activeDevice.getOperatingSystemVersion();
-            //        TODO rework with jfennec
-            //        ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
+            ReportInfo.getRunInfo().addInfo("Device:" + propertySuffix, deviceName + " " + osString);
 
             reportedDeviceNames.add(deviceName);
         }

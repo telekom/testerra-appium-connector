@@ -1,5 +1,9 @@
 package eu.tsystems.mms.tic.testframework.mobile.device;
 
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -7,11 +11,6 @@ import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
 
 /**
  * Created by rnhb on 30.04.2015.
@@ -34,9 +33,9 @@ public class DeviceLog {
                 line = br.readLine();
             }
         } catch (FileNotFoundException e) {
-            throw new FennecRuntimeException("No log found at " + deviceLogPath);
+            throw new TesterraRuntimeException("No log found at " + deviceLogPath);
         } catch (IOException e) {
-            throw new FennecRuntimeException("Error when reading the log at " + deviceLogPath);
+            throw new TesterraRuntimeException("Error when reading the log at " + deviceLogPath);
         }
     }
 

@@ -22,6 +22,7 @@ import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -224,6 +225,11 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
     @Override
     public void doubleClickJS() {
         LOGGER.warn("doubleClickJS not implemented on mobile system.");
+    }
+
+    @Override
+    public File takeScreenshot() {
+        return webMobileGuiElement.takeScreenshot();
     }
 
     @Override
