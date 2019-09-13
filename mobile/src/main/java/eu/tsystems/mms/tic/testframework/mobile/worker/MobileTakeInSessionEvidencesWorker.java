@@ -7,7 +7,6 @@ import eu.tsystems.mms.tic.testframework.interop.TestEvidenceCollector;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
-import hep.aida.ref.Test;
 
 import java.util.List;
 
@@ -28,11 +27,13 @@ public class MobileTakeInSessionEvidencesWorker extends AbstractMobileEvidencesW
             // get screenshots and videos
             final List<Screenshot> screenshots = TestEvidenceCollector.collectScreenshots();
             final List<Video> videos = TestEvidenceCollector.collectVideos();
+
             if (screenshots != null) {
                 screenshots.forEach(s -> s.errorContextId = methodContext.id);
                 methodContext.screenshots.addAll(screenshots);
             }
-            if(videos != null) {
+
+            if (videos != null) {
                 videos.forEach(video -> video.errorContextId = methodContext.id);
                 methodContext.videos.addAll(videos);
             }

@@ -19,9 +19,7 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLoc
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
-import eu.tsystems.mms.tic.testframework.mobile.worker.MobileScreenshotGrabber;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
-import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
@@ -36,7 +34,6 @@ import javax.xml.xpath.XPathFactory;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.List;
 
 /**
  * Created by rnhb on 17.11.2015.
@@ -413,19 +410,17 @@ public class Tests {
 
         final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
-
-        List<Screenshot> screenshots = new MobileScreenshotGrabber().takeScreenshots();
     }
 
     @Test
     public void test1234() throws Exception {
+
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         String adb = "Apple iPhone 7 (Nr 2)";
         TestDevice build = TestDevice.builder().operatingSystem(MobileOperatingSystem.IOS).name(adb).build();
 
         mobileDriver.reserveDevice(build);
         mobileDriver.resetWlanOfActiveDevice();
-
     }
 
     @Test

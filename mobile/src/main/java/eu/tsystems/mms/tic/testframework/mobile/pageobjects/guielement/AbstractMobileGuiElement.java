@@ -385,6 +385,6 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
 
     public File takeScreenshot(){
         return mobileDriver.getScreenshotAs(OutputType.FILE);
-        //TODO fallunterscheidung wie beim richtigen takescreenshoit
+        //TODO erku/jobi fallunterscheidung wie beim richtigen takescreenshoit
     }
 }

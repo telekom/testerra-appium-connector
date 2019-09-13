@@ -4,16 +4,22 @@ import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
+import org.testng.Assert;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 
+@Listeners(TesterraListener.class)
 public class Screenshot {
 
     /**
      * Check Screenshot Quality from Cloud.
      */
     @Test
-    public void T01_Screenshot_Quality() {
+    public void T01_Screenshot_Quality_And_StepView() {
+
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "localhost");
         System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest");
         System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
@@ -23,9 +29,33 @@ public class Screenshot {
         System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDeviceByFilter();
-        for (int i = 0; i < 20; i++) {
-            mobileDriver.takeBeforeScreenshot();
+
+        for (int i = 0; i < 2; i++) {
+            TestStep.begin("Screen " + i);
+            mobileDriver.takeAfterScreenshot();
             TimerUtils.sleep(5000);
         }
+    }
+
+    @Test
+    public void T02_Screenshot_Quality_onFailed() {
+
+        System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "localhost");
+        System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest");
+        System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
+        System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
+        System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
+        System.setProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, "100");
+        System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
+        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+        mobileDriver.reserveDeviceByFilter();
+
+        for (int i = 0; i < 5; i++) {
+            TestStep.begin("Screen " + i);
+            mobileDriver.takeAfterScreenshot();
+            TimerUtils.sleep(5000);
+        }
+
+        Assert.fail("Error in Test! :)");
     }
 }

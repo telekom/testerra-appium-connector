@@ -5,10 +5,9 @@ import eu.tsystems.mms.tic.testframework.interop.ScreenshotCollector;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
-import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
-import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -36,15 +35,12 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
 
                 if (mobileDriver.getActiveDevice() != null) {
 
-                    final Screenshot screenshot = mobileDriver.prepareNewScreenshot();
-                    final String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
-                    this.moveDumpToFile(visualDump);
+                    final File screenshotFile = mobileDriver.prepareNewScreenshot();
+                    final File visualDumpFile = this.getVisualDump(mobileDriver);
+                    final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE, null);
 
-                    final MethodContext methodContext = ExecutionContextController.getCurrentMethodContext();
-                    if (methodContext != null) {
-                        screenshots.add(screenshot);
-                        methodContext.steps().getCurrentTestStep().getCurrentTestStepAction().addScreenshots(null, screenshot);
-                    }
+                    screenshots.add(screenshot);
+                    TestStepController.addScreenshotsToCurrentAction(null, screenshot);
                 }
             } catch (Exception e) {
                 LOGGER.error("Exception on handling test failure.", e);
@@ -56,11 +52,10 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
 
     /**
      * Write visualDump to xml file
-     *
-     * @param visualDump dump text to save.
      */
-    private void moveDumpToFile(String visualDump) {
+    private File getVisualDump(MobileDriver mobileDriver) {
 
+        final String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
 
         final String dumpFileName = String.format("dump_%s.xml", System.currentTimeMillis());
         final Path tmpDumpPath = Paths.get(System.getProperty("java.io.tmpdir"), dumpFileName);
@@ -81,12 +76,6 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
 
         }
 
-        try {
-            Report.provideScreenshot(tmpDumpFile, null, Report.Mode.MOVE, null);
-        } catch (IOException e) {
-            LOGGER.error("Exception moving visual dump to report.", e);
-        }
-
+        return tmpDumpFile;
     }
-
 }

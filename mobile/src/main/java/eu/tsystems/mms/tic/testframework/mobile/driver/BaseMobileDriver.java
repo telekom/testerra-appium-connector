@@ -16,10 +16,12 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import eu.tsystems.mms.tic.testframework.mobile.monitor.AppMonitor;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
@@ -34,6 +36,7 @@ import org.slf4j.LoggerFactory;
 import javax.imageio.ImageIO;
 import java.awt.image.BufferedImage;
 import java.awt.image.WritableRaster;
+import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
@@ -69,7 +72,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     boolean openReflectionScreen = PropertyManager.getBooleanProperty(
             MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN,
             DefaultParameter.MOBILE_OPEN_REFLECTION_SCREEN);
-    Screenshot beforeScreenshot;
+    File beforeScreenshot;
 
     int activeDeviceIndex;
 
@@ -285,9 +288,31 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     private void takeScreenshot() {
         if (takeScreenshots && !screenshotsDisabled) {
-            Screenshot screenshot = prepareNewScreenshot();
+            final File screenshotFile = prepareNewScreenshot();
+            final Screenshot screenshot = this.publishScreenshotToMethodContext(screenshotFile, null);
             TestStepController.addScreenshotsToCurrentAction(screenshot, null);
         }
+    }
+
+    private Screenshot publishScreenshotToMethodContext(final File screenshotFile, final File visualDumpFile) {
+
+        if (screenshotFile == null) {
+            LOGGER.debug("Called publishScreenshotToMethodContext with null: No screenshot to publish.");
+            return null;
+        }
+
+        try {
+            final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE, null);
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            screenshot.errorContextId = currentMethodContext.id;
+            currentMethodContext.screenshots.add(screenshot);
+            return screenshot;
+
+        } catch (IOException e) {
+            LOGGER.error("Error providing screenshot to report.");
+        }
+
+        return null;
     }
 
     @Override
@@ -295,14 +320,21 @@ public abstract class BaseMobileDriver implements MobileDriver {
         if (takeScreenshots && !screenshotsDisabled) {
             if (takeOnlyBeforeScreenshots) {
                 if (beforeScreenshot != null) {
-                    TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, null);
+                    final Screenshot screenshot = this.publishScreenshotToMethodContext(beforeScreenshot, null);
+                    TestStepController.addScreenshotsToCurrentAction(screenshot, null);
                 }
             } else {
                 if (delayBetweenScreenshotsInMs > 0) {
                     TimerUtils.sleep(delayBetweenScreenshotsInMs);
                 }
-                Screenshot afterScreenshot = prepareNewScreenshot();
-                TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, afterScreenshot);
+
+                // Providing screenshots to method context...
+                final File afterScreenshotFile = prepareNewScreenshot();
+                final Screenshot screenshotBefore = this.publishScreenshotToMethodContext(beforeScreenshot, null);
+                final Screenshot screenshotAfter = this.publishScreenshotToMethodContext(afterScreenshotFile, null);
+
+                // provide screenshot to current test step...
+                TestStepController.addScreenshotsToCurrentAction(screenshotBefore, screenshotAfter);
             }
 
             beforeScreenshot = null;
@@ -310,33 +342,27 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     @Override
-    public Screenshot prepareNewScreenshot() {
+    public File prepareNewScreenshot() {
 
         //TODO Workaround: Though initially set screenshot quality still varyies, but not if it is set right before capturing the screen, somehow.
         //TODO When this is fixed, with the next seetest version, please remove it again.
         seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
         final String capturePath = seeTestClient().capture();
         if (capturePath == null) {
+            LOGGER.warn("SeeTestClient: Capture Path was empty. No screenshot saved.");
             return null;
         }
 
         final String imageFile = activeDevice.getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
         final Path tempScreenshotPath = Paths.get(System.getProperty("java.io.tmpdir"), imageFile);
 
-        try {
-
-            if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, tempScreenshotPath)) {
-                return null;
-            }
-
-            ScreenshotTracker.setCurrentScreenshot(tempScreenshotPath);
-            return Report.provideScreenshot(tempScreenshotPath.toFile(), null, Report.Mode.MOVE, null);
-
-        } catch (IOException e) {
-            LOGGER.error("Error taking and providing screenshot.", e);
+        if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, tempScreenshotPath)) {
+            LOGGER.warn("MobileDriverUtils: Could not receive remote or local screenshot file on capture path: " + capturePath);
+            return null;
         }
 
-        return null;
+        ScreenshotTracker.setCurrentScreenshot(tempScreenshotPath);
+        return tempScreenshotPath.toFile();
     }
 
     @Override

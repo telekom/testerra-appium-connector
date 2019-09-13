@@ -5,11 +5,12 @@ import com.experitest.client.MobileListener;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
-import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
+
+import java.io.File;
 
 /**
  * Created by rnhb on 12.07.2017.
@@ -34,7 +35,7 @@ public interface MobileDriver extends TakesScreenshot {
 
     void takeAfterScreenshot();
 
-    Screenshot prepareNewScreenshot();
+    File prepareNewScreenshot();
 
     void releaseDevice(TestDevice testDevice);
 
