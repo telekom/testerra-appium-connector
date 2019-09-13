@@ -7,10 +7,10 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.worker;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.execution.testng.worker.MethodWorker;
-import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
-import eu.tsystems.mms.tic.testframework.mobile.driver.DefaultParameter;
+import eu.tsystems.mms.tic.testframework.events.TesterraEvent;
+import eu.tsystems.mms.tic.testframework.events.TesterraEventListener;
+import eu.tsystems.mms.tic.testframework.events.TesterraEventType;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 
@@ -22,28 +22,24 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
  *
  * @author erku
  */
-public class MobileBeforeMethodWorker extends MethodWorker {
+public class MobileBeforeMethodWorker implements TesterraEventListener, Loggable, MobileVideoHandlerInterface {
 
     @Override
-    public void run() {
+    public void fireEvent(TesterraEvent testerraEvent) {
 
-        // Early exit if configuration method...
-        if (!this.isTest()) {
-            return;
-        }
+        if (testerraEvent.getTesterraEventType() == TesterraEventType.TEST_METHOD_START) {
 
-        if (MobileDriverManager.hasActiveMobileDriver()) {
+            if (MobileDriverManager.hasActiveMobileDriver()) {
 
-            final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+                final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
 
-            if (mobileDriver.getActiveDevice() != null) {
+                if (mobileDriver.getActiveDevice() != null) {
 
-                LOGGER.info("Active device:" + mobileDriver.getActiveDevice().getName());
-                boolean saveVideoOnFail = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_REPORT_SAVE_VIDEO_TEST_FAILED, DefaultParameter.MOBILE_REPORT_SAVE_VIDEO_TEST_FAILED);
-                boolean alwaysSaveVideo = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_REPORT_SAVE_VIDEO, DefaultParameter.MOBILE_REPORT_SAVE_VIDEO);
+                    log().info("Active device:" + mobileDriver.getActiveDevice().getName());
 
-                if (saveVideoOnFail || alwaysSaveVideo) {
-                    mobileDriver.startVideoRecord();
+                    if (isSaveVideoOnFail() || isAlwaysSaveVideo()) {
+                        mobileDriver.startVideoRecord();
+                    }
                 }
             }
         }

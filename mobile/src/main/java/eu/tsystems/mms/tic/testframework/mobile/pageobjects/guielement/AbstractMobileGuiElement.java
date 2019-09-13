@@ -393,7 +393,6 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
             return mobileDriver.getScreenshotAs(OutputType.FILE);
         } else {
             try {
-                //find();
                 final TakesScreenshot driver = mobileDriver;
                 final MobileGuiElement element = this;
 
