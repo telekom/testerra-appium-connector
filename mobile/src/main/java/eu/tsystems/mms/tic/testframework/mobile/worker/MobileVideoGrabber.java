@@ -20,12 +20,22 @@ import java.util.List;
 
 public class MobileVideoGrabber implements VideoCollector {
 
+    private static boolean ALREADY_GRABBED = false;
+
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileVideoGrabber.class);
 
     @Override
     public List<Video> getVideos() {
 
         final List<Video> videos = new ArrayList<>();
+
+        if (ALREADY_GRABBED) {
+
+            // TODO: erku - This is a dirty hack to avoid the same video twice in report.
+            // TODO TakeOutOfSessionsEvidencesWorker MUST check FOR Desktop Environment
+            return videos;
+        }
+
         final MethodContext methodContext = ExecutionContextController.getCurrentMethodContext();
 
         if (MobileDriverManager.hasActiveMobileDriver() && methodContext != null) {
@@ -66,6 +76,7 @@ public class MobileVideoGrabber implements VideoCollector {
             }
         }
 
+        ALREADY_GRABBED = true;
         return videos;
     }
 }
