@@ -7,17 +7,8 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.device;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.device.deviceFilter.AndFilter;
 import eu.tsystems.mms.tic.testframework.mobile.device.deviceFilter.DeviceFilter;
 import eu.tsystems.mms.tic.testframework.mobile.device.deviceFilter.DeviceNameFilter;
@@ -27,6 +18,14 @@ import eu.tsystems.mms.tic.testframework.mobile.device.deviceFilter.OSVersionFil
 import eu.tsystems.mms.tic.testframework.mobile.device.deviceFilter.OrFilter;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Class to manage the handling of the TestDevice instances.
@@ -82,7 +81,7 @@ public class DeviceStore {
     public TestDevice getDevice(String deviceName) {
         deviceName = deviceName.replace("adb:", "").replace("ios_app:", "");
         if (!devices.containsKey(deviceName)) {
-            throw new FennecRuntimeException(
+            throw new TesterraRuntimeException(
                     deviceName + " is not contained in DeviceStore. Make sure to add it first before " +
                             "trying to use it and that you use the correct name.");
         }
@@ -99,12 +98,12 @@ public class DeviceStore {
 
     private DeviceFilter getDeviceFilter(String filterProperty) {
         if (StringUtils.isEmpty(filterProperty)) {
-            throw new FennecRuntimeException("Property " + filterProperty
+            throw new TesterraRuntimeException("Property " + filterProperty
                     + " was not set when requesting to reserve a device by filter. This is not possible.");
         }
         String filter = PropertyManager.getProperty(filterProperty);
         if (StringUtils.isEmpty(filter)) {
-            throw new FennecRuntimeException("Property " + filterProperty + " was set but its value is \"" + filter
+            throw new TesterraRuntimeException("Property " + filterProperty + " was set but its value is \"" + filter
                     + "\". This should not happen.");
         }
 

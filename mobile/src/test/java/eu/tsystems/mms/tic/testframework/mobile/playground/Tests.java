@@ -1,18 +1,27 @@
 package eu.tsystems.mms.tic.testframework.mobile.playground;
 
 import com.experitest.client.MobileListener;
-import eu.tsystems.mms.tic.testframework.constants.XetaProperties;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.api.Cloud;
 import eu.tsystems.mms.tic.testframework.mobile.cloud.applications.Applications;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
-import eu.tsystems.mms.tic.testframework.mobile.driver.*;
+import eu.tsystems.mms.tic.testframework.mobile.driver.DeviceReservationPolicy;
+import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
-import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.*;
-import eu.tsystems.mms.tic.testframework.report.utils.ReportUtils;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ImageMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
 import org.xml.sax.InputSource;
@@ -22,7 +31,6 @@ import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
 import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathFactory;
-import java.io.File;
 import java.io.StringReader;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -30,6 +38,7 @@ import java.nio.file.Paths;
 /**
  * Created by rnhb on 17.11.2015.
  */
+@Listeners(TesterraListener.class)
 public class Tests {
 
     private final String visualDum = "<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
@@ -391,46 +400,27 @@ public class Tests {
     @Test
     public void T01_Screenshot_Quality() throws Exception {
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://mobiledevicecloud.t-systems-mms.eu");
-        System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest");
-        System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#");
+        System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest"); //
+        System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#"); // pAL7bKB
         System.setProperty(MobileProperties.MOBILE_GRID_PROJECT, "Testing");
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "os.type=android");
-        System.setProperty(XetaProperties.XETA_PROXY_SETTINGS_LOAD, "false");
-        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
-        mobileDriver.reserveDeviceByFilter();
-        prep(mobileDriver);
-        prep(mobileDriver);
-        prep(mobileDriver);
-        prep(mobileDriver);
-    }
+        //        System.setProperty(MobileProperties.MOBILE_REPORT_SAVE_VIDEO, "true");
 
-    private void prep(MobileDriver md) {
-        String capturePath = md.seeTestClient().capture();
-        if (capturePath == null) {
-            return;
-        } else {
-            String imageFile = md.getActiveDevice().getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-            Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-            File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
-            if (!screenshotFolder.exists()) {
-                screenshotFolder.mkdirs();
-            }
-            try {
-                md.seeTestClient().getRemoteFile(capturePath, 10000, screenshotDestinationPath.toAbsolutePath().toString());
-            } catch (Exception e) {
-            }
-        }
+        System.setProperty(TesterraProperties.PROXY_SETTINGS_LOAD, "false");
+
+        final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+        mobileDriver.reserveDeviceByFilter();
     }
 
     @Test
     public void test1234() throws Exception {
+
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         String adb = "Apple iPhone 7 (Nr 2)";
         TestDevice build = TestDevice.builder().operatingSystem(MobileOperatingSystem.IOS).name(adb).build();
 
         mobileDriver.reserveDevice(build);
         mobileDriver.resetWlanOfActiveDevice();
-
     }
 
     @Test

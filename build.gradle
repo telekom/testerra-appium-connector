@@ -3,17 +3,37 @@ plugins {
 }
 
 repositories {
-    mavenLocal()
+//    mavenLocal()
     mavenCentral()
-    jcenter()
+//    jcenter()
 }
 
 allprojects {
 
-    group 'eu.tsystems.mms.tic.jfennec'
+    group 'eu.tsystems.mms.tic.testerra'
     version '1-SNAPSHOT'
 
+    apply plugin: 'java'
     apply plugin: 'maven'
+    apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+            }
+        }
+
+        repositories {
+            maven {
+                url System.getProperty("deployUrl", "none")
+                credentials {
+                    username System.getProperty("deployUsername", "none")
+                    password System.getProperty("deployPassword", "none")
+                }
+            }
+        }
+    }
 }
 
 ext {
@@ -32,7 +52,7 @@ ext {
             'org.slf4j:slf4j-log4j12:1.8.0-beta2'
     ]
 
-    seetest = 'com.experitest:seetest-client:12.2'
+    seetest = 'com.experitest:seetest-client:12.7'
 
     jersey_client = 'org.glassfish.jersey.core:jersey-client:2.26'
 
@@ -46,22 +66,22 @@ ext {
 
     jaxbVersion = '2.2.11'
     jaxb = [
-           'javax.xml.bind:jaxb-api:'+ jaxbVersion,
-           'com.sun.xml.bind:jaxb-core:'+ jaxbVersion,
-           'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
+            'javax.xml.bind:jaxb-api:' + jaxbVersion,
+            'com.sun.xml.bind:jaxb-core:' + jaxbVersion,
+            'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
     ]
 
-    jfennecVersion = '1-SNAPSHOT'
-    jfennecGroup = 'eu.tsystems.mms.tic.jfennec'
-    jfennecDriverUi = jfennecGroup + ":driver-ui:" + jfennecVersion
-    jfennecCoreInterop = jfennecGroup + ":core-interop:" + jfennecVersion
+    testerraVersion = '1-SNAPSHOT'
+    testerraGroup = 'eu.tsystems.mms.tic.testerra'
+    testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
+    testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
 
     powermockVersion = '1.7.3'
     powermock = [
             'org.powermock:powermock-module-testng:' + powermockVersion,
-            'org.powermock:powermock-api-mockito2:'+ powermockVersion
+            'org.powermock:powermock-api-mockito2:' + powermockVersion
     ]
-    
+
     mockito = 'org.mockito:mockito-core:2.8.9'
 }
 
@@ -74,8 +94,26 @@ subprojects {
 
         maven { url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom" }
         maven { url "http://repo.maven.apache.org/maven2" }
+        // please setup in ${home}/.gradle/gradle.properties following info
+        //mavenUser=your userneme
+        //mavenPassword=artifactory enc password
+        maven {
+            credentials {
+                username "$mavenUser"
+                password "$mavenPassword"
+            }
+            url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom"
+        }
+
+        jcenter()
+        maven { url "http://repo.experitest.com:8010/Maven2" }
     }
 }
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
+}
+
+test {
+    // enable TestNG support (default is JUnit)
+    useTestNG()
 }

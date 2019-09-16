@@ -7,21 +7,19 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
-import org.openqa.selenium.WebDriver;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.experitest.client.Client;
 import com.experitest.client.GridClient;
-
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.constants.Browser;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.adapter.MobileGuiElementCoreFactory;
+import eu.tsystems.mms.tic.testframework.mobile.constants.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceStore;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
+import org.openqa.selenium.WebDriver;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * The mobile client manager for the connection details
@@ -29,11 +27,6 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
  * @author rnhb
  */
 public final class MobileDriverManager {
-
-    static {
-        //        TODO rework with jfennec/not needed with open source jfennec
-        //        XetaLicense.checkLicense();
-    }
 
     /**
      * The working directory.
@@ -52,9 +45,9 @@ public final class MobileDriverManager {
 
     static {
         deviceStore = new DeviceStore();
-        port = Integer.parseInt(
-                PropertyManager.getProperty(MobileProperties.MOBILE_SERVER_PORT, DefaultParameter.MOBILE_SERVER_PORT));
-        registerWebDriverFactory();
+        port = 8889;
+        //        port = Integer.parseInt(
+        //                PropertyManager.getProperty(MobileProperties.MOBILE_SERVER_PORT, DefaultParameter.MOBILE_SERVER_PORT));
     }
 
     /**
@@ -65,12 +58,10 @@ public final class MobileDriverManager {
         return getMobileDriver();
     }
 
-    static void registerWebDriverFactory() {
+    public static void registerWebDriverFactory() {
         MobileGuiElementCoreFactory mobileGuiElementCoreFactory = new MobileGuiElementCoreFactory();
-        GuiElement.registerGuiElementCoreFactory(mobileGuiElementCoreFactory, Browser.mobile_chrome,
-                Browser.mobile_safari);
-        WebDriverManager.registerWebDriverFactory(new WebDriverAdapterFactory(), Browser.mobile_chrome,
-                Browser.mobile_safari);
+        GuiElement.registerGuiElementCoreFactory(mobileGuiElementCoreFactory, MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
+        WebDriverManager.registerWebDriverFactory(new WebDriverAdapterFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }
 
     public static boolean hasActiveMobileDriver() {
@@ -83,6 +74,10 @@ public final class MobileDriverManager {
     @Deprecated
     public static MobileDriver getMobileDriver(String sessionKey) {
         return getMobileDriver();
+    }
+
+    public static void main(String[] args) {
+        MobileDriver mobileDriver = DRIVERS.get();
     }
 
     /**
@@ -109,7 +104,7 @@ public final class MobileDriverManager {
                     String project = PropertyManager.getProperty(MobileProperties.MOBILE_GRID_PROJECT);
                     LOGGER.info(
                             "Creating GridMobileDriver, connecting to SeeTest Grid at {} with user {} for project {}.",
-                            new Object[] { seeTestHost, user, project });
+                            new Object[]{seeTestHost, user, project});
                     gridClient = new GridClient(user, password, project, seeTestHost);
                 } else {
                     LOGGER.info("Creating GridMobileDriver, connecting to SeeTest Grid at {} with access key.",

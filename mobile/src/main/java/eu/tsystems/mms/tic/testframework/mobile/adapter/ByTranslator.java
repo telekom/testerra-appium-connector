@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.adapter;
 
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import org.openqa.selenium.By;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,7 +15,7 @@ public class ByTranslator {
     }
 
     /**
-     * Translate the By locator to be readable by SeeTest. Though possible to construct, nested Byall's will throw a FennecRuntimeException.
+     * Translate the By locator to be readable by SeeTest. Though possible to construct, nested Byall's will throw a TesterraRuntimeException.
      *
      * @param by the locator to be translated.
      * @return a string representation specially prepared for SeeTest.
@@ -35,7 +35,7 @@ public class ByTranslator {
         String result;
         if (byExpression.contains("By.all")) {
             if (byExpression.split("By\\.all").length > 2) {
-                throw new FennecRuntimeException(String.format("Nested ByAlls like \"%s\" are not supported.", byExpression));
+                throw new TesterraRuntimeException(String.format("Nested ByAlls like \"%s\" are not supported.", byExpression));
             }
             String[] byExpressions = byExpression.substring(byExpression.indexOf("By.all({") + 8, byExpression.lastIndexOf("})")).split(",By\\.");
             StringBuilder sbr = new StringBuilder("");
@@ -63,7 +63,7 @@ public class ByTranslator {
             } else if (byExpression.contains("By.tagName:")) {
                 result = String.format("@nodeName='%s'", value.toUpperCase());
             } else {
-                throw new FennecRuntimeException(String.format("The By Expression \"%s\" is not translatable.", byExpression));
+                throw new TesterraRuntimeException(String.format("The By Expression \"%s\" is not translatable.", byExpression));
             }
         }
         if (wrap) {

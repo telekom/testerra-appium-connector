@@ -1,16 +1,8 @@
 package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies;
 
-import java.util.Map;
-
-import org.openqa.selenium.Point;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.testng.Assert;
-
 import com.experitest.client.InternalException;
-
 import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileGuiElement;
@@ -18,6 +10,12 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLoc
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.StatusContainer;
+import org.openqa.selenium.Point;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.testng.Assert;
+
+import java.util.Map;
 
 /**
  * Created by rnhb on 17.02.2016.
@@ -69,7 +67,7 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
             Integer y = Integer.valueOf(properties.get("y"));
             return new Point(x, y);
         } catch (Exception e) {
-            throw new FennecRuntimeException("Parse error when trying to get position of MobileGuiElement.", e);
+            throw new TesterraRuntimeException("Parse error when trying to get position of MobileGuiElement.", e);
         }
     }
 

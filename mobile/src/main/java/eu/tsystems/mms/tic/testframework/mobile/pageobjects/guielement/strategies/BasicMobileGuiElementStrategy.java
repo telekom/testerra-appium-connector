@@ -1,13 +1,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies;
 
-import java.awt.Color;
-import java.util.Map;
-
-import org.openqa.selenium.Point;
-import org.testng.Assert;
-
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.constants.FennecProperties;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
@@ -17,6 +11,11 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMob
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.StatusContainer;
 import eu.tsystems.mms.tic.testframework.transfer.ThrowablePackedResponse;
 import eu.tsystems.mms.tic.testframework.utils.Timer;
+import org.openqa.selenium.Point;
+import org.testng.Assert;
+
+import java.awt.*;
+import java.util.Map;
 
 /**
  * Created by rnhb on 22.12.2015.
@@ -31,7 +30,7 @@ public class BasicMobileGuiElementStrategy implements MobileGuiElementStrategy {
     private MobilePage mobilePage;
     private String name;
 
-    int timeoutInSeconds = PropertyManager.getIntProperty(FennecProperties.ELEMENT_TIMEOUT_SECONDS, 30);
+    int timeoutInSeconds = PropertyManager.getIntProperty(TesterraProperties.ELEMENT_TIMEOUT_SECONDS, 30);
 
     protected int timerSleepTimeInMs = 1000;
 

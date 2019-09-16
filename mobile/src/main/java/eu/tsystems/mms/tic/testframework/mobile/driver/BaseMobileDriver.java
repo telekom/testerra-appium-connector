@@ -5,18 +5,30 @@ import com.experitest.client.InternalException;
 import com.experitest.client.MobileListener;
 import com.google.common.base.Stopwatch;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecRuntimeException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
+import eu.tsystems.mms.tic.testframework.info.ReportInfo;
 import eu.tsystems.mms.tic.testframework.mobile.By;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
-import eu.tsystems.mms.tic.testframework.mobile.device.*;
+import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
+import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
+import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
+import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import eu.tsystems.mms.tic.testframework.mobile.monitor.AppMonitor;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
-
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
+import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
-import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -30,7 +42,12 @@ import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.TimeUnit;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -55,7 +72,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     boolean openReflectionScreen = PropertyManager.getBooleanProperty(
             MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN,
             DefaultParameter.MOBILE_OPEN_REFLECTION_SCREEN);
-    String beforeScreenshot;
+    File beforeScreenshot;
 
     int activeDeviceIndex;
 
@@ -165,7 +182,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     private void ensureDeviceIsActive() {
         if (activeDevice == null) {
-            throw new FennecRuntimeException(
+            throw new TesterraRuntimeException(
                     "A method tried to send a command to a device, but no device was focused before.");
         }
     }
@@ -197,8 +214,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         }
 
         LOGGER.info("SeeTest Java Client Version: " + clientVersion);
-        //TODO core-interop
-//        ReportInfo.getRunInfo().addInfo("Client Version:", clientVersion);
+        ReportInfo.getRunInfo().addInfo("Client Version:", clientVersion);
     }
 
     @Override
@@ -224,8 +240,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             }
             try {
                 for (DeviceTest deviceTest : deviceTests) {
-                    //        TODO rework with jfennec
-                    //        TestStep.begin("Device Test " + deviceTest);
+                    TestStep.begin("Device Test " + deviceTest);
                     LOGGER.info("Starting Device Test " + deviceTest);
                     boolean pass = deviceTest.doDeviceTest(this, testDevice);
                     LOGGER.info("Device Test " + deviceTest + " has pass status: " + pass);
@@ -233,11 +248,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
                         String errorMessage = String.format(
                                 "DeviceTest \"%s\" failed on device \"%s\". Please check device or report to administrator.",
                                 deviceTest.toString(), testDevice.getName());
-                        if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING,
-                                DefaultParameter.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING)) {
-                            //TODO core interop
-//                            ReportInfo.getDashboardWarning().addInfoWithDefaultPrio(
-//                                    errorMessage);
+                        if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING, DefaultParameter.MOBILE_SHOW_FAILED_DEVICE_TEST_WARNING)) {
+                            ReportInfo.getDashboardWarning().addInfoWithDefaultPrio(errorMessage);
                         }
                         throw new DeviceNotAvailableException(testDevice, errorMessage);
                     }
@@ -259,9 +271,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 }
             }
         }
-        throw new DeviceNotAvailableException(TestDevice.NONE,
-                "No device of allowed devices available. Allowed devices: " + foundDevices);
-
+        throw new DeviceNotAvailableException(TestDevice.NONE, "No device of allowed devices available. Allowed devices: " + foundDevices);
     }
 
     @Override
@@ -278,10 +288,31 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     private void takeScreenshot() {
         if (takeScreenshots && !screenshotsDisabled) {
-            String screenshot = prepareNewScreenshot();
-            //        TODO rework with jfennec
-            //        TestStepController.addScreenshotsToCurrentAction(screenshot, null);
+            final File screenshotFile = prepareNewScreenshot();
+            final Screenshot screenshot = this.publishScreenshotToMethodContext(screenshotFile, null);
+            TestStepController.addScreenshotsToCurrentAction(screenshot, null);
         }
+    }
+
+    private Screenshot publishScreenshotToMethodContext(final File screenshotFile, final File visualDumpFile) {
+
+        if (screenshotFile == null) {
+            LOGGER.debug("Called publishScreenshotToMethodContext with null: No screenshot to publish.");
+            return null;
+        }
+
+        try {
+            final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE, null);
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            screenshot.errorContextId = currentMethodContext.id;
+            currentMethodContext.screenshots.add(screenshot);
+            return screenshot;
+
+        } catch (IOException e) {
+            LOGGER.error("Error providing screenshot to report.");
+        }
+
+        return null;
     }
 
     @Override
@@ -289,16 +320,21 @@ public abstract class BaseMobileDriver implements MobileDriver {
         if (takeScreenshots && !screenshotsDisabled) {
             if (takeOnlyBeforeScreenshots) {
                 if (beforeScreenshot != null) {
-                    //        TODO rework with jfennec
-                    //        TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, null);
+                    final Screenshot screenshot = this.publishScreenshotToMethodContext(beforeScreenshot, null);
+                    TestStepController.addScreenshotsToCurrentAction(screenshot, null);
                 }
             } else {
                 if (delayBetweenScreenshotsInMs > 0) {
-                    TestUtils.sleep(delayBetweenScreenshotsInMs);
+                    TimerUtils.sleep(delayBetweenScreenshotsInMs);
                 }
-                String afterScreenshot = prepareNewScreenshot();
-                //        TODO rework with jfennec
-                //        TestStepController.addScreenshotsToCurrentAction(beforeScreenshot, afterScreenshot);
+
+                // Providing screenshots to method context...
+                final File afterScreenshotFile = prepareNewScreenshot();
+                final Screenshot screenshotBefore = this.publishScreenshotToMethodContext(beforeScreenshot, null);
+                final Screenshot screenshotAfter = this.publishScreenshotToMethodContext(afterScreenshotFile, null);
+
+                // provide screenshot to current test step...
+                TestStepController.addScreenshotsToCurrentAction(screenshotBefore, screenshotAfter);
             }
 
             beforeScreenshot = null;
@@ -306,45 +342,27 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     @Override
-    public String prepareNewScreenshot() {
+    public File prepareNewScreenshot() {
+
         //TODO Workaround: Though initially set screenshot quality still varyies, but not if it is set right before capturing the screen, somehow.
         //TODO When this is fixed, with the next seetest version, please remove it again.
-        seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(
-                MobileProperties.MOBILE_SCREENSHOT_QUALITY,
-                DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
-        String capturePath = seeTestClient().capture();
+        seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
+        final String capturePath = seeTestClient().capture();
         if (capturePath == null) {
+            LOGGER.warn("SeeTestClient: Capture Path was empty. No screenshot saved.");
             return null;
-        } else {
-            String imageFile = activeDevice.getName() + "_"
-                    + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
-
-            //        TODO rework with jfennec
-            //         Path screenshotDestinationPath = Paths.get(ReportUtils.getScreenshotsPath() + imageFile);
-
-            // TODO This is probably not the intended way to publish screenshots
-//            File screenshotFolder = new File(ReportUtils.getScreenshotsPath());
-//            if (!screenshotFolder.exists()) {
-//                LOGGER.warn("Folder for screenshots was not found, creating it: " + screenshotFolder);
-//                screenshotFolder.mkdirs();
-//            }
-//
-//            if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, screenshotDestinationPath)) {
-//                return null;
-//            }
-//            ScreenshotTracker.setCurrentScreenshot(screenshotDestinationPath);
-
-            // todo imageFile.subString(1) cut off the s from screen and destroyed order of image files in xeta report
-            String screenshotPathForReport = "../../screenshots/" + imageFile;
-
-            //TODO rework analogue to @Desktop
-//            TestMethodContainer testMethodContainer = ExecutionContextController
-//                    .getTestMethodContainerForCurrentTestResult();
-//            if (testMethodContainer != null && showAllScreenshotsInSlider) {
-//                testMethodContainer.addScreenshotPath(screenshotPathForReport, imageFile);
-//            }
-            return screenshotPathForReport;
         }
+
+        final String imageFile = activeDevice.getName() + "_" + Paths.get(capturePath.replace('\\', '/')).getFileName().toString();
+        final Path tempScreenshotPath = Paths.get(System.getProperty("java.io.tmpdir"), imageFile);
+
+        if (!MobileDriverUtils.getRemoteOrLocalFile(this, capturePath, tempScreenshotPath)) {
+            LOGGER.warn("MobileDriverUtils: Could not receive remote or local screenshot file on capture path: " + capturePath);
+            return null;
+        }
+
+        ScreenshotTracker.setCurrentScreenshot(tempScreenshotPath);
+        return tempScreenshotPath.toFile();
     }
 
     @Override
@@ -388,7 +406,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     public void clearApplicationData(String packageName) {
         if (packageName == null) {
-            throw new FennecRuntimeException("PackageName cannot be null!");
+            throw new TesterraRuntimeException("PackageName cannot be null!");
         }
         ensureDeviceIsActive();
         if (MobileOperatingSystem.ANDROID == activeDevice.getOperatingSystem()) {
@@ -429,8 +447,9 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public boolean installApplication(String fullPathOfApp, boolean instrument) {
+
         if (fullPathOfApp == null) {
-            throw new FennecRuntimeException("Application String cannot be null!");
+            throw new TesterraRuntimeException("Application String cannot be null!");
         }
         LOGGER.info("Installing Application " + fullPathOfApp + ".");
         Stopwatch started = Stopwatch.createStarted();
@@ -441,8 +460,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         if (!installedApplications.contains(fullPathOfApp)) {
             String suffix = fullPathOfApp.isEmpty() ? "" : " " + (installedApplications.size() + 1);
-            //        TODO rework with jfennec
-            //         ReportInfo.getRunInfo().addInfo("Application" + suffix + ":", fullPathOfApp);
+            ReportInfo.getRunInfo().addInfo("Application" + suffix + ":", fullPathOfApp);
             installedApplications.add(fullPathOfApp);
         }
 
@@ -451,12 +469,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     /**
      * @param application String of application. Prefix "cloud:" will be cut.
+     *
      * @return status of success of uninstall
      */
     @Override
     public boolean uninstall(String application) {
         if (application == null) {
-            throw new FennecRuntimeException("Application String cannot be null!");
+            throw new TesterraRuntimeException("Application String cannot be null!");
         }
         Stopwatch started = Stopwatch.createStarted();
         application = cutCloudPrefix(application);
@@ -505,7 +524,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     public final void reserveDevice(TestDevice testDevice) throws DeviceNotAvailableException {
         if (testDevice == null) {
-            throw new FennecRuntimeException("TestDevice cannot be null!");
+            throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
         LOGGER.info("Trying to reserve device " + testDevice + ", last known status is "
                 + testDevice.getReservationStatus());
@@ -515,7 +534,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         if (reservationStatusOfDevice == ReservationStatus.UNKNOWN
                 || reservationStatusOfDevice == ReservationStatus.OFFLINE) {
-            throw new FennecRuntimeException(
+            throw new TesterraRuntimeException(
                     testDevice + " not available, cannot reserve it. Status: " + reservationStatusOfDevice);
         } else {
             if (deviceReservationPolicy.isAllowed(reservationStatusOfDevice)) {
@@ -702,7 +721,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     public void launchApplication(String applicationString, boolean instrumentApplication, boolean closeAppIfRunning) {
         ensureDeviceIsActive();
         if (applicationString == null) {
-            throw new FennecRuntimeException("Application String cannot be null!");
+            throw new TesterraRuntimeException("Application String cannot be null!");
         }
         Stopwatch started = Stopwatch.createStarted();
 
@@ -718,7 +737,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 LOGGER.warn("Ignoring launch exception:", e);
             } else {
                 afterLog("Failed to launch app", true);
-                throw new FennecRuntimeException("Error when launching application \"" + applicationString + "\" "
+                throw new TesterraRuntimeException("Error when launching application \"" + applicationString + "\" "
                         + (instrumentApplication ? "" : "not ") + "instrumented).", e);
             }
         }
@@ -729,16 +748,12 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 + "s.", true);
 
         if (applicationString.contains("safari:") || applicationString.contains("chrome:")) {
-            //        TODO rework with jfennec?
-            //        ReportInfo.getRunInfo().addInfo("Browser:",
-            //        applicationString.substring(0, applicationString.indexOf(":")));
+            ReportInfo.getRunInfo().addInfo("Browser:", applicationString.substring(0, applicationString.indexOf(":")));
         } else if (applicationString.startsWith("http")) {
             if (activeDevice.getOperatingSystem() == MobileOperatingSystem.ANDROID) {
-                //        TODO rework with jfennec?
-                //        ReportInfo.getRunInfo().addInfo("Browser:", "Chrome");
+                ReportInfo.getRunInfo().addInfo("Browser:", "Chrome");
             } else if (activeDevice.getOperatingSystem() == MobileOperatingSystem.IOS) {
-                //        TODO rework with jfennec?
-                //        ReportInfo.getRunInfo().addInfo("Browser:", "Safari");
+                ReportInfo.getRunInfo().addInfo("Browser:", "Safari");
             }
         }
     }
@@ -746,7 +761,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     public boolean isApplicationInstalled(String applicationString) {
         if (applicationString == null) {
-            throw new FennecRuntimeException("Application String cannot be null!");
+            throw new TesterraRuntimeException("Application String cannot be null!");
         }
         String installedApplications = seeTestClient().getInstalledApplications();
         applicationString = appendSemicolon(cutCloudPrefix(cutActivity(applicationString)));
@@ -871,7 +886,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      * foreground of the active device.
      *
      * @return name \ bundle \ package name of the application that's currently run in the foreground of the active
-     *         device
+     * device
      */
     @Override
     public String getCurrentlyRunningApplication() {
@@ -933,7 +948,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
 
         if (target != OutputType.FILE) {
-            throw new FennecRuntimeException("Mobile Driver only allows files as getScreenShotAs return type.");
+            throw new TesterraRuntimeException("Mobile Driver only allows files as getScreenShotAs return type.");
         }
         String isBottom;
         List<Path> screens = new LinkedList<>();
@@ -957,12 +972,9 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.clientHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
-                isBottom = this.seeTestClient().hybridRunJavascript("", 0,
-                        "var result = document.documentElement.scrollTop+document.documentElement.clientHeight>=document.documentElement.offsetHeight;");
-                this.seeTestClient().hybridRunJavascript("", 0,
-                        "window.scrollBy(0,document.documentElement.clientHeight);");
-                //        TODO remove since unnecessary with jfennec?
-                //        TestUtils.sleep(1000);
+                isBottom = this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop+document.documentElement.clientHeight>=document.documentElement.offsetHeight;");
+                this.seeTestClient().hybridRunJavascript("", 0, "window.scrollBy(0,document.documentElement.clientHeight);");
+                TestUtils.sleep(1000);
                 maxTries--;
             } else {
                 break;
@@ -975,8 +987,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
             LOGGER.error("Failed to stitch screenshots.", e);
             return null;
         }
-//        TODO remove since unnecessary with jfennec?
-//        TestStepController.addScreenshotsToCurrentAction(out.toAbsolutePath().toString(), null);
+        //        TODO remove since unnecessary with testerra?
+        //        TestStepController.addScreenshotsToCurrentAction(out.toAbsolutePath().toString(), null);
         return (X) out.toFile();
     }
 
@@ -984,6 +996,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      * Stitch set of screenshots together.
      *
      * @param screens List of screenshots to stitch.
+     *
      * @return Path of new stitched screenshot.
      */
     private Path stitchScreenshots(List<Path> screens) throws IOException {
@@ -1121,15 +1134,11 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 if ("1".equals(value)) {
                     wifiSwitch.click();
                     // wait a little for the switch animation to finish
-                    //        TODO rework with jfennec?
-                    //        TestUtils.sleep(1000);
+                    TestUtils.sleep(1000);
                 }
                 wifiSwitch.click();
-
                 // wait some seconds so the device has the chance to reconnect to the wifi before continuing
-
-                //        TODO rework with jfennec?
-                //        TestUtils.sleep(4000);
+                TestUtils.sleep(4000);
                 return true;
             }
         }

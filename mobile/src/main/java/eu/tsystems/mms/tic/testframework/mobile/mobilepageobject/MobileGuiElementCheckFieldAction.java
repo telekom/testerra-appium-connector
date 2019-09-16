@@ -7,9 +7,8 @@ import eu.tsystems.mms.tic.testframework.pageobjects.AbstractPage;
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.CheckFieldAction;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.FieldWithActionConfig;
-
-//TODO rework to core-interop
-//import eu.tsystems.mms.tic.testframework.report.utils.MethodAccessUtils;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 
 /**
  * Created by rnhb on 17.12.2015.
@@ -42,8 +41,8 @@ public class MobileGuiElementCheckFieldAction extends CheckFieldAction {
                     break;
             }
         } catch (AssertionError e) {
-            //TODO rework to core-interop
-            //MethodAccessUtils.setThrowable(readableMessage, e);
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            currentMethodContext.setThrowable(readableMessage, e);
             throw new PageNotFoundException(readableMessage, e);
         }
     }

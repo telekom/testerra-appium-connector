@@ -8,10 +8,8 @@
 package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement;
 
 
-import org.slf4j.LoggerFactory;
-
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.FennecSystemException;
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.mobile.By;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
@@ -19,8 +17,10 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.CachedNativeMobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.NativeMobileGuiElementStrategy;
-//import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
+import org.slf4j.LoggerFactory;
+
+//import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
 
 /**
  * @author rnhb
@@ -30,7 +30,6 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
     private static final boolean cacheGuiElements;
 
     static {
-//        XetaLicense.checkLicense();
         cacheGuiElements = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_CACHE_GUI_ELEMENTS, false);
         LoggerFactory.getLogger("MobileGuiElement").info("Using cache: " + cacheGuiElements);
     }
@@ -60,9 +59,9 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
      */
     public NativeMobileGuiElement(String elementLocatorString, MobilePage mobilePage) {
         if (StringUtils.isStringEmpty(elementLocatorString)) {
-            throw new FennecSystemException("Locator for GuiElement is empty, this is not allowed.");
+            throw new TesterraSystemException("Locator for GuiElement is empty, this is not allowed.");
         } else if (!elementLocatorString.startsWith("xpath=")) {
-            throw new FennecSystemException("Locator for NativeMobileGuiElement did not start with 'xpath=', this is not allowed.");
+            throw new TesterraSystemException("Locator for NativeMobileGuiElement did not start with 'xpath=', this is not allowed.");
         }
         MobileLocator mobileLocator = new MobileLocator(LocatorType.NATIVE.toString(), elementLocatorString, 0);
         mobileDriver = MobileDriverManager.getMobileDriver();

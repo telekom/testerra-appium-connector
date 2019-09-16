@@ -12,13 +12,18 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.MobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
-//import eu.tsystems.mms.tic.testframework.restriction.XetaLicense;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.IOException;
 import java.util.Map;
 
 /**
@@ -31,10 +36,6 @@ import java.util.Map;
 public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileGuiElement.class);
-
-    static {
-//        XetaLicense.checkLicense();
-    }
 
     private MobileGuiElementStrategy strategy;
 
@@ -368,7 +369,7 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
             boolean isAboveUpperBorder = posY < border;
             boolean isBelowLowerBorder = elementEndY > screenHeight - border;
 
-//            float relativeOffset = Math.max(border - posY, elementEndY - screenHeight + border) / (float) screenHeight;
+            //            float relativeOffset = Math.max(border - posY, elementEndY - screenHeight + border) / (float) screenHeight;
             float swipeStrength = 0.6f;
 
             if (isAboveUpperBorder) {
@@ -384,7 +385,7 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
         LOGGER.warn("Failed to center element vertically.");
     }
 
-    public File takeScreenshot(){
+    public File takeScreenshot() {
 
         final boolean isSelenium4 = false;
 
@@ -392,21 +393,20 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
             return mobileDriver.getScreenshotAs(OutputType.FILE);
         } else {
             try {
-                //find();
                 final TakesScreenshot driver = mobileDriver;
                 final MobileGuiElement element = this;
 
                 File screenshot = driver.getScreenshotAs(OutputType.FILE);
                 BufferedImage fullImg = ImageIO.read(screenshot);
 
-//                Point point = element.getLocation();
+                //                Point point = element.getLocation();
 
                 int propertyX = Integer.parseInt(element.getProperty("x"));
                 int propertyY = Integer.parseInt(element.getProperty("y"));
                 int eleWidth = Integer.parseInt(element.getProperty("width"));
                 int eleHeight = Integer.parseInt(element.getProperty("height"));
 
-                BufferedImage eleScreenshot = fullImg.getSubimadge(
+                BufferedImage eleScreenshot = fullImg.getSubimage(
                         propertyX,
                         propertyY,
                         eleWidth,
@@ -415,11 +415,10 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
                 ImageIO.write(eleScreenshot, "png", screenshot);
                 return screenshot;
             } catch (IOException e) {
-                LOGGER.error(String.format("%s unable to take screenshot: %s ", this.name, e)); //TODO JOBI: hier stand vorher this.guiElementData, was ist der Gegenpart in Mobile?
+                LOGGER.error(String.format("%s unable to take screenshot: %s ", this.name, e));
             }
         }
 
         return null;
-        //TODO fallunterscheidung wie beim richtigen takescreenshoit
     }
 }

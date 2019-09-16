@@ -1,21 +1,22 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import com.experitest.client.Client;
+import com.experitest.client.MobileListener;
+import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
+import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriverException;
 
-import com.experitest.client.Client;
-import com.experitest.client.MobileListener;
-
-import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
-import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
-import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
+import java.io.File;
 
 /**
  * Created by rnhb on 12.07.2017.
  */
 public interface MobileDriver extends TakesScreenshot {
+
     void registerDeviceTest(DeviceTest deviceTest);
 
     void clearDeviceTests();
@@ -34,7 +35,7 @@ public interface MobileDriver extends TakesScreenshot {
 
     void takeAfterScreenshot();
 
-    String prepareNewScreenshot();
+    File prepareNewScreenshot();
 
     void releaseDevice(TestDevice testDevice);
 
@@ -142,8 +143,8 @@ public interface MobileDriver extends TakesScreenshot {
     void setReporting(boolean reporting);
 
     /* (non-Javadoc)
-         * @see org.openqa.selenium.TakesScreenshot#getScreenshotAs(org.openqa.selenium.OutputType)
-         */
+     * @see org.openqa.selenium.TakesScreenshot#getScreenshotAs(org.openqa.selenium.OutputType)
+     */
     @SuppressWarnings("unchecked")
     @Override
     <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
