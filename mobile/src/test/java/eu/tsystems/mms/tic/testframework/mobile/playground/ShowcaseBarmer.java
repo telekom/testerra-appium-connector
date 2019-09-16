@@ -16,13 +16,13 @@ import org.testng.annotations.Test;
  */
 public class ShowcaseBarmer {
 
-    @Test
+    @Test(enabled = false)
     public void testBarmer() throws Exception {
         TestDevice moto3G = TestDevice.builder("PF28_Huawei_P8lite", MobileOperatingSystem.ANDROID).build();
         //TestDevice moto3G = TestDevice.builder("PF28_Moto_G3", MobileOperatingSystem.ANDROID).build();
         MobileDriverManager.deviceStore().addDevice(moto3G);
 
-        PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
+        //PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
         PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_REPORT_TAKE_SCREENSHOTS, "false");
 
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();

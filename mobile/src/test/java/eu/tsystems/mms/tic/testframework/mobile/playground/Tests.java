@@ -435,7 +435,7 @@ public class Tests {
 
     @Test
     public void testCachedMobileGuiElement() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
         TestDevice pf28_xperia_z = TestDevice.builder().operatingSystem(MobileOperatingSystem.ANDROID).name("PF28_Xperia_Z3").build();
         MobileDriverManager.deviceStore().addDevice(pf28_xperia_z);
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
@@ -457,7 +457,7 @@ public class Tests {
 
     @Test
     public void testVisualDump() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
         TestDevice pf28_xperia_z = TestDevice.builder().operatingSystem(MobileOperatingSystem.ANDROID).name("PF28_Xperia_Z3").build();
         MobileDriverManager.deviceStore().addDevice(pf28_xperia_z);
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
@@ -468,7 +468,7 @@ public class Tests {
 
     @Test
     public void testDeviceInfo() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project9");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project9");
         System.setProperty(MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN, "true");
 
         TestDevice pf28_xperia_z = TestDevice.builder().operatingSystem(MobileOperatingSystem.ANDROID).name("PF28_Xperia_Z3").build();
@@ -530,7 +530,7 @@ public class Tests {
 
     @Test
     public void test1() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
         System.setProperty(MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN, "true");
 
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
@@ -542,9 +542,9 @@ public class Tests {
 
     }
 
-    @Test
+    @Test(enabled = false)
     public void testT01_Sendungsverfolgung_SucheValideNummer() throws Exception {
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project6");
         System.setProperty(MobileProperties.MOBILE_OPEN_REFLECTION_SCREEN, "true");
 
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();

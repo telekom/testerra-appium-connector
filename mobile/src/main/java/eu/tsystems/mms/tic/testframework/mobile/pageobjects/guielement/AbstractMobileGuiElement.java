@@ -383,4 +383,43 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
         }
         LOGGER.warn("Failed to center element vertically.");
     }
+
+    public File takeScreenshot(){
+
+        final boolean isSelenium4 = false;
+
+        if (isSelenium4) {
+            return mobileDriver.getScreenshotAs(OutputType.FILE);
+        } else {
+            try {
+                //find();
+                final TakesScreenshot driver = mobileDriver;
+                final MobileGuiElement element = this;
+
+                File screenshot = driver.getScreenshotAs(OutputType.FILE);
+                BufferedImage fullImg = ImageIO.read(screenshot);
+
+//                Point point = element.getLocation();
+
+                int propertyX = Integer.parseInt(element.getProperty("x"));
+                int propertyY = Integer.parseInt(element.getProperty("y"));
+                int eleWidth = Integer.parseInt(element.getProperty("width"));
+                int eleHeight = Integer.parseInt(element.getProperty("height"));
+
+                BufferedImage eleScreenshot = fullImg.getSubimadge(
+                        propertyX,
+                        propertyY,
+                        eleWidth,
+                        eleHeight
+                );
+                ImageIO.write(eleScreenshot, "png", screenshot);
+                return screenshot;
+            } catch (IOException e) {
+                LOGGER.error(String.format("%s unable to take screenshot: %s ", this.name, e)); //TODO JOBI: hier stand vorher this.guiElementData, was ist der Gegenpart in Mobile?
+            }
+        }
+
+        return null;
+        //TODO fallunterscheidung wie beim richtigen takescreenshoit
+    }
 }

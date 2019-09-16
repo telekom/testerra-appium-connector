@@ -22,7 +22,7 @@ public class LayoutTest {
     @Test
     public void testName() throws Exception {
 
-        System.setProperty(MobileProperties.MOBILE_PROJECT_DIR,"C:\\Users\\rnhb\\workspace\\project10");
+        //System.setProperty(MobileProperties.MOBILE_PROJECT_DIR,"C:\\Users\\rnhb\\workspace\\project10");
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         TestDevice testDevice = TestDevice.builder().operatingSystem(MobileOperatingSystem.ANDROID).name("PF28_Galaxy_S6").build();
         MobileDriverManager.deviceStore().addDevice(testDevice);

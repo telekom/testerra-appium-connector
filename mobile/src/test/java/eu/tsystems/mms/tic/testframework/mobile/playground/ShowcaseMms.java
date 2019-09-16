@@ -22,8 +22,8 @@ public class ShowcaseMms {
         TestDevice testDevice = TestDevice.builder("PF28_Huawei_P8lite", MobileOperatingSystem.ANDROID).build();
         MobileDriverManager.deviceStore().addDevice(testDevice);
 
-        PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
-        PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_REPORT_TAKE_SCREENSHOTS, "false");
+        //PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
+        PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_REPORT_TAKE_SCREENSHOTS, "true");
         PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_SERVER_PORT, "8889");
 
         test(testDevice, "com.google.chrome", "chrome");
@@ -54,6 +54,7 @@ public class ShowcaseMms {
             WebMobileGuiElement toInterviewLink = new WebMobileGuiElement("xpath=//*[@text='Toggle navigation']");
             toInterviewLink.waitForIsPresent();
             toInterviewLink.click();
+            toInterviewLink.takeScreenshot();
 
             WebMobileGuiElement solutionsLink = new WebMobileGuiElement("xpath=//*[@text='Lösungen']");
             solutionsLink.waitForIsPresent();

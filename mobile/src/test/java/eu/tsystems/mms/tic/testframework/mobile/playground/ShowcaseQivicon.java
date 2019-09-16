@@ -27,7 +27,7 @@ public class ShowcaseQivicon {
         TestDevice moto3G = TestDevice.builder("PF28_G_4", MobileOperatingSystem.ANDROID).build();
         MobileDriverManager.deviceStore().addDevice(moto3G);
 
-        PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
+        //PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_PROJECT_DIR, "C:\\Users\\rnhb\\workspace\\project2");
         PropertyManager.getThreadLocalProperties().setProperty(MobileProperties.MOBILE_REPORT_TAKE_SCREENSHOTS, "true");
 
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
