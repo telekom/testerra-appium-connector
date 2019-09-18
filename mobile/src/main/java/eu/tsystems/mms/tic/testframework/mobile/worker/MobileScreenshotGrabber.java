@@ -37,7 +37,7 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
 
                     final File screenshotFile = mobileDriver.prepareNewScreenshot();
                     final File visualDumpFile = this.getVisualDump(mobileDriver);
-                    final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE, null);
+                    final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE);
 
                     screenshots.add(screenshot);
                     TestStepController.addScreenshotsToCurrentAction(null, screenshot);

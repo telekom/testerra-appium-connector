@@ -302,7 +302,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         }
 
         try {
-            final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE, null);
+            final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE);
             MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
             screenshot.errorContextId = currentMethodContext.id;
             currentMethodContext.screenshots.add(screenshot);
