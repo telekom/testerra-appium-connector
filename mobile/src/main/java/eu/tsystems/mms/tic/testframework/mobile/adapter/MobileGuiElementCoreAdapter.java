@@ -179,11 +179,6 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
     }
 
     @Override
-    public void refresh() {
-        LOGGER.warn("Refresh not implemented on mobile system.");
-    }
-
-    @Override
     public void doubleClick() {
         throw new NotSupportedException("Should be implemented later");
     }

@@ -149,6 +149,8 @@ public interface MobileDriver extends TakesScreenshot {
     @Override
     <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 
+    <X> X getScreenshotAs(OutputType<X> target, boolean stichScreenshots) throws WebDriverException;
+
     void releaseAllDevices();
 
     void disableScreenshots(boolean disable);
@@ -162,4 +164,6 @@ public interface MobileDriver extends TakesScreenshot {
     boolean resetWlanOfActiveDevice();
 
     String getDevicesInformation();
+
+    void publishScreenshotToReport(File screenshotFile, File visualDumpFile);
 }

@@ -4,6 +4,7 @@ import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
@@ -66,5 +67,22 @@ public class Screenshot {
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         TimerUtils.sleep(5000);
         Assert.fail("Error in Test! :)");
+    }
+
+    @Test
+    public void T04_Test_GuiElement_takeScreenshot() {
+
+        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+        TimerUtils.sleep(5000);
+
+        mobileDriver.launchApplication("http://www.google.com");
+
+        WebMobileGuiElement toInterviewLink = new WebMobileGuiElement("xpath=//*[@id='hplogo']");
+        toInterviewLink.waitForIsPresent();
+        TestStep.begin("Teststep 1 vor ScreenShot");
+        toInterviewLink.takeScreenshot();
+        toInterviewLink.click();
+
+
     }
 }

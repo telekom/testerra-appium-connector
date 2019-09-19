@@ -12,6 +12,8 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.MobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
 import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
@@ -393,13 +395,11 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
             return mobileDriver.getScreenshotAs(OutputType.FILE);
         } else {
             try {
-                final TakesScreenshot driver = mobileDriver;
+                final MobileDriver driver = mobileDriver;
                 final MobileGuiElement element = this;
 
-                File screenshot = driver.getScreenshotAs(OutputType.FILE);
+                File screenshot = driver.getScreenshotAs(OutputType.FILE, false);
                 BufferedImage fullImg = ImageIO.read(screenshot);
-
-                //                Point point = element.getLocation();
 
                 int propertyX = Integer.parseInt(element.getProperty("x"));
                 int propertyY = Integer.parseInt(element.getProperty("y"));
@@ -413,6 +413,9 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
                         eleHeight
                 );
                 ImageIO.write(eleScreenshot, "png", screenshot);
+
+                mobileDriver.publishScreenshotToReport(screenshot, null);
+
                 return screenshot;
             } catch (IOException e) {
                 LOGGER.error(String.format("%s unable to take screenshot: %s ", this.name, e));

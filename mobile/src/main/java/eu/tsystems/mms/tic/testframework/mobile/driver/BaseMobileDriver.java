@@ -294,7 +294,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         }
     }
 
-    private Screenshot publishScreenshotToMethodContext(final File screenshotFile, final File visualDumpFile) {
+    public Screenshot publishScreenshotToMethodContext(final File screenshotFile, final File visualDumpFile) {
 
         if (screenshotFile == null) {
             LOGGER.debug("Called publishScreenshotToMethodContext with null: No screenshot to publish.");
@@ -944,8 +944,16 @@ public abstract class BaseMobileDriver implements MobileDriver {
      * @see org.openqa.selenium.TakesScreenshot#getScreenshotAs(org.openqa.selenium.OutputType)
      */
     @SuppressWarnings("unchecked")
+
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+
+        final boolean stitchScreenshotsProperty = PropertyManager
+                .getBooleanProperty(MobileProperties.MOBILE_STITCH_SCREENS, DefaultParameter.MOBILE_STITCH_SCREENS);
+        return getScreenshotAs(target,stitchScreenshotsProperty);
+    }
+
+    public <X> X getScreenshotAs(OutputType<X> target, boolean stichScreens) throws WebDriverException {
 
         if (target != OutputType.FILE) {
             throw new TesterraRuntimeException("Mobile Driver only allows files as getScreenShotAs return type.");
@@ -953,8 +961,6 @@ public abstract class BaseMobileDriver implements MobileDriver {
         String isBottom;
         List<Path> screens = new LinkedList<>();
         int maxTries = 30;
-        final boolean stitchScreenshotsProperty = PropertyManager
-                .getBooleanProperty(MobileProperties.MOBILE_STITCH_SCREENS, DefaultParameter.MOBILE_STITCH_SCREENS);
         do {
             Path tempFile;
             try {
@@ -968,7 +974,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             if (transferred) {
                 screens.add(tempFile);
             }
-            if (stitchScreenshotsProperty) {
+            if (stichScreens) {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.clientHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
@@ -1178,5 +1184,10 @@ public abstract class BaseMobileDriver implements MobileDriver {
         reconnectButton.click();
 
         return connectionInfoText.waitForIsDisplayed();
+    }
+
+    public void publishScreenshotToReport(File screenshotFile, File visualDumpFile){
+        Screenshot screenshot = publishScreenshotToMethodContext(screenshotFile, visualDumpFile);
+        TestStepController.addScreenshotsToCurrentAction(screenshot, null);
     }
 }
