@@ -107,9 +107,9 @@ public class ShowcaseMms extends TesterraTest {
             digInnoLabHeadline.swipeWhileNotFound(Direction.DOWN.toString(), 500, 250, 250, 5, false);
             //            digInnoLabHeadline.click();
             //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
-            //            TestUtils.sleep(1000);
+            //            TimerUtils.sleep(1000);
             //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
-            //            TestUtils.sleep(1000);
+            //            TimerUtils.sleep(1000);
             //            mobileDriver.swipe(Direction.DOWN, 300, 1000);
 
             WebMobileGuiElement cloudApplicationServicesLink = new WebMobileGuiElement("xpath=//*[@text='Zum Fachartikel']");

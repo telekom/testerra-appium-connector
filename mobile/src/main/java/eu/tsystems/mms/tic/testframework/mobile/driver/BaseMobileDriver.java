@@ -22,7 +22,6 @@ import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
-import eu.tsystems.mms.tic.testframework.utils.TestUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.utils.XMLUtils;
 import org.jsoup.nodes.Document;
@@ -950,7 +949,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         final boolean stitchScreenshotsProperty = PropertyManager
                 .getBooleanProperty(MobileProperties.MOBILE_STITCH_SCREENS, DefaultParameter.MOBILE_STITCH_SCREENS);
-        return getScreenshotAs(target,stitchScreenshotsProperty);
+        return getScreenshotAs(target, stitchScreenshotsProperty);
     }
 
     public <X> X getScreenshotAs(OutputType<X> target, boolean stichScreens) throws WebDriverException {
@@ -980,7 +979,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
                 isBottom = this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop+document.documentElement.clientHeight>=document.documentElement.offsetHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "window.scrollBy(0,document.documentElement.clientHeight);");
-                TestUtils.sleep(1000);
+                TimerUtils.sleep(1000);
                 maxTries--;
             } else {
                 break;
@@ -1140,11 +1139,11 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 if ("1".equals(value)) {
                     wifiSwitch.click();
                     // wait a little for the switch animation to finish
-                    TestUtils.sleep(1000);
+                    TimerUtils.sleep(1000);
                 }
                 wifiSwitch.click();
                 // wait some seconds so the device has the chance to reconnect to the wifi before continuing
-                TestUtils.sleep(4000);
+                TimerUtils.sleep(4000);
                 return true;
             }
         }
@@ -1186,7 +1185,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         return connectionInfoText.waitForIsDisplayed();
     }
 
-    public void publishScreenshotToReport(File screenshotFile, File visualDumpFile){
+    public void publishScreenshotToReport(File screenshotFile, File visualDumpFile) {
         Screenshot screenshot = publishScreenshotToMethodContext(screenshotFile, visualDumpFile);
         TestStepController.addScreenshotsToCurrentAction(screenshot, null);
     }

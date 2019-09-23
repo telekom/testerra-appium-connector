@@ -8,7 +8,7 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
-import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Test;
 
 /**
@@ -37,7 +37,7 @@ public class ShowcaseBarmer {
             // open apps
             NativeMobileGuiElement appsButton = new NativeMobileGuiElement("xpath=//*[@contentDescription='Apps']");
             if (appsButton.isDisplayed()) {
-              //  appsButton.click();
+                //  appsButton.click();
             }
 
             // launch arztnavi
@@ -62,7 +62,7 @@ public class ShowcaseBarmer {
             NativeMobileGuiElement prescriptionImage = new NativeMobileGuiElement("xpath=//*[@class='android.widget.Image']");
             prescriptionImage.assertIsDisplayed();
 
-            mobileDriver.swipe(Direction.DOWN,500,200);
+            mobileDriver.swipe(Direction.DOWN, 500, 200);
 
             NativeMobileGuiElement doneButton = new NativeMobileGuiElement("xpath=//*[@id='rightNavDarkButton']");
             doneButton.waitForIsDisplayed();
@@ -76,7 +76,7 @@ public class ShowcaseBarmer {
             startPageButton.waitForIsDisplayed();
             startPageButton.click();
 
-            TestUtils.sleep(1000);
+            TimerUtils.sleep(1000);
             mobileDriver.closeApplication("de.barmergek.arztnavi");
         }
     }

@@ -42,7 +42,7 @@ public class MobileGuiElementCheckFieldAction extends CheckFieldAction {
             }
         } catch (AssertionError e) {
             MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
-            currentMethodContext.setThrowable(readableMessage, e);
+            currentMethodContext.errorContext().setThrowable(readableMessage, e);
             throw new PageNotFoundException(readableMessage, e);
         }
     }

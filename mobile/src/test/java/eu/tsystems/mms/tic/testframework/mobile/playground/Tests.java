@@ -20,7 +20,7 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMob
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
-import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.testng.annotations.Listeners;
 import org.testng.annotations.Test;
 import org.w3c.dom.Document;
@@ -385,13 +385,13 @@ public class Tests {
 
         mobileDriver.swipe(Direction.RIGHT, 0.2f, 500);
         int milliSeconds = 5000;
-        TestUtils.sleep(milliSeconds);
+        TimerUtils.sleep(milliSeconds);
         mobileDriver.swipe(Direction.LEFT, 0.2f, 500);
-        TestUtils.sleep(milliSeconds);
+        TimerUtils.sleep(milliSeconds);
         mobileDriver.swipe(Direction.RIGHT, 0.2f, 500);
-        TestUtils.sleep(milliSeconds);
+        TimerUtils.sleep(milliSeconds);
         mobileDriver.swipe(Direction.LEFT, 0.2f, 500);
-        TestUtils.sleep(milliSeconds);
+        TimerUtils.sleep(milliSeconds);
     }
 
     /**

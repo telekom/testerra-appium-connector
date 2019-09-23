@@ -12,12 +12,9 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.MobileGuiElementStrategy;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
-import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
-import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
-import eu.tsystems.mms.tic.testframework.utils.TestUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.TakesScreenshot;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -376,10 +373,10 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
 
             if (isAboveUpperBorder) {
                 mobileDriver.swipe(Direction.UP, swipeStrength, 1000);
-                TestUtils.sleep(200); // short sleep to allow scrolling to finish
+                TimerUtils.sleep(200); // short sleep to allow scrolling to finish
             } else if (isBelowLowerBorder) {
                 mobileDriver.swipe(Direction.DOWN, 0.15f + swipeStrength, 1000);
-                TestUtils.sleep(200); // short sleep to allow scrolling to finish
+                TimerUtils.sleep(200); // short sleep to allow scrolling to finish
             } else {
                 return;
             }
