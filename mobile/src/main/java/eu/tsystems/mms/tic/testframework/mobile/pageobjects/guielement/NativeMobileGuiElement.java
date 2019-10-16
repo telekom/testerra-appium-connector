@@ -72,4 +72,10 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
         }
         setContainingPage(mobilePage);
     }
+
+    @Override
+    public NativeMobileGuiElement setName(final String name) {
+
+        return (NativeMobileGuiElement) super.setName(name);
+    }
 }

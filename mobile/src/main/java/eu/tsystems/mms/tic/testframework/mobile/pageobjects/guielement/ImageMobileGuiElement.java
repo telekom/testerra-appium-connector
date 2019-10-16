@@ -29,4 +29,11 @@ public class ImageMobileGuiElement extends AbstractMobileGuiElement {
         mobileDriver = MobileDriverManager.getMobileDriver();
         setStrategy(new BasicMobileGuiElementStrategy(mobileDriver, mobileLocator, statusContainer));
     }
+
+    @Override
+    public ImageMobileGuiElement setName(final String name) {
+
+        return (ImageMobileGuiElement) super.setName(name);
+    }
+
 }

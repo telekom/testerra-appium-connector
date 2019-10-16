@@ -43,4 +43,10 @@ public class WebMobileGuiElement extends AbstractMobileGuiElement {
     public MobileDriver getMobileDriver() {
         return mobileDriver;
     }
+
+    @Override
+    public WebMobileGuiElement setName(final String name) {
+
+        return (WebMobileGuiElement) super.setName(name);
+    }
 }

@@ -9,6 +9,7 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDum
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
+import eu.tsystems.mms.tic.testframework.pageobjects.location.Locate;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.By;
@@ -99,14 +100,27 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public GuiElement getSubElement(By byLocator, String description) {
-        String translatedBy = ByTranslator.translateForSeeTest(byLocator);
-        String subLocator = new MobileLocator(LocatorType.WEB.toString(), translatedBy, 0)
-                .getLocatorWithoutXpathPrefix();
-        String parentLocator = this.webMobileGuiElement.getLocator().getLocatorWithoutXpathPrefix();
+
+        return getSubElement(byLocator).setName(description);
+    }
+
+    @Override
+    public GuiElement getSubElement(Locate locate) {
+
+        final String translatedBy = ByTranslator.translateForSeeTest(locate.getBy());
+        final String parentLocator = this.webMobileGuiElement.getLocator().getLocatorWithoutXpathPrefix();
+
+        String subLocator = new MobileLocator(LocatorType.WEB.toString(), translatedBy, 0).getLocatorWithoutXpathPrefix();
         if (subLocator.startsWith(".")) {
             subLocator = subLocator.substring(1);
         }
+
         return new GuiElement(WebDriverManager.getWebDriver(), By.xpath(parentLocator + subLocator));
+    }
+
+    @Override
+    public GuiElement getSubElement(By by) {
+        return getSubElement(Locate.by(by));
     }
 
     @Override
@@ -235,6 +249,26 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
     @Override
     public boolean anyFollowingTextNodeContains(String contains) {
         throw new NotSupportedException("Should be implemented later");
+    }
+
+    @Override
+    public boolean isVisible(boolean complete) {
+
+        throw new RuntimeException("Not implemented.");
+        //        if (!isDisplayed()) return false;
+        //
+        //
+        //
+        //        Rectangle viewport = WebDriverUtils.getViewport(webDRIVER...);
+        //        final WebElement webElement = getWebElement();
+        //        // getRect doesn't work
+        //        Point elementLocation = webElement.getLocation();
+        //        Dimension elementSize = webElement.getSize();
+        //        java.awt.Rectangle viewportRect = new java.awt.Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
+        //        java.awt.Rectangle elementRect = new java.awt.Rectangle(elementLocation.x, elementLocation.y, elementSize.width, elementSize.height);
+        //        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
+        //
+        //        return false;
     }
 
     @Override

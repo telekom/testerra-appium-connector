@@ -1,14 +1,13 @@
 package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement;
 
-import java.awt.Color;
-import java.util.Map;
-
-import org.openqa.selenium.Point;
-
 import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Nameable;
+import org.openqa.selenium.Point;
+
+import java.awt.*;
+import java.util.Map;
 
 /**
  * Created by rnhb on 22.12.2015.
@@ -21,7 +20,7 @@ public interface MobileGuiElement extends Checkable, Nameable {
 
     Color getColorOfPixel(int xOffset, int yOffset);
 
-    void setName(String name);
+    Object setName(String name);
 
     /**
      * Supported properties:

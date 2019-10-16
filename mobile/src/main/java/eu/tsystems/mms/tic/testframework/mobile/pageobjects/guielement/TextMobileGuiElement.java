@@ -9,7 +9,6 @@ package eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement;
 
 
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.strategies.BasicMobileGuiElementStrategy;
 
@@ -39,5 +38,11 @@ public class TextMobileGuiElement extends AbstractMobileGuiElement {
         MobileLocator mobileLocator = new MobileLocator(LocatorType.TEXT.toString(), elementLocatorString, index);
         mobileDriver = MobileDriverManager.getMobileDriver();
         setStrategy(new BasicMobileGuiElementStrategy(mobileDriver, mobileLocator, statusContainer));
+    }
+
+    @Override
+    public TextMobileGuiElement setName(final String name) {
+
+        return (TextMobileGuiElement) super.setName(name);
     }
 }

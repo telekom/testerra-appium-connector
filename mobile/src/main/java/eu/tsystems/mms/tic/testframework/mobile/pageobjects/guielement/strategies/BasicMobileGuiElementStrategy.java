@@ -124,8 +124,9 @@ public class BasicMobileGuiElementStrategy implements MobileGuiElementStrategy {
     }
 
     @Override
-    public void setName(String name) {
+    public BasicMobileGuiElementStrategy setName(String name) {
         this.name = name;
+        return this;
     }
 
     @Override
@@ -352,4 +353,4 @@ public class BasicMobileGuiElementStrategy implements MobileGuiElementStrategy {
         return mobilePage;
     }
 
- }
+}

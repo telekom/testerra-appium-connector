@@ -32,7 +32,7 @@ import java.util.Map;
  *
  * @author rnhb
  */
-public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
+public abstract class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileGuiElement.class);
 
@@ -97,9 +97,11 @@ public class AbstractMobileGuiElement implements Checkable, MobileGuiElement {
     }
 
     @Override
-    public void setName(String name) {
+    public AbstractMobileGuiElement setName(final String name) {
+
         this.name = name;
         strategy.setName(name);
+        return this;
     }
 
     @Override
