@@ -3,6 +3,7 @@ package eu.tsystems.mms.tic.testframework.mobile.adapter;
 import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
@@ -13,6 +14,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.location.Locate;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.By;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.WebElement;
@@ -254,21 +256,24 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
     @Override
     public boolean isVisible(boolean complete) {
 
-        throw new RuntimeException("Not implemented.");
-        //        if (!isDisplayed()) return false;
-        //
-        //
-        //
-        //        Rectangle viewport = WebDriverUtils.getViewport(webDRIVER...);
-        //        final WebElement webElement = getWebElement();
-        //        // getRect doesn't work
-        //        Point elementLocation = webElement.getLocation();
-        //        Dimension elementSize = webElement.getSize();
-        //        java.awt.Rectangle viewportRect = new java.awt.Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
-        //        java.awt.Rectangle elementRect = new java.awt.Rectangle(elementLocation.x, elementLocation.y, elementSize.width, elementSize.height);
-        //        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
-        //
-        //        return false;
+        if (!isDisplayed()) return false;
+
+        final Dimension size = this.getSize();
+        final Point location = this.getLocation();
+
+        // todo erku here
+        final int screenWidth = MobileDriverManager.getMobileDriver().getActiveDevice().getPixelsX();
+        final int screenHeight = MobileDriverManager.getMobileDriver().getActiveDevice().getPixelsY();
+
+        //        final int posY = location.getY();
+        //        final int height = size.getHeight();
+        //        final int elementEndY = posY + height;
+        //        final boolean isAboveTopBorder = elementEndY < 0 || posY <= 0;
+        //        final boolean isBelowBottomBorder = elementEndY > borderBottom;
+
+        java.awt.Rectangle viewportRect = new java.awt.Rectangle(0, 0, screenWidth, screenHeight);
+        java.awt.Rectangle elementRect = new java.awt.Rectangle(location.x, location.y, size.width, size.height);
+        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
     }
 
     @Override

@@ -1,0 +1,12 @@
+= Testerra Mobile
+
+// Add documentation here
+== What is Testerra Mobile?
+
+Testerra Mobile is an extension for Testerra to enable Testerra functions for mobile testing.
+It is based on the SeeTest Automation Client.
+Testerra Mobile is mainly developed by the T-Systems Multimedia Solutions experts for test automation as well as Testerra itself.
+
+== Prerequisites
+
+To run mobile tests with Testerra Mobile an running instance of SeeTest Automation Client on your local machine or an remote instance is necessary.
