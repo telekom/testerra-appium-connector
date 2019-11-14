@@ -1,2 +1,2 @@
-rootProject.name = 'testerra-mobile'
+rootProject.name = 'mobile'
 include ':mobile'
