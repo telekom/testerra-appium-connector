@@ -92,19 +92,11 @@ subprojects {
     repositories {
         mavenLocal()
 
-        maven { url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom" }
         maven { url "http://repo.maven.apache.org/maven2" }
-        // please setup in ${home}/.gradle/gradle.properties following info
-        //mavenUser=your userneme
-        //mavenPassword=artifactory enc password
-        maven {
-            credentials {
-                username "$mavenUser"
-                password "$mavenPassword"
-            }
-            url "https://artifacts.mms-at-work.de/artifactory/prj-ticautom"
-        }
-
+        /**
+         * You should setup your gradle artifactory repository first
+         * @see {https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
+         */
         jcenter()
         maven { url "http://repo.experitest.com:8010/Maven2" }
     }
@@ -114,6 +106,5 @@ dependencies {
 }
 
 test {
-    // enable TestNG support (default is JUnit)
     useTestNG()
 }
