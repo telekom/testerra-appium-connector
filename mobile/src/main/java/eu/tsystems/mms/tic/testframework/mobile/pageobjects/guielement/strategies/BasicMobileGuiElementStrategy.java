@@ -22,7 +22,6 @@ import java.util.Map;
  * <p>
  * Strategy for any element, including Image or Text
  */
-@Deprecated
 public class BasicMobileGuiElementStrategy implements MobileGuiElementStrategy {
 
     final MobileLocator mobileLocator;

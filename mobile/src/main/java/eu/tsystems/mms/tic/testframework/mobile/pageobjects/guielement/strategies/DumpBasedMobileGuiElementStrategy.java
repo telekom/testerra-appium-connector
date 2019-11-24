@@ -22,7 +22,6 @@ import java.util.Map;
  * <p/>
  * Strategy for all elements, that have access to a dump. Web, instrumented Native and not instrumented Native.
  */
-@Deprecated
 public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStrategy {
     private final ScreenDump.Type screenDumpType;
 

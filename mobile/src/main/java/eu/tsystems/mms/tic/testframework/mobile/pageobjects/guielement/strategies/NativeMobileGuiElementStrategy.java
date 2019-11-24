@@ -15,7 +15,6 @@ import java.util.Map;
 /**
  * Created by rnhb on 22.12.2015.
  */
-@Deprecated
 public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStrategy {
     private static final Logger LOGGER = LoggerFactory.getLogger(NativeMobileGuiElementStrategy.class);
 

@@ -36,7 +36,6 @@ public abstract class AbstractMobileGuiElement implements Checkable, MobileGuiEl
 
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileGuiElement.class);
 
-    @Deprecated
     private MobileGuiElementStrategy strategy;
 
     private String name;
@@ -49,7 +48,6 @@ public abstract class AbstractMobileGuiElement implements Checkable, MobileGuiEl
         statusContainer = new StatusContainer();
     }
 
-    @Deprecated
     protected void setStrategy(MobileGuiElementStrategy mobileGuiElementStrategy) {
         strategy = mobileGuiElementStrategy;
     }
