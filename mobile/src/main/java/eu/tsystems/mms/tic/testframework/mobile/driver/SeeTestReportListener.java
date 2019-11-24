@@ -3,6 +3,7 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -125,7 +126,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
             mobileDriver.seeTestClient().report("Last Command: \n" + lastCommandResultMap.toString(), true);
 
             // also provide the screendump
-            String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
+            String visualDump = mobileDriver.getScreenDump(ScreenDump.Type.NATIVE_INSTRUMENTED).getRawXmlString();
             mobileDriver.seeTestClient().report("Screen Dump: \n" + visualDump, true);
 
             Throwable throwable = result.getThrowable();

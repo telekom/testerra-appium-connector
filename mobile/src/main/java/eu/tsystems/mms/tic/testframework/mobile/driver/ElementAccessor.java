@@ -1,11 +1,8 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
-import java.awt.Color;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
+
+import java.awt.*;
 
 /**
  * Created by rnhb on 17.04.2015.
@@ -13,7 +10,6 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLoc
 public class ElementAccessor {
 
     private final MobileDriver mobileDriver;
-    private Logger logger = LoggerFactory.getLogger(this.getClass());
 
     public ElementAccessor(MobileDriver mobileDriver) {
         this.mobileDriver = mobileDriver;
@@ -24,18 +20,26 @@ public class ElementAccessor {
     }
 
     public void click(MobileLocator mobileLocator, int clickCount, int offsetX, int offsetY) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().click(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount, offsetX, offsetY);
     }
 
     public void click(MobileLocator mobileLocator, int clickCount) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().click(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount);
     }
 
     public void longClick(MobileLocator mobileLocator, int clickCount, int x, int y) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().longClick(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount, x, y);
     }
 
     public void elementSwipe(MobileLocator mobileLocator, String direction, int offset, int swipeTime) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().elementSwipe(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, direction, offset, swipeTime);
     }
 
@@ -52,6 +56,8 @@ public class ElementAccessor {
     }
 
     public void elementSendText(MobileLocator mobileLocator, String text) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().elementSendText(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, text);
     }
 
@@ -69,15 +75,17 @@ public class ElementAccessor {
 
     public boolean waitForElement(MobileLocator mobileLocator, int timeout) {
         return mobileDriver.seeTestClient().waitForElement(mobileLocator.zone, mobileLocator.locator,
-                mobileLocator.index, timeout);
+            mobileLocator.index, timeout);
     }
 
     public boolean waitForElementToVanish(MobileLocator mobileLocator, int timeout) {
         return mobileDriver.seeTestClient().waitForElementToVanish(mobileLocator.zone, mobileLocator.locator,
-                mobileLocator.index, timeout);
+            mobileLocator.index, timeout);
     }
 
     public void drag(MobileLocator mobileLocator, int xOffset, int yOffset) {
+
+        mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().drag(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, xOffset, yOffset);
     }
 
