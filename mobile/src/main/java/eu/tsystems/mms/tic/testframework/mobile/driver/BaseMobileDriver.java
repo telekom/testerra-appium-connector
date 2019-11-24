@@ -16,6 +16,7 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
 import eu.tsystems.mms.tic.testframework.mobile.monitor.AppMonitor;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
@@ -43,6 +44,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -97,6 +99,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     private DeviceReservationPolicy deviceReservationPolicy;
 
+    private final HashMap<ScreenDump.Type, ScreenDump> screenDumpHashMap = new HashMap<>();
+
     public BaseMobileDriver() {
         activeDevice = null;
         reservedDevices = new HashSet<>();
@@ -125,6 +129,25 @@ public abstract class BaseMobileDriver implements MobileDriver {
             deviceReservationPolicy = DeviceReservationPolicy.UNRESERVED_OR_OWN_DEVICES;
         }
         LOGGER.info("Current device Reservation Policy:" + deviceReservationPolicy);
+    }
+
+    @Override
+    public ScreenDump getScreenDump(ScreenDump.Type type) {
+        ScreenDump nativeScreenDump = screenDumpHashMap.get(type);
+
+        if (nativeScreenDump == null) {
+            nativeScreenDump = new ScreenDump(seeTestClient().getVisualDump(type.toString()));
+            screenDumpHashMap.put(type, nativeScreenDump);
+            LOGGER.debug("Screendump cached.");
+        }
+
+        return nativeScreenDump;
+    }
+
+    @Override
+    public void clearScreenDumpCaches() {
+        screenDumpHashMap.clear();
+        LOGGER.debug("Screendump Cache cleared.");
     }
 
     @Override
