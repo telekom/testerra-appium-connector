@@ -421,7 +421,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         } else {
             pixelOffset = (int) offsetInPixelOrScreenFraction;
         }
-        seeTestClient().swipe(direction.toString(), pixelOffset, timeInMs);
+        elementAccessor.swipe(direction.toString(), pixelOffset, timeInMs);
         afterLog("Swiped.", true);
     }
 
