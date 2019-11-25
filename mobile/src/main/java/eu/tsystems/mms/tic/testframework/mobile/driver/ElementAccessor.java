@@ -20,25 +20,26 @@ public class ElementAccessor {
     }
 
     public void click(MobileLocator mobileLocator, int clickCount, int offsetX, int offsetY) {
-
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().click(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount, offsetX, offsetY);
     }
 
     public void click(MobileLocator mobileLocator, int clickCount) {
-
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().click(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount);
     }
 
     public void longClick(MobileLocator mobileLocator, int clickCount, int x, int y) {
-
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().longClick(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, clickCount, x, y);
     }
 
-    public void elementSwipe(MobileLocator mobileLocator, String direction, int offset, int swipeTime) {
+    public void swipe(String direction, int offset, int time) {
+        mobileDriver.clearScreenDumpCaches();
+        mobileDriver.seeTestClient().swipe(direction, offset, time);
+    }
 
+    public void elementSwipe(MobileLocator mobileLocator, String direction, int offset, int swipeTime) {
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().elementSwipe(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, direction, offset, swipeTime);
     }
@@ -56,7 +57,6 @@ public class ElementAccessor {
     }
 
     public void elementSendText(MobileLocator mobileLocator, String text) {
-
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().elementSendText(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, text);
     }
@@ -74,8 +74,7 @@ public class ElementAccessor {
     }
 
     public boolean waitForElement(MobileLocator mobileLocator, int timeout) {
-        return mobileDriver.seeTestClient().waitForElement(mobileLocator.zone, mobileLocator.locator,
-            mobileLocator.index, timeout);
+        return mobileDriver.seeTestClient().waitForElement(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, timeout);
     }
 
     public boolean waitForElementToVanish(MobileLocator mobileLocator, int timeout) {
@@ -84,7 +83,6 @@ public class ElementAccessor {
     }
 
     public void drag(MobileLocator mobileLocator, int xOffset, int yOffset) {
-
         mobileDriver.clearScreenDumpCaches();
         mobileDriver.seeTestClient().drag(mobileLocator.zone, mobileLocator.locator, mobileLocator.index, xOffset, yOffset);
     }
