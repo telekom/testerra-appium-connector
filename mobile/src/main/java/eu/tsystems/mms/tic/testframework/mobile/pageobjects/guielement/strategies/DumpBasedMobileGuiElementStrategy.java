@@ -23,7 +23,7 @@ import java.util.Map;
  * Strategy for all elements, that have access to a dump. Web, instrumented Native and not instrumented Native.
  */
 public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStrategy {
-    final ScreenDump.Type screenDumpType;
+    private final ScreenDump.Type screenDumpType;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpBasedMobileGuiElementStrategy.class);
 
@@ -41,8 +41,7 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public String getSource() {
-        String visualDump = driver.seeTestClient().getVisualDump(mobileLocator.zone);
-        ScreenDump screenDump = new ScreenDump(visualDump);
+        final ScreenDump screenDump = driver.getScreenDump(screenDumpType);
         return screenDump.getContent(mobileLocator);
     }
 
@@ -91,8 +90,7 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public Map<String, String> getProperties() {
-        String visualDump = driver.seeTestClient().getVisualDump(mobileLocator.zone);
-        ScreenDump screenDump = new ScreenDump(visualDump);
+        final ScreenDump screenDump = driver.getScreenDump(screenDumpType);
         Map<String, String> attributes = screenDump.getAttributes(mobileLocator);
         return attributes;
     }

@@ -12,7 +12,6 @@ import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.DefaultParameter;
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
-import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
@@ -154,8 +153,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public List<WebElement> findElements(By by) {
-        String webDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.WEB.toString());
-        ScreenDump screenDump = new ScreenDump(webDump);
+        ScreenDump screenDump = mobileDriver.getScreenDump(ScreenDump.Type.WEB);
         String seeTestXpath = ByTranslator.translateForSeeTest(by);
         MobileLocator mobileLocator = new MobileLocator(LocatorType.WEB.toString(), seeTestXpath, 0);
         NodeList elements = screenDump.findElements(mobileLocator);
@@ -187,7 +185,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getPageSource() {
-        return mobileDriver.seeTestClient().getVisualDump("WEB");
+        return mobileDriver.getScreenDump(ScreenDump.Type.WEB).getRawXmlString();
     }
 
     @Override
@@ -261,7 +259,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see org.openqa.selenium.TakesScreenshot#getScreenshotAs(org.openqa.selenium.OutputType)
      */
     @Override
