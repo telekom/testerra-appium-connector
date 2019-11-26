@@ -61,5 +61,4 @@ public interface MobileProperties {
      * Sets if the device reflection screen should be opened by SeeTest when working on it.
      */
     String MOBILE_OPEN_REFLECTION_SCREEN = "tt.mobile.open.reflection.screen";
-    String MOBILE_CACHE_GUI_ELEMENTS = "tt.mobile.cache.gui.elements";
 }

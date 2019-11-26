@@ -4,7 +4,6 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
@@ -157,9 +156,7 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
         MobileLocator childrenLocator = new MobileLocator("irrelevant", xPath, 0);
 
         MobileDriver mobileDriver = webMobileGuiElement.getMobileDriver();
-        String nativeVisualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
-
-        ScreenDump nativeScreenDump = new ScreenDump(nativeVisualDump);
+        ScreenDump nativeScreenDump = mobileDriver.getScreenDump(ScreenDump.Type.NATIVE_INSTRUMENTED);
 
         List<String> childrenTexts = new ArrayList<String>();
 
@@ -181,8 +178,7 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
             childrenTexts.add(nodeValue);
         }
 
-        String webVisualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.WEB.toString());
-        ScreenDump webScreenDump = new ScreenDump(webVisualDump);
+        ScreenDump webScreenDump = mobileDriver.getScreenDump(ScreenDump.Type.WEB);
         elements = webScreenDump.findElements(childrenLocator);
 
         for (int i = 0; i < elements.getLength(); i++) {

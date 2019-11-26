@@ -61,10 +61,10 @@ public class ScreenDump {
     private final DocumentBuilderFactory documentBuilderFactory;
     private final DocumentBuilder documentBuilder;
     private final XPathFactory xPathFactory;
-    private String nativeScreenDump;
+    private String rawXmlString;
 
-    public ScreenDump(String nativeScreenDump) {
-        this.nativeScreenDump = nativeScreenDump;
+    public ScreenDump(String rawXmlString) {
+        this.rawXmlString = rawXmlString;
         documentBuilderFactory = DocumentBuilderFactory.newInstance();
         xPathFactory = XPathFactory.newInstance();
         try {
@@ -76,17 +76,17 @@ public class ScreenDump {
 
     private Document getDumpAsDocument() {
         try {
-            return documentBuilder.parse(new InputSource(new StringReader(nativeScreenDump)));
+            return documentBuilder.parse(new InputSource(new StringReader(rawXmlString)));
         } catch (SAXException e) {
-            nativeScreenDump = nativeScreenDump.replaceAll("&#(\\d*)", "$1");
+            rawXmlString = rawXmlString.replaceAll("&#(\\d*)", "$1");
             try {
-                return documentBuilder.parse(new InputSource(new StringReader(nativeScreenDump)));
+                return documentBuilder.parse(new InputSource(new StringReader(rawXmlString)));
             } catch (Exception e1) {
                 LOGGER.debug(e1.getMessage());
-                throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
+                throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + rawXmlString, e);
             }
         } catch (IOException e) {
-            throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + nativeScreenDump, e);
+            throw new TesterraRuntimeException("Failed to parse NativeScreenDump as xml. NativeScreenDump = " + rawXmlString, e);
         }
     }
 
@@ -170,5 +170,9 @@ public class ScreenDump {
             //TODO the return statement looks suspicious
             return e.toString();
         }
+    }
+
+    public String getRawXmlString() {
+        return rawXmlString;
     }
 }

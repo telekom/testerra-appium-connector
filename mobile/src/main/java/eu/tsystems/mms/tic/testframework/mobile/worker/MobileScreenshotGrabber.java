@@ -4,7 +4,7 @@ import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.interop.ScreenshotCollector;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
@@ -55,7 +55,7 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
      */
     private File getVisualDump(MobileDriver mobileDriver) {
 
-        final String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
+        final String visualDump = mobileDriver.getScreenDump(ScreenDump.Type.NATIVE_INSTRUMENTED).getRawXmlString();
 
         final String dumpFileName = String.format("dump_%s.xml", System.currentTimeMillis());
         final Path tmpDumpPath = Paths.get(System.getProperty("java.io.tmpdir"), dumpFileName);

@@ -286,6 +286,7 @@ public interface MobileGuiElement extends Checkable, Nameable {
      *
      * @param mobilePage MobilePage this element is defined in.
      */
+    @Deprecated
     void setContainingPage(MobilePage mobilePage);
 
     /**
