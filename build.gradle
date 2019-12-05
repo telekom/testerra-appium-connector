@@ -76,6 +76,8 @@ ext {
     testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
     testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
 
+    testerraMobile = testerraGroup + ":mobile:" + testerraVersion
+
     powermockVersion = '1.7.3'
     powermock = [
             'org.powermock:powermock-module-testng:' + powermockVersion,
