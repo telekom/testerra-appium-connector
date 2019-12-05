@@ -35,9 +35,11 @@ public class MobileDriverTest extends AbstractTest {
     public void setup(Method m) throws DeviceNotAvailableException {
 
         MobileDriver driver = MobileDriverManager.getMobileDriver();
+
         if (driver.getActiveDevice() == null) {
             driver.reserveDeviceByFilter(getDeviceFilterProperty());
         }
+
         if (m.getAnnotation(NeedsAppInstalled.class) != null) {
             installTestApp();
         }

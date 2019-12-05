@@ -37,9 +37,11 @@ public abstract class AbstractTest {
 
     @BeforeClass(alwaysRun = true)
     public void prepareDevice() throws DeviceNotAvailableException {
+
+
         //TODO how to achive that in testerra?
         //        TestRunConfiguration.getInstance().addTestFramework("xeta-mobile");
-        mobileOperatingSystem = getOsByScope();
+        mobileOperatingSystem = this.getOsByScope();
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         //        mobileDriver.registerDeviceTest(new DeviceOnlineTest("www.google.de", "xpath=//*[@id='hplogo']"));
         //        mobileDriver.registerDeviceTest(new DeviceTest("App can be installed") {
@@ -76,6 +78,7 @@ public abstract class AbstractTest {
     }
 
     private MobileOperatingSystem getOsByScope() {
+
         //        String scopeProperty = PropertyManager.getProperty("scope");
         //        if (scopeProperty == null || scopeProperty.equalsIgnoreCase("int")) {
         //            return MobileOperatingSystem.IOS;
@@ -116,15 +119,12 @@ public abstract class AbstractTest {
 
     protected String getAppName() {
 
-        return PropertyManager
-                .getProperty("tt.mobile.system.test.app.name." + mobileOperatingSystem.lowerCaseName());
+        return PropertyManager.getProperty("tt.mobile.system.test.app.name." + mobileOperatingSystem.lowerCaseName());
     }
 
     protected void assertTestAppIsRunning() {
 
-        Assert.assertTrue(
-                getAppName().contains(MobileDriverManager.getMobileDriver().getCurrentlyRunningApplication()),
-                "Test App is not running.");
+        Assert.assertTrue(getAppName().contains(MobileDriverManager.getMobileDriver().getCurrentlyRunningApplication()), "Test App is not running.");
     }
 
     protected void assertTestAppIsNotRunning() {
@@ -142,19 +142,16 @@ public abstract class AbstractTest {
             }
         });
 
-        Assert.assertFalse(sequence.getResponse(),
-                "Test App is running.");
+        Assert.assertFalse(sequence.getResponse(), "Test App is running.");
     }
 
     protected void assertTestAppIsInstalled() {
 
-        Assert.assertTrue(MobileDriverManager.getMobileDriver().isApplicationInstalled(getAppName()),
-                "Application is installed.");
+        Assert.assertTrue(MobileDriverManager.getMobileDriver().isApplicationInstalled(getAppName()), "Application is installed.");
     }
 
     protected void assertTestAppIsNotInstalled() {
 
-        Assert.assertFalse(MobileDriverManager.getMobileDriver().isApplicationInstalled(getAppName()),
-                "Application is installed.");
+        Assert.assertFalse(MobileDriverManager.getMobileDriver().isApplicationInstalled(getAppName()), "Application is installed.");
     }
 }
