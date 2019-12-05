@@ -81,11 +81,13 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
      */
 
     public void setMonitoringActivated(boolean monitoringActivated) {
+
         this.monitoringActivated = monitoringActivated;
     }
 
     @Override
     public void onTestStart(ITestResult result) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
 
@@ -113,11 +115,13 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onTestSuccess(ITestResult result) {
+
         generateReport();
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
 
@@ -140,7 +144,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
                 mobileDriver.report("Screen on failure: " + throwable.toString(), true, false);
             } else {
                 mobileDriver.seeTestClient().report("Test failed because of a TestNG assertion, but the throwable of the result was " +
-                        "null. Check the Xeta Report!", false);
+                        "null. Check the Testerra Report!", false);
             }
         } catch (Exception e) {
             LOGGER.error("Exception on handling test failure.", e);
@@ -149,6 +153,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
     }
 
     private void generateReport() {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
             String pathToMobileReport = mobileDriver.seeTestClient().generateReport(false);
@@ -170,10 +175,12 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onStart(ITestContext context) {
+
     }
 
     @Override
     public void onFinish(ITestContext context) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
             if (monitoringActivated) {
@@ -196,6 +203,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onConfigurationFailure(ITestResult itr) {
+
         try {
             Throwable throwable = itr.getThrowable();
             if (throwable != null) {
@@ -213,6 +221,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onConfigurationSkip(ITestResult itr) {
+
         onConfigurationFailure(itr);
     }
 }

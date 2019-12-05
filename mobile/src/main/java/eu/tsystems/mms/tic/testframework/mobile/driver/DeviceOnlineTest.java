@@ -15,10 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 /**
- * Checks if the device is connected to WIFI by checking an element for a given url (by default xeta mobiles internal
+ * Checks if the device is connected to WIFI by checking an element for a given url (by default testerra mobiles internal
  * web page). If the expected element is not found we run the resetWlanOfActiveDevice routine to connect to wlan and
  * check the element again. If that's not working we return false and another device is being reserved.
- * 
+ *
  * @author sepr
  */
 public class DeviceOnlineTest extends DeviceTest {
@@ -32,16 +32,18 @@ public class DeviceOnlineTest extends DeviceTest {
      * Default constructor checking our internal test page.
      */
     public DeviceOnlineTest() {
+
         this("http://q4deumsy0tt.mms-dresden.de", "xpath=//*[@id='burger']");
     }
 
     /**
      * Alternative constructor using own url and expected element locator.
-     * 
-     * @param pageUrl url of web page to check connection.
+     *
+     * @param pageUrl        url of web page to check connection.
      * @param elementLocator locator of element expected to be displayed on given page.
      */
     public DeviceOnlineTest(String pageUrl, String elementLocator) {
+
         super("device is online");
         this.testPageUrl = pageUrl;
         this.testPageElementLocator = elementLocator;
@@ -49,13 +51,14 @@ public class DeviceOnlineTest extends DeviceTest {
 
     /*
      * (non-Javadoc)
-     * 
+     *
      * @see
      * eu.tsystems.mms.tic.testframework.mobile.driver.DeviceTest#doDeviceTest(eu.tsystems.mms.tic.testframework.mobile.
      * driver.MobileDriver, eu.tsystems.mms.tic.testframework.mobile.device.TestDevice)
      */
     @Override
     public boolean doDeviceTest(MobileDriver mobileDriver, TestDevice testDevice) throws Exception {
+
         mobileDriver.closeSystemPopUps();
         mobileDriver.changeOrientationTo(ViewOrientation.PORTRAIT);
         boolean found = false;
