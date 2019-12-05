@@ -8,3 +8,5 @@ licenses
 *.zip
 out
 build
+gradlew
+gradlew.bat

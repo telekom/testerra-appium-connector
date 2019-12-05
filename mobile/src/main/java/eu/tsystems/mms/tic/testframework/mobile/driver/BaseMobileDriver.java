@@ -102,6 +102,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     private final HashMap<ScreenDump.Type, ScreenDump> screenDumpHashMap = new HashMap<>();
 
     public BaseMobileDriver() {
+
         activeDevice = null;
         reservedDevices = new HashSet<>();
         openDevices = new HashSet<>();
@@ -111,6 +112,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         deviceTests.add(new DeviceTest("reservation") {
             @Override
             public boolean doDeviceTest(MobileDriver mobileDriver, TestDevice testDevice) throws Exception {
+
                 reserveDevice(testDevice);
                 seeTestClient().capture();
                 return true;
@@ -133,6 +135,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public ScreenDump getScreenDump(ScreenDump.Type type) {
+
         ScreenDump nativeScreenDump = screenDumpHashMap.get(type);
 
         if (nativeScreenDump == null) {
@@ -146,12 +149,14 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void clearScreenDumpCaches() {
+
         screenDumpHashMap.clear();
         LOGGER.debug("Screendump Cache cleared.");
     }
 
     @Override
     public void registerDeviceTest(DeviceTest deviceTest) {
+
         if (deviceTests.contains(deviceTest)) {
             if (DeviceTest.DEFAULT_NAME.equals(deviceTest.name)) {
                 LOGGER.warn(
@@ -166,6 +171,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void clearDeviceTests() {
+
         deviceTests.clear();
     }
 
@@ -176,10 +182,12 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void setFiringKeyEvents(boolean b) {
+
         seeTestClient().setProperty(keyEventProperty, String.valueOf(b));
     }
 
     private void afterLog(String msg, boolean takeScreenshot) {
+
         if (takeScreenshot) {
             takeAfterScreenshot();
         }
@@ -187,6 +195,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private void beforeLog(String msg, boolean takeScreenshot) {
+
         LOGGER.info(msg);
         if (takeScreenshot) {
             takeBeforeScreenshot();
@@ -195,14 +204,18 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public boolean closeApplication(String packageName) {
+
         packageName = cutCloudPrefix(packageName);
         beforeLog("Closing application " + packageName, true);
         boolean applicationClosed = seeTestClient().applicationClose(packageName);
+        clearScreenDumpCaches();
+
         beforeLog("Closed " + packageName + ": " + applicationClosed, true);
         return applicationClosed;
     }
 
     private void ensureDeviceIsActive() {
+
         if (activeDevice == null) {
             throw new TesterraRuntimeException(
                     "A method tried to send a command to a device, but no device was focused before.");
@@ -210,6 +223,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     void handleSeeTestClientCreation() {
+
         if (seeTestClient == null) {
             throw new RuntimeException("SeeTestClient was not successfully created. Cannot execute tests.");
         }
@@ -241,6 +255,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public TestDevice reserveDeviceByFilter(String filterProperty) {
+
         List<TestDevice> foundDevices = MobileDriverManager.deviceStore().getTestDevicesByFilter(filterProperty);
 
         boolean randomizeDeviceOrder = PropertyManager.getBooleanProperty(
@@ -298,17 +313,20 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public TestDevice reserveDeviceByFilter() throws DeviceNotAvailableException {
+
         return reserveDeviceByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
     }
 
     @Override
     public void takeBeforeScreenshot() {
+
         if (takeScreenshots && !screenshotsDisabled) {
             beforeScreenshot = prepareNewScreenshot();
         }
     }
 
     private void takeScreenshot() {
+
         if (takeScreenshots && !screenshotsDisabled) {
             final File screenshotFile = prepareNewScreenshot();
             final Screenshot screenshot = this.publishScreenshotToMethodContext(screenshotFile, null);
@@ -339,6 +357,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void takeAfterScreenshot() {
+
         if (takeScreenshots && !screenshotsDisabled) {
             if (takeOnlyBeforeScreenshots) {
                 if (beforeScreenshot != null) {
@@ -390,14 +409,17 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     @Deprecated
     public boolean isDeviceConnected(TestDevice testDevice) {
+
         String connectedDevices = seeTestClient().getConnectedDevices();
         return connectedDevices.contains(testDevice.getName());
     }
 
     @Override
     public void closeKeyboard() {
+
         ensureDeviceIsActive();
         seeTestClient().closeKeyboard();
+        clearScreenDumpCaches();
     }
 
     /**
@@ -411,6 +433,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      * @param timeInMs                      How long the swipe should take. Short swipes can overshoot because of the fast movement.
      */
     public void swipe(Direction direction, float offsetInPixelOrScreenFraction, int timeInMs) {
+
         ensureDeviceIsActive();
         beforeLog("Swiping in " + direction + " for " + timeInMs + " ms, " + offsetInPixelOrScreenFraction + " pixel",
                 true);
@@ -422,11 +445,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
             pixelOffset = (int) offsetInPixelOrScreenFraction;
         }
         elementAccessor.swipe(direction.toString(), pixelOffset, timeInMs);
+
         afterLog("Swiped.", true);
     }
 
     @Override
     public void clearApplicationData(String packageName) {
+
         if (packageName == null) {
             throw new TesterraRuntimeException("PackageName cannot be null!");
         }
@@ -442,12 +467,14 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void clearDeviceLog() {
+
         ensureDeviceIsActive();
         seeTestClient().clearDeviceLog();
     }
 
     @Override
     public DeviceLog getDeviceLog() {
+
         ensureDeviceIsActive();
         String deviceLogPath = seeTestClient().getDeviceLog();
         try {
@@ -464,6 +491,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public boolean installApplication(String fullPathOfApp) {
+
         return installApplication(fullPathOfApp, true);
     }
 
@@ -491,11 +519,11 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     /**
      * @param application String of application. Prefix "cloud:" will be cut.
-     *
      * @return status of success of uninstall
      */
     @Override
     public boolean uninstall(String application) {
+
         if (application == null) {
             throw new TesterraRuntimeException("Application String cannot be null!");
         }
@@ -510,6 +538,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void uninstallAllInstalledApps() {
+
         for (String installedApplication : installedApplications) {
             try {
                 uninstall(installedApplication);
@@ -521,6 +550,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private String cutCloudPrefix(String application) {
+
         if (application.startsWith(cloudPrefix)) {
             application = application.substring(cloudPrefix.length());
         }
@@ -528,6 +558,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private String appendSemicolon(String application) {
+
         if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_APPLICATIONNAME_MATCH_STRICT,
                 DefaultParameter.MOBILE_APPLICATIONNAME_MATCH_STRICT)) {
             return application + ";";
@@ -536,6 +567,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private String cutActivity(String applicationString) {
+
         if (applicationString.contains("/")) {
             return applicationString.substring(0, applicationString.indexOf("/"));
         } else {
@@ -545,6 +577,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public final void reserveDevice(TestDevice testDevice) throws DeviceNotAvailableException {
+
         if (testDevice == null) {
             throw new TesterraRuntimeException("TestDevice cannot be null!");
         }
@@ -575,6 +608,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     protected abstract void waitForDevice(TestDevice testDevice);
 
     private void updateReservationStatusOfDevice(TestDevice testDevice) {
+
         LOGGER.info("Trying to get update reservation status for " + testDevice);
         String devicesInformation = getDevicesInformation();
         Document deviceInformation = XMLUtils.jsoup().createJsoupDocument(devicesInformation);
@@ -601,12 +635,14 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     @Deprecated
     public void switchToAndWakeDevice(TestDevice testDevice) {
+
         switchToDevice(testDevice);
         wakeDevice();
     }
 
     @Override
     public void openDevice() {
+
         ensureDeviceIsActive();
         seeTestClient().openDevice();
         openDevices.add(activeDevice);
@@ -614,6 +650,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void closeDevice() {
+
         ensureDeviceIsActive();
         seeTestClient().closeDevice();
         openDevices.remove(activeDevice);
@@ -621,6 +658,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void wakeDevice() {
+
         ensureDeviceIsActive();
         Stopwatch started = Stopwatch.createStarted();
 
@@ -637,47 +675,58 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void browserBack() {
+
         ensureDeviceIsActive();
         beforeLog("Going back in Browser.", true);
         seeTestClient().sendText("{WEBBACK}");
+        clearScreenDumpCaches();
         afterLog("Went back in Browser.", true);
     }
 
     @Override
     public void back() {
+
         ensureDeviceIsActive();
         beforeLog("Pressing back on device.", true);
         seeTestClient().sendText("{BACK}");
+        clearScreenDumpCaches();
         afterLog("Pressed back on device.", true);
     }
 
     @Override
     public void pressHomeButton() {
+
         ensureDeviceIsActive();
         beforeLog("Pressing home on device.", true);
         seeTestClient().sendText("{HOME}");
+        clearScreenDumpCaches();
         afterLog("Pressed home on device.", true);
     }
 
     @Override
     public void pressEnterOnKeyboard() {
+
         ensureDeviceIsActive();
         beforeLog("Pressing enter on keyboard.", true);
         seeTestClient().sendText("{ENTER}");
+        clearScreenDumpCaches();
         afterLog("Pressed enter on keyboard.", true);
     }
 
     @Override
     public void changeOrientationTo(ViewOrientation viewOrientation) {
+
         ensureDeviceIsActive();
         beforeLog("Change orientation to " + viewOrientation, true);
         seeTestClient().sendText("{" + viewOrientation.name() + "}");
         activeDevice.setViewOrientation(viewOrientation);
+        clearScreenDumpCaches();
         afterLog("Changed orientation", true);
     }
 
     @Override
     public ViewOrientation getOrientation() {
+
         ensureDeviceIsActive();
         beforeLog("Get screen orientation", false);
         String orientation = seeTestClient().getDeviceProperty("orientation");
@@ -687,11 +736,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public int getNumberOfElements(LocatorType locatorType, String identifier) {
+
         return seeTestClient().getElementCount(locatorType.name(), identifier);
     }
 
     @Override
     public Dimension getScreenResolution() {
+
         ensureDeviceIsActive();
         int x = seeTestClient().p2cx(100);
         int y = seeTestClient().p2cy(100);
@@ -700,6 +751,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void closeAllDevices() {
+
         for (TestDevice openDevice : openDevices) {
             seeTestClient().setDevice(openDevice.getName());
             closeDevice();
@@ -708,43 +760,55 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void performDragOnCoordinates(int startX, int startY, int endX, int endY, int timeToDrag) {
+
+        clearScreenDumpCaches();
         seeTestClient().dragCoordinates(startX, startY, endX, endY, timeToDrag);
     }
 
     @Override
     public ElementAccessor element() {
+
         return elementAccessor;
     }
 
     @Override
     public TestDevice getActiveDevice() {
+
         return activeDevice;
     }
 
     @Override
     public void pressBackspace() {
+
         ensureDeviceIsActive();
         beforeLog("Pressing backspace on keyboard.", false);
         seeTestClient().sendText("{BKSP}");
+        clearScreenDumpCaches();
         afterLog("Pressed backspace on keyboard.", false);
     }
 
     @Override
     public void launchApplication(String applicationString) {
+
         launchApplication(applicationString, true);
     }
 
     @Override
     public void launchApplication(String applicationString, boolean instrumentApplication) {
+
         launchApplication(applicationString, instrumentApplication, true);
     }
 
     @Override
     public void launchApplication(String applicationString, boolean instrumentApplication, boolean closeAppIfRunning) {
+
         ensureDeviceIsActive();
+        clearScreenDumpCaches();
+
         if (applicationString == null) {
             throw new TesterraRuntimeException("Application String cannot be null!");
         }
+
         Stopwatch started = Stopwatch.createStarted();
 
         applicationString = cutCloudPrefix(applicationString);
@@ -778,10 +842,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 ReportInfo.getRunInfo().addInfo("Browser:", "Safari");
             }
         }
+
+        clearScreenDumpCaches();
     }
 
     @Override
     public boolean isApplicationInstalled(String applicationString) {
+
         if (applicationString == null) {
             throw new TesterraRuntimeException("Application String cannot be null!");
         }
@@ -792,6 +859,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void setGpsLocation(String latitude, String longitude) {
+
         beforeLog("Setting GPS location to " + latitude + " lat, " + longitude + " long.", true);
         seeTestClient().setLocation(latitude, longitude);
         afterLog("Set GPS location to " + latitude + " lat, " + longitude + " long.", true);
@@ -799,6 +867,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void clearGpsLocation() {
+
         beforeLog("Clearing GPS location.", true);
         seeTestClient().clearLocation();
         afterLog("Cleared GPS location.", true);
@@ -806,11 +875,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public Client seeTestClient() {
+
         return seeTestClient;
     }
 
     @Override
     public void startVideoRecord() {
+
         ensureDeviceIsActive();
         LOGGER.info("Starting video record.");
         try {
@@ -822,6 +893,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public String stopVideoRecord() {
+
         ensureDeviceIsActive();
         LOGGER.info("Stopping video record.");
         try {
@@ -837,9 +909,11 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void shakeDevice() {
+
         ensureDeviceIsActive();
         beforeLog("Shaking device.", true);
         seeTestClient().shake();
+        clearScreenDumpCaches();
         afterLog("Shaked device", true);
     }
 
@@ -850,6 +924,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void setNetWorkConditionsProfile(String netWorkConditionsProfile) {
+
         ensureDeviceIsActive();
         seeTestClient().setNetworkConditions(netWorkConditionsProfile);
     }
@@ -865,6 +940,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void addRecoveryListener(LocatorType locatorType, String xPath, MobileListener listener) {
+
         seeTestClient().addMobileListener(locatorType.name(), xPath, listener);
     }
 
@@ -876,8 +952,10 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void type(String textToType) {
+
         beforeLog("Typing \"" + textToType + "\" on keyboard.", true);
         seeTestClient().sendText(textToType);
+        clearScreenDumpCaches();
         afterLog("Typed \"" + textToType + "\" on keyboard.", true);
     }
 
@@ -888,6 +966,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public void uninstallAllApps(String regexMatchingPackageName) {
+
         try {
             String installedApplications = seeTestClient().getInstalledApplications();
             String[] applications = installedApplications.replace("\n", "").split(";");
@@ -912,24 +991,28 @@ public abstract class BaseMobileDriver implements MobileDriver {
      */
     @Override
     public String getCurrentlyRunningApplication() {
+
         return seeTestClient().getCurrentApplicationName();
     }
 
     @Override
     @Deprecated
     public void report(String message) {
+
         report(message, false, true);
     }
 
     @Override
     @Deprecated
     public void report(String message, boolean takeScreenshot) {
+
         report(message, takeScreenshot, true);
     }
 
     @Override
     @Deprecated
     public void report(String message, boolean takeScreenshot, boolean status) {
+
         LOGGER.info("reporting: " + reporting + "  " + message);
         if (reporting) {
             if (takeScreenshot) {
@@ -947,6 +1030,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     @Deprecated
     public void report(String message, String imagePath, boolean status) {
+
         if (reporting) {
             seeTestClient().setShowReport(true);
             seeTestClient().report(imagePath, message, status);
@@ -957,6 +1041,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     @Deprecated
     public void setReporting(boolean reporting) {
+
         this.reporting = reporting;
     }
 
@@ -1024,10 +1109,10 @@ public abstract class BaseMobileDriver implements MobileDriver {
      * Stitch set of screenshots together.
      *
      * @param screens List of screenshots to stitch.
-     *
      * @return Path of new stitched screenshot.
      */
     private Path stitchScreenshots(List<Path> screens) throws IOException {
+
         if (screens.size() == 1) {
             return screens.get(0);
         }
@@ -1062,6 +1147,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void releaseAllDevices() {
+
         if (monitoring && appMonitor != null) {
             try {
                 appMonitor.createReportTab();
@@ -1080,11 +1166,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public void disableScreenshots(boolean disable) {
+
         this.screenshotsDisabled = disable;
     }
 
     @Override
     public void closeSystemPopUps() {
+
         if (activeDevice != null && activeDevice.getOperatingSystem() == MobileOperatingSystem.IOS) {
             disableScreenshots(true);
             try {
@@ -1126,6 +1214,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
     @Override
     public boolean resetWlanOfActiveDevice() {
+
         boolean success = false;
         Exception thrownException = null;
         try {
@@ -1147,6 +1236,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private boolean resetIosWifi() {
+
         closeApplication("com.apple.Preferences");
         launchApplication("com.apple.Preferences");
         NativeMobileGuiElement wifiButton = new NativeMobileGuiElement(By.xPath(".//*[@text='WLAN']"));
@@ -1174,6 +1264,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     private boolean resetAndroidWifi() {
+
         String packageName = "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity";
 
         if (!this.seeTestClient().getInstalledApplications().contains("mdc.app.android")) {
@@ -1209,6 +1300,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     public void publishScreenshotToReport(File screenshotFile, File visualDumpFile) {
+
         Screenshot screenshot = publishScreenshotToMethodContext(screenshotFile, visualDumpFile);
         TestStepController.addScreenshotsToCurrentAction(screenshot, null);
     }
