@@ -313,7 +313,7 @@ public class DeviceCheck {
         } catch (DeviceNotAvailableException e) {
             deviceCheckResult.addError(DeviceCheckError.DEVICE_NOT_AVAILABLE);
             deviceAvailable = false;
-        } catch (TesterraRuntimeException xetaRuntimeException) {
+        } catch (TesterraRuntimeException testerraRunTimeException) {
             deviceCheckResult.addError(DeviceCheckError.APP_NOT_STARTED);
             deviceAppStarted = false;
         } finally {

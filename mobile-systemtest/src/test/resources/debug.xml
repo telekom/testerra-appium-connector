@@ -3,8 +3,7 @@
 <suite name="local_debug" verbose="10" configfailurepolicy="continue" parallel="false">
 
     <listeners>
-        <listener class-name="eu.tsystems.mms.tic.testframework.report.XetaListener"/>
-        <listener class-name="eu.tsystems.mms.tic.testframework.mobile.driver.MobileTestListener"/>
+        <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>
     </listeners>
 
     <test name="Debug" parallel="false">

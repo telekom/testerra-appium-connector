@@ -72,7 +72,7 @@ public abstract class TestAppHomePage extends AbstractTestAppPage {
     // new NativeMobileGuiElement(By.id("action_camera")).click();
     // return (T) new TestAppCameraPage();
     // } else {
-    // throw new XetaRuntimeException("Could not launch requested activity.");
+    // throw new TesterraRuntimeException("Could not launch requested activity.");
     // }
     // }
 
