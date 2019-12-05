@@ -25,6 +25,7 @@ public class TextMobileGuiElement extends AbstractMobileGuiElement {
      * @param elementLocatorString the element locator string
      */
     public TextMobileGuiElement(String elementLocatorString) {
+
         this(elementLocatorString, 0);
     }
 
@@ -35,6 +36,7 @@ public class TextMobileGuiElement extends AbstractMobileGuiElement {
      * @param index                the element index
      */
     public TextMobileGuiElement(String elementLocatorString, int index) {
+
         MobileLocator mobileLocator = new MobileLocator(LocatorType.TEXT.toString(), elementLocatorString, index);
         mobileDriver = MobileDriverManager.getMobileDriver();
         setStrategy(new BasicMobileGuiElementStrategy(mobileDriver, mobileLocator, statusContainer));

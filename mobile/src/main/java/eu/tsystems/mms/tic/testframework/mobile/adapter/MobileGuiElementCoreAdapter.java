@@ -9,7 +9,7 @@ import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDum
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.WebMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
-import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
+import eu.tsystems.mms.tic.testframework.pageobjects.location.Locate;
 import eu.tsystems.mms.tic.testframework.utils.StringUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.By;
@@ -39,31 +39,37 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
     private static final Logger LOGGER = LoggerFactory.getLogger(MobileGuiElementCoreAdapter.class);
 
     public MobileGuiElementCoreAdapter(WebMobileGuiElement mobileGuiElement) {
+
         super(mobileGuiElement);
     }
 
     @Override
     public WebElement getWebElement() {
+
         return new MobileWebElementAdapter(webMobileGuiElement);
     }
 
     @Override
     public By getBy() {
+
         throw new NotSupportedException("getBy() is not supported for MobileGuiElement.");
     }
 
     @Override
     public void scrollToElement() {
+
         scrollToElement(0);
     }
 
     @Override
     public void scrollToElement(int yOffset) {
+
         final Point location = webMobileGuiElement.getLocation();
         final int x = location.getX();
         final int y = location.getY() - yOffset;
         LOGGER.trace("Scrolling into view: " + x + ", " + y);
         webMobileGuiElement.getMobileDriver().seeTestClient().hybridRunJavascript("", 0, "scroll(" + x + ", " + y + ")");
+        webMobileGuiElement.getMobileDriver().clearScreenDumpCaches();
 
         // not sufficient - we might need to scroll upwards
         // webMobileGuiElement.swipeWhileNotFound(Direction.DOWN.toString(), 100, 1000, 0, 5, false);
@@ -71,31 +77,37 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public void select() {
+
         webMobileGuiElement.click();
     }
 
     @Override
     public void deselect() {
+
         webMobileGuiElement.click();
     }
 
     @Override
     public void type(String text) {
+
         webMobileGuiElement.sendText(text);
     }
 
     @Override
     public void clickJS() {
+
         webMobileGuiElement.click();
     }
 
     @Override
     public void clickAbsolute() {
+
         webMobileGuiElement.click();
     }
 
     @Override
     public void mouseOverAbsolute2Axis() {
+
         LOGGER.warn("Mouse over not possible on mobile system.");
     }
 
@@ -121,36 +133,43 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public GuiElement getSubElement(By by) {
+
         return getSubElement(Locate.by(by));
     }
 
     @Override
     public WebElement findElement(By byLocator) {
+
         throw new NotSupportedException("Should be implemented later");
     }
 
     @Override
     public Rectangle getRect() {
+
         throw new NotSupportedException("getRect() not supported by " + MobileGuiElementCoreAdapter.class.getSimpleName());
     }
 
     @Override
     public void mouseOver() {
+
         LOGGER.warn("Mouse over not possible on mobile system.");
     }
 
     @Override
     public void mouseOverJS() {
+
         LOGGER.warn("Mouse over not possible on mobile system.");
     }
 
     @Override
     public Select getSelectElement() {
+
         throw new NotSupportedException("Should be implemented later");
     }
 
     @Override
     public List<String> getTextsFromChildren() {
+
         MobileLocator locator = webMobileGuiElement.getLocator();
         String xPath = locator.locator + "/*";
         MobileLocator childrenLocator = new MobileLocator("irrelevant", xPath, 0);
@@ -192,16 +211,19 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public void doubleClick() {
+
         throw new NotSupportedException("Should be implemented later");
     }
 
     @Override
     public void highlight() {
+
         LOGGER.warn("highlight not implemented on mobile system.");
     }
 
     @Override
     public void swipe(int offsetX, int offSetY) {
+
         if (offsetX != 0 && offSetY != 0) {
             LOGGER.warn("Swipe was called for WebMobileGuiElement with a diagonal offset. This is not supported. Will only swipe the x offset!");
         }
@@ -211,41 +233,49 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public int getLengthOfValueAfterSendKeys(String textToInput) {
+
         throw new NotSupportedException("Should be implemented later");
     }
 
     @Override
     public int getNumberOfFoundElements() {
+
         return webMobileGuiElement.getNumberOfElements();
     }
 
     @Override
     public void rightClick() {
+
         LOGGER.warn("rightClick not implemented on mobile system.");
     }
 
     @Override
     public void rightClickJS() {
+
         LOGGER.warn("rightClickJS not implemented on mobile system.");
     }
 
     @Override
     public void doubleClickJS() {
+
         LOGGER.warn("doubleClickJS not implemented on mobile system.");
     }
 
     @Override
     public File takeScreenshot() {
+
         return webMobileGuiElement.takeScreenshot();
     }
 
     @Override
     public boolean isPresent() {
+
         return webMobileGuiElement.isPresent();
     }
 
     @Override
     public boolean anyFollowingTextNodeContains(String contains) {
+
         throw new NotSupportedException("Should be implemented later");
     }
 
@@ -274,17 +304,20 @@ public class MobileGuiElementCoreAdapter extends MobileWebElementAdapter impleme
 
     @Override
     public boolean isDisplayedFromWebElement() {
+
         return webMobileGuiElement.isDisplayed();
     }
 
     @Override
     public boolean isSelectable() {
+
         Map<String, String> properties = webMobileGuiElement.getProperties();
         return properties.containsKey("selected");
     }
 
     @Override
     public String toString() {
+
         return webMobileGuiElement.toString();
     }
 }

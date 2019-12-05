@@ -12,7 +12,6 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.DeviceReservationPolicy;
 import eu.tsystems.mms.tic.testframework.mobile.driver.Direction;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
-import eu.tsystems.mms.tic.testframework.mobile.driver.ScreenDumpType;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.MobilePage;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ImageMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.MobileLocator;
@@ -113,6 +112,7 @@ public class Tests {
 
     @Test
     public void testAAA() {
+
         System.setProperty(MobileProperties.MOBILE_DEVICE_RESERVATION_POLICY, DeviceReservationPolicy.UNRESERVED_OR_OWN_DEVICES.toString());
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         TestDevice testDevice = TestDevice.builder().name("Samsung Galaxy S6 (Nr 2)").operatingSystem(MobileOperatingSystem.ANDROID).build();
@@ -125,6 +125,7 @@ public class Tests {
 
     @Test
     public void testT00() throws Exception {
+
         ScreenDump screenDump = new ScreenDump("<?xml version=\"1.0\" encoding=\"UTF-8\"?><node onScreen=\"false\" top=\"false\" visible=\"false\">\n" +
                 "   <UIWindow alpha=\"1\" backgroundColor=\"0xFFFFFF\" class=\"UIWindow\" enabled=\"false\" height=\"1334\" hidden=\"false\" knownSuperClass=\"UIWindow\" onScreen=\"true\" tag=\"0\" top=\"false\" visible=\"true\" width=\"750\" x=\"0\" y=\"0\">\n" +
                 "      <UILayoutContainerView alpha=\"1\" class=\"UILayoutContainerView\" enabled=\"true\" height=\"1334\" hidden=\"false\" onScreen=\"true\" tag=\"0\" top=\"false\" visible=\"true\" width=\"750\" x=\"0\" y=\"0\">\n" +
@@ -371,6 +372,7 @@ public class Tests {
 
     @Test
     public void testT88() throws Exception {
+
         TestDevice build = TestDevice.builder("Apple iPhone 7 (Nr 3)", MobileOperatingSystem.IOS).build();
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.reserveDevice(build);
@@ -378,6 +380,7 @@ public class Tests {
         mobileDriver.seeTestClient().addMobileListener("NATIVE", "xpath=//*[@accessibilityLabel='Einstellungen']", new MobileListener() {
             @Override
             public boolean recover(String s, String s1) {
+
                 System.out.println("Mobile Listener triggered: " + s + "  -  " + s1);
                 return true;
             }
@@ -399,6 +402,7 @@ public class Tests {
      */
     @Test
     public void T01_Screenshot_Quality() throws Exception {
+
         System.setProperty(MobileProperties.MOBILE_SERVER_HOST, "https://mobiledevicecloud.t-systems-mms.eu");
         System.setProperty(MobileProperties.MOBILE_GRID_USER, "xeta_systemtest"); //
         System.setProperty(MobileProperties.MOBILE_GRID_PASSWORD, "Mas4test#"); // pAL7bKB
@@ -436,6 +440,7 @@ public class Tests {
 
     @Test
     public void testName() throws Exception {
+
         DocumentBuilderFactory documentBuilderFactory = DocumentBuilderFactory.newInstance();
         DocumentBuilder documentBuilder = documentBuilderFactory.newDocumentBuilder();
         Document parse = documentBuilder.parse(new InputSource(new StringReader(visualDum)));
@@ -453,7 +458,7 @@ public class Tests {
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         mobileDriver.switchToDevice(pf28_xperia_z);
         NativeMobileGuiElement nativeMobileGuiElement = new NativeMobileGuiElement("xpath=//*[@id='loginButton']");
-        String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
+        String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDump.Type.NATIVE_INSTRUMENTED.toString());
     }
 
     @Test
@@ -472,11 +477,13 @@ public class Tests {
 
     @Test
     public void testApi() {
+
         Applications applications = Cloud.applications().getApplications();
     }
 
     @Test
     public void testName1() throws Exception {
+
         DeviceStore deviceStore = new DeviceStore();
         deviceStore.addDevice(TestDevice.builder().name("iPhone").operatingSystem(MobileOperatingSystem.IOS).build());
         System.setProperty(MobileProperties.MOBILE_DEVICE_FILTER, "name=ipsahone");

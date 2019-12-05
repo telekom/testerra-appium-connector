@@ -27,11 +27,13 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
     }
 
     public NativeMobileGuiElement(By by) {
+
         this(by.toString());
     }
 
     @Deprecated
     public NativeMobileGuiElement(By by, MobilePage mobilePage) {
+
         this(by.toString(), mobilePage);
     }
 
@@ -41,6 +43,7 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
      * @param elementLocatorString the element locator string
      */
     public NativeMobileGuiElement(String elementLocatorString) {
+
         this(elementLocatorString, null);
     }
 
@@ -52,6 +55,7 @@ public class NativeMobileGuiElement extends AbstractMobileGuiElement {
      */
     @Deprecated
     public NativeMobileGuiElement(String elementLocatorString, MobilePage mobilePage) {
+
         if (StringUtils.isStringEmpty(elementLocatorString)) {
             throw new TesterraSystemException("Locator for GuiElement is empty, this is not allowed.");
         } else if (!elementLocatorString.startsWith("xpath=")) {
