@@ -4,7 +4,6 @@
 
     <listeners>
         <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>
-
     </listeners>
 
     <test name="regression" parallel="false">

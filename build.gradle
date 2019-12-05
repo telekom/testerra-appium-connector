@@ -3,9 +3,9 @@ plugins {
 }
 
 repositories {
-//    mavenLocal()
+    mavenLocal()
     mavenCentral()
-//    jcenter()
+    jcenter()
 }
 
 allprojects {
@@ -59,7 +59,6 @@ ext {
     apache_commons = [
             'commons-io:commons-io:2.4',
             'commons-net:commons-net:3.2',
-            'commons-lang:commons-lang:2.6',
             'org.apache.commons:commons-lang3:3.5',
             'org.apache.commons:commons-csv:1.5'
     ]
@@ -76,8 +75,6 @@ ext {
     testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
     testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
 
-    testerraMobile = testerraGroup + ":mobile:" + testerraVersion
-
     powermockVersion = '1.7.3'
     powermock = [
             'org.powermock:powermock-module-testng:' + powermockVersion,
@@ -88,21 +85,24 @@ ext {
 }
 
 subprojects {
+
     apply plugin: 'java'
     sourceCompatibility = 1.8
 
     repositories {
-        mavenLocal()
 
-        maven { url "http://repo.maven.apache.org/maven2" }
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+
         /**
          * You should setup your gradle artifactory repository first
          * @see {https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
          */
-        jcenter()
         maven { url "http://repo.experitest.com:8010/Maven2" }
     }
 }
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }

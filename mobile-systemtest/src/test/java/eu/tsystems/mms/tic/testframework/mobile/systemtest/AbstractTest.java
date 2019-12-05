@@ -90,7 +90,7 @@ public abstract class AbstractTest {
      */
     protected String getDeviceFilterProperty() {
 
-        return "xeta.mobile.system.test.device.filter." + mobileOperatingSystem.lowerCaseName();
+        return "tt.mobile.system.test.device.filter." + mobileOperatingSystem.lowerCaseName();
     }
 
     protected void launchTestApp() {
@@ -117,7 +117,7 @@ public abstract class AbstractTest {
     protected String getAppName() {
 
         return PropertyManager
-                .getProperty("xeta.mobile.system.test.app.name." + mobileOperatingSystem.lowerCaseName());
+                .getProperty("tt.mobile.system.test.app.name." + mobileOperatingSystem.lowerCaseName());
     }
 
     protected void assertTestAppIsRunning() {

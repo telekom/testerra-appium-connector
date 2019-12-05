@@ -1,18 +1,13 @@
-plugins {
-    id 'java'
+description = 'Testerra Mobile Systemtest'
+
+dependencies {
+    compile group: 'eu.tsystems.mms.tic.testerra', name: 'mobile', version: '1-SNAPSHOT'
+    testCompile group: 'junit', name: 'junit', version: '4.12'
 }
 
-description = 'Testerra Mobile Systemtest'
-group 'org.example'
-version '1.0-SNAPSHOT'
-
-sourceCompatibility = 1.8
-
 repositories {
+    mavenLocal()
     mavenCentral()
 }
 
-dependencies {
-    compile testerraMobile
-    testCompile group: 'junit', name: 'junit', version: '4.12'
-}
+test.useTestNG()

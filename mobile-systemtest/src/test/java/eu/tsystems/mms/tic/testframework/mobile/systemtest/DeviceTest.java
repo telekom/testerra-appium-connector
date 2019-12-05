@@ -43,7 +43,7 @@ public abstract class DeviceTest extends AbstractTest {
 
     public DeviceTest(MobileOperatingSystem operatingSystem) {
 
-        System.setProperty("xeta.mobile.device.filter", "os.type=" + operatingSystem.getClassPrefix());
+        System.setProperty("tt.mobile.device.filter", "os.type=" + operatingSystem.getClassPrefix());
     }
 
     @BeforeGroups(groups = {Groups.SINGLE})
@@ -196,7 +196,7 @@ public abstract class DeviceTest extends AbstractTest {
             deviceStore.addDevice(t);
         }
 
-        System.setProperty("xeta.mobile.device.filter", "manufacturer=Apple&os.type=iOS");
+        System.setProperty("tt.mobile.device.filter", "manufacturer=Apple&os.type=iOS");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByAnd = applyAndFilter(testDevices);
         Collections.sort(filteredDevices, comparator);
@@ -205,7 +205,7 @@ public abstract class DeviceTest extends AbstractTest {
         Assert.assertEquals(filteredDevices, filteredDevicesByAnd, "List of filtered devices by DeviceStore function does not match AndFilter.");
 
 
-        System.setProperty("xeta.mobile.device.filter", "os.version=6.0.1|9.0");
+        System.setProperty("tt.mobile.device.filter", "os.version=6.0.1|9.0");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByOr = applyOrFilter(testDevices);
 
@@ -214,7 +214,7 @@ public abstract class DeviceTest extends AbstractTest {
 
         Assert.assertEquals(filteredDevices, filteredDevicesByOr, "List of filtered devices by DeviceStore function does not match OrFilter.");
 
-        System.setProperty("xeta.mobile.device.filter", "name=nexus_5");
+        System.setProperty("tt.mobile.device.filter", "name=nexus_5");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByName = applyDeviceNameFilter(testDevices);
 
@@ -223,7 +223,7 @@ public abstract class DeviceTest extends AbstractTest {
 
         Assert.assertEquals(filteredDevices, filteredDevicesByName, "List of filtered devices by DeviceStore function does not match DeviceNameFilter.");
 
-        System.setProperty("xeta.mobile.device.filter", "manufacturer=Apple");
+        System.setProperty("tt.mobile.device.filter", "manufacturer=Apple");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByManufacturer = applyManufacturerFilter(testDevices);
 
@@ -232,7 +232,7 @@ public abstract class DeviceTest extends AbstractTest {
 
         Assert.assertEquals(filteredDevices, filteredDevicesByManufacturer, "List of filtered devices by DeviceStore function does not match ManufacturerFilter.");
 
-        System.setProperty("xeta.mobile.device.filter", "os.version=9.0");
+        System.setProperty("tt.mobile.device.filter", "os.version=9.0");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByOSVersion = applyOSVersionFilter(testDevices);
 
@@ -241,7 +241,7 @@ public abstract class DeviceTest extends AbstractTest {
 
         Assert.assertEquals(filteredDevices, filteredDevicesByOSVersion, "List of filtered devices by DeviceStore function does not match OSVersionFilter.");
 
-        System.setProperty("xeta.mobile.device.filter", "os.type=iOS");
+        System.setProperty("tt.mobile.device.filter", "os.type=iOS");
         filteredDevices = deviceStore.getTestDevicesByFilter(MobileProperties.MOBILE_DEVICE_FILTER);
         List<TestDevice> filteredDevicesByOS = applyOSFilter(testDevices);
 
