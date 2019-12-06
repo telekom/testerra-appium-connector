@@ -10,4 +10,17 @@ repositories {
     mavenCentral()
 }
 
-test.useTestNG()
+task smokeTests(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/Smoketest.xml'
+//        includeGroups 'smoke'
+        configFailurePolicy "continue"
+    }
+}
+
+task systemTests(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/Systemtest.xml'
+        configFailurePolicy "continue"
+    }
+}

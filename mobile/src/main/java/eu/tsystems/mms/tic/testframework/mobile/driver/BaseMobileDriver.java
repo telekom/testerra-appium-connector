@@ -389,6 +389,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         //TODO When this is fixed, with the next seetest version, please remove it again.
         seeTestClient().setProperty("screen.quality", PropertyManager.getProperty(MobileProperties.MOBILE_SCREENSHOT_QUALITY, DefaultParameter.MOBILE_SCREENSHOT_QUALITY));
         final String capturePath = seeTestClient().capture();
+
         if (capturePath == null) {
             LOGGER.warn("SeeTestClient: Capture Path was empty. No screenshot saved.");
             return null;
@@ -1055,19 +1056,20 @@ public abstract class BaseMobileDriver implements MobileDriver {
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
 
-        final boolean stitchScreenshotsProperty = PropertyManager
-                .getBooleanProperty(MobileProperties.MOBILE_STITCH_SCREENS, DefaultParameter.MOBILE_STITCH_SCREENS);
+        final boolean stitchScreenshotsProperty = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_STITCH_SCREENS, DefaultParameter.MOBILE_STITCH_SCREENS);
         return getScreenshotAs(target, stitchScreenshotsProperty);
     }
 
-    public <X> X getScreenshotAs(OutputType<X> target, boolean stichScreens) throws WebDriverException {
+    public <X> X getScreenshotAs(OutputType<X> target, boolean stitchScreenshots) throws WebDriverException {
 
         if (target != OutputType.FILE) {
             throw new TesterraRuntimeException("Mobile Driver only allows files as getScreenShotAs return type.");
         }
+
         String isBottom;
         List<Path> screens = new LinkedList<>();
         int maxTries = 30;
+
         do {
             Path tempFile;
             try {
@@ -1076,12 +1078,18 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 LOGGER.error("Failed to create temp. file for screenshots.", e);
                 return null;
             }
-            String pathFromSeeTest = seeTestClient().capture();
-            boolean transferred = MobileDriverUtils.getRemoteOrLocalFile(this, pathFromSeeTest, tempFile);
+
+            final String pathFromSeeTest = seeTestClient().capture();
+            final boolean transferred = MobileDriverUtils.getRemoteOrLocalFile(this, pathFromSeeTest, tempFile);
+
             if (transferred) {
                 screens.add(tempFile);
             }
-            if (stichScreens) {
+
+            // TODO erku - switch on application name... :)... only stitch on web view.
+            String currentApplicationName = this.seeTestClient().getCurrentApplicationName();
+
+            if (stitchScreenshots) {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.clientHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
@@ -1092,6 +1100,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             } else {
                 break;
             }
+
         } while ("false".equals(isBottom) && maxTries > 0);
         Path out;
         try {

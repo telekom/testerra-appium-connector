@@ -7,6 +7,7 @@ import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.transfer.ThrowablePackedResponse;
 import eu.tsystems.mms.tic.testframework.utils.Timer;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
@@ -22,7 +23,7 @@ import java.lang.reflect.Method;
 /**
  * Created by ncbe on 02.09.2016.
  */
-public abstract class AbstractTest {
+public abstract class AbstractTest extends TesterraTest {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(AbstractTest.class);
     //    static final String MOBILE_TEST_PAGE = "http://q4deumsy0tt.mms-dresden.de";
@@ -37,7 +38,6 @@ public abstract class AbstractTest {
 
     @BeforeClass(alwaysRun = true)
     public void prepareDevice() throws DeviceNotAvailableException {
-
 
         //TODO how to achive that in testerra?
         //        TestRunConfiguration.getInstance().addTestFramework("xeta-mobile");
@@ -57,8 +57,9 @@ public abstract class AbstractTest {
         //        ClientListener.addGoogleLanguagePopupRemoverListener();
         TestDevice device = mobileDriver.reserveDeviceByFilter(getDeviceFilterProperty());
         mobileDriver.switchToDevice(device);
-        mobileDriver.installApplication(getAppName());
 
+
+        // mobileDriver.installApplication(getAppName()); // TODO erku no app installed
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -93,7 +94,8 @@ public abstract class AbstractTest {
      */
     protected String getDeviceFilterProperty() {
 
-        return "tt.mobile.system.test.device.filter." + mobileOperatingSystem.lowerCaseName();
+        return "tt.mobile.device.filter";
+        //return "tt.mobile.system.test.device.filter." + mobileOperatingSystem.lowerCaseName();
     }
 
     protected void launchTestApp() {
