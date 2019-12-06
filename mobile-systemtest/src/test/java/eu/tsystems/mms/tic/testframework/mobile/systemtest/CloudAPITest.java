@@ -166,8 +166,7 @@ public class CloudAPITest {
     private void setConnectionProperties(boolean projectUser) {
 
         String suffix = projectUser ? ".perProject" : "";
-        CloudApiClient.getConnectionProperties()
-                .setPassword(PropertyManager.getProperty("cloudapi.password" + suffix, null));
+        CloudApiClient.getConnectionProperties().setPassword(PropertyManager.getProperty("cloudapi.password" + suffix, null));
         CloudApiClient.getConnectionProperties().setUser(PropertyManager.getProperty("cloudapi.user" + suffix, null));
     }
 }

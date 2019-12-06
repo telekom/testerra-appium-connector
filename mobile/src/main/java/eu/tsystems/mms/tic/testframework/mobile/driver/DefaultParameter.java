@@ -12,7 +12,7 @@ public interface DefaultParameter {
     int MOBILE_MONITORING_INTERVAL = 500;
     boolean MOBILE_MONITORING_ACTIVE = false;
     String MOBILE_REPORT_TYPE = "xml";
-    boolean MOBILE_STITCH_SCREENS = true;
+    boolean MOBILE_STITCH_SCREENS = false;
     boolean MOBILE_REPORT_TAKE_SCREENSHOTS = true;
     boolean MOBILE_REPORT_TAKE_ONLY_BEFORE_SCREENSHOTS = false;
     boolean MOBILE_REPORT_SAVE_VIDEO_TEST_FAILED = false;

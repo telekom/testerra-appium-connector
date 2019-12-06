@@ -41,20 +41,19 @@ public class MobileDriverTest extends AbstractTest {
         }
 
         if (m.getAnnotation(NeedsAppInstalled.class) != null) {
-            installTestApp();
+            // installTestApp(); TODO erku No app installed
         }
     }
 
-    @Test
+    @Test(enabled = false) // TODO erku No app installed
     @NeedsAppInstalled
     public void testT02N_MobileDriver_isApplicationInstalled() throws DeviceNotAvailableException {
 
-        boolean applicationInstalled = MobileDriverManager.getMobileDriver()
-                .isApplicationInstalled("not.existing.app");
+        boolean applicationInstalled = MobileDriverManager.getMobileDriver().isApplicationInstalled("not.existing.app");
         Assert.assertFalse(applicationInstalled, "Application is installed");
     }
 
-    @Test(groups = Groups.SMOKE)
+    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku No app installed)
     @NeedsAppInstalled
     public void testT03_MobileDriver_launchApplication() throws DeviceNotAvailableException {
 
@@ -62,7 +61,7 @@ public class MobileDriverTest extends AbstractTest {
         assertTestAppIsRunning();
     }
 
-    @Test
+    @Test(enabled = false) // TODO erku No app installed)
     @NeedsAppInstalled
     public void testT04_MobileDriver_closeApplication() throws DeviceNotAvailableException {
 
@@ -72,7 +71,7 @@ public class MobileDriverTest extends AbstractTest {
         assertTestAppIsNotRunning();
     }
 
-    @Test
+    @Test(enabled = false) // TODO erku No app installed)
     @NeedsAppInstalled
     public void testT05_MobileDriver_uninstall() throws DeviceNotAvailableException {
 
@@ -82,7 +81,7 @@ public class MobileDriverTest extends AbstractTest {
         assertTestAppIsNotInstalled();
     }
 
-    @Test
+    @Test()
     public void testT06_MobileDriver_reserveDevice() throws DeviceNotAvailableException {
 
         MobileDriver driver = MobileDriverManager.getMobileDriver();
@@ -141,8 +140,7 @@ public class MobileDriverTest extends AbstractTest {
         driver.releaseAllDevices();
         TimerUtils.sleep(20000);
         TestDevice deviceByFilter = driver.reserveDeviceByFilter();
-        Assert.assertEquals(driver.getActiveDevice().getOperatingSystem(),
-                driver.getActiveDevice().getOperatingSystem());
+        Assert.assertEquals(driver.getActiveDevice().getOperatingSystem(), driver.getActiveDevice().getOperatingSystem());
         driver.releaseDevice(deviceByFilter);
         TimerUtils.sleep(20000);
     }
@@ -179,31 +177,34 @@ public class MobileDriverTest extends AbstractTest {
     public void testT14_MobileDriver_takeScreenshot() {
 
         final MobileDriver driver = MobileDriverManager.getMobileDriver();
-        File screenshotFile = driver.getScreenshotAs(OutputType.FILE);
-        //        String screenshotPath = driver.prepareNewScreenshot();
-        //        screenshotPath = screenshotPath.replace("../../screenshots/", ReportUtils.getScreenshotsPath());
-        Assert.assertTrue(screenshotFile.exists(), "Screen could not be recorded.");
+        final File screenshotFile = driver.getScreenshotAs(OutputType.FILE);
+        Assert.assertTrue(screenshotFile.exists(), "Screen captured.");
+
+        final File screenshotFile2 = driver.prepareNewScreenshot();
+        Assert.assertTrue(screenshotFile2.exists(), "Screen captured.");
     }
 
-    @Test(groups = Groups.SMOKE)
+    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku No app installed
+    @NeedsAppInstalled
     public void testT15_MobileDriver_changeOrientation() {
 
         MobileDriver driver = MobileDriverManager.getMobileDriver();
         launchTestApp();
+
         if (driver.getScreenResolution().getWidth() < driver.getScreenResolution().getHeight()) {
             driver.changeOrientationTo(ViewOrientation.LANDSCAPE);
-            Assert.assertTrue(driver.getScreenResolution().getWidth() > driver.getScreenResolution().getHeight(),
-                    "Screen could not be rotated.");
+            Assert.assertTrue(driver.getScreenResolution().getWidth() > driver.getScreenResolution().getHeight(), "Screen could not be rotated.");
         } else {
             driver.changeOrientationTo(ViewOrientation.PORTRAIT);
-            Assert.assertTrue(driver.getScreenResolution().getHeight() > driver.getScreenResolution().getWidth(),
-                    "Screen could not be rotated.");
+            Assert.assertTrue(driver.getScreenResolution().getHeight() > driver.getScreenResolution().getWidth(), "Screen could not be rotated.");
         }
+
         driver.changeOrientationTo(ViewOrientation.PORTRAIT);
     }
 
     @Fails(description = "shake device not supported by most devices")
-    @Test
+    @Test(enabled = false) // TODO erku needs app
+    @NeedsAppInstalled
     public void testT16_MobileDriver_shakeDevice() {
 
         launchTestApp();
@@ -211,7 +212,8 @@ public class MobileDriverTest extends AbstractTest {
     }
 
     @Fails(ticketString = "MDC-128", validFor = "os.unter.test=ios")
-    @Test(groups = Groups.SMOKE)
+    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku
+    @NeedsAppInstalled
     public void testT18_MobileDriver_pressHomeButton() {
 
         launchTestApp();

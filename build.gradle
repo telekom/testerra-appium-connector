@@ -91,15 +91,15 @@ subprojects {
 
     repositories {
 
+        /**
+         * You should setup your gradle artifactory repository first
+         * @see{https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
+         */
+
         mavenLocal()
         mavenCentral()
         jcenter()
-
-        /**
-         * You should setup your gradle artifactory repository first
-         * @see {https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
-         */
-        maven { url "http://repo.experitest.com:8010/Maven2" }
+        maven { url "https://cloud.experitest.com/repo/" }
     }
 }
 

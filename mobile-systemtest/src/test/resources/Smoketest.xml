@@ -3,7 +3,7 @@
 <suite name="SmokeTest" verbose="10" configfailurepolicy="continue" parallel="false">
 
     <listeners>
-        <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>
+        <!--        <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>-->
     </listeners>
 
     <test name="regression" parallel="false">
@@ -22,7 +22,7 @@
     </test>
     <test name="regression api" parallel="false">
         <classes>
-            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.CloudAPITest"/>
+            <!--            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.CloudAPITest"/>-->
         </classes>
     </test>
 </suite>

@@ -154,7 +154,8 @@ public interface MobileDriver extends TakesScreenshot {
     @Override
     <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 
-    <X> X getScreenshotAs(OutputType<X> target, boolean stichScreenshots) throws WebDriverException;
+    @Deprecated
+    <X> X getScreenshotAs(OutputType<X> target, boolean stitchScreenshots) throws WebDriverException;
 
     void releaseAllDevices();
 
