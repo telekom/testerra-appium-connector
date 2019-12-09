@@ -820,7 +820,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         } catch (InternalException e) {
             if (PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SKIP_LAUNCH_ERROR,
                     DefaultParameter.MOBILE_SKIP_LAUNCH_ERROR) &&
-                    e.getMessage().startsWith("Exception caught while executing launch: Failed to navigate to")) {
+                    e.getMessage().startsWith("Exception caught while executing launch: Failed to ")) {
                 LOGGER.warn("Ignoring launch exception:", e);
             } else {
                 afterLog("Failed to launch app", true);
