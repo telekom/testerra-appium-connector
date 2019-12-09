@@ -174,8 +174,7 @@ public class NativeMobileGuiElementTest extends AbstractTest {
     @Test(groups = {Groups.SMOKE})
     public void testT33_NativeMobileGuiElement_longClick() {
 
-        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         TestAppContextMenuPage contextMenuPage = contextPage.doLongClick();
         contextPage = contextMenuPage.clickDelete();
         contextPage.doClickReset();

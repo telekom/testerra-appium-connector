@@ -5,8 +5,10 @@ import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceNotAvailableException;
 import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.mobile.driver.LocatorType;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
+import eu.tsystems.mms.tic.testframework.mobile.utils.ClientListener;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.transfer.ThrowablePackedResponse;
 import eu.tsystems.mms.tic.testframework.utils.Timer;
@@ -51,14 +53,15 @@ public abstract class AbstractTest extends TesterraTest {
         //            }
         //        });
 
-        //        ClientListener.addGoogleChromePromoDialogListener();
-        //        ClientListener.addGoogleChromeTermsAndConditionsListener();
-        //        ClientListener.addGoogleLanguagePopupRemoverListener();
+        ClientListener.addGoogleChromePromoDialogListener();
+        ClientListener.addGoogleChromeTermsAndConditionsListener();
+        ClientListener.addGoogleLanguagePopupRemoverListener();
+
 
         TestDevice device = mobileDriver.reserveDeviceByFilter(this.getDeviceFilterProperty());
         mobileDriver.switchToDevice(device);
 
-        mobileDriver.installApplication(getAppName()); // TODO erku no app installed
+        mobileDriver.installApplication(getAppName());
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -106,7 +109,25 @@ public abstract class AbstractTest extends TesterraTest {
         String appName = getAppName();
         MobileDriver driver = MobileDriverManager.getMobileDriver();
         if (driver.isApplicationInstalled(appName)) {
-            driver.launchApplication(appName, true, false);
+
+            try {
+                driver.launchApplication(appName, true, false);
+            } catch (Exception e) {
+
+                if (mobileOperatingSystem.equals(MobileOperatingSystem.ANDROID)) {
+
+                    final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+
+                    if (mobileDriver.seeTestClient().isElementFound(LocatorType.NATIVE.toString(), "xpath=//*[@id='permissions_message']", 0)) {
+                        mobileDriver.seeTestClient().click(LocatorType.NATIVE.toString(), "//*[@id='continue_button']", 0, 1);
+                    }
+
+                    if (mobileDriver.seeTestClient().isElementFound(LocatorType.NATIVE.toString(), "//*[@id='alertTitle' and text()='MDC App']", 0)) {
+                        mobileDriver.seeTestClient().click(LocatorType.NATIVE.toString(), "//*[@text='Ok']", 0, 1);
+                    }
+                }
+            }
+
         } else {
             throw new TesterraRuntimeException("App war nicht installiert beim starten");
         }
