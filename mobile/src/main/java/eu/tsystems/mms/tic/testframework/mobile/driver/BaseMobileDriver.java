@@ -1086,10 +1086,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
                 screens.add(tempFile);
             }
 
-            // TODO erku - switch on application name... :)... only stitch on web view.
-            String currentApplicationName = this.seeTestClient().getCurrentApplicationName();
+            if (stitchScreenshots && isChromeOrSafariOpen()) {
 
-            if (stitchScreenshots) {
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.scrollTop;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.clientHeight;");
                 this.seeTestClient().hybridRunJavascript("", 0, "var result = document.documentElement.offsetHeight;");
@@ -1112,6 +1110,13 @@ public abstract class BaseMobileDriver implements MobileDriver {
         //        TODO remove since unnecessary with testerra?
         //        TestStepController.addScreenshotsToCurrentAction(out.toAbsolutePath().toString(), null);
         return (X) out.toFile();
+    }
+
+    private boolean isChromeOrSafariOpen() {
+
+        final String currentApplicationName = this.seeTestClient().getCurrentApplicationName();
+
+        return currentApplicationName.toLowerCase().equals("com.apple.mobilesafari");
     }
 
     /**
