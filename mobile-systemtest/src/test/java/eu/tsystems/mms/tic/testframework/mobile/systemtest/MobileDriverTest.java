@@ -41,7 +41,7 @@ public class MobileDriverTest extends AbstractTest {
         }
 
         if (m.getAnnotation(NeedsAppInstalled.class) != null) {
-            // installTestApp(); TODO erku No app installed
+            installTestApp(); //TODO erku No app installed
         }
     }
 
@@ -53,7 +53,7 @@ public class MobileDriverTest extends AbstractTest {
         Assert.assertFalse(applicationInstalled, "Application is installed");
     }
 
-    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku No app installed)
+    @Test(groups = Groups.SMOKE)
     @NeedsAppInstalled
     public void testT03_MobileDriver_launchApplication() throws DeviceNotAvailableException {
 
@@ -184,7 +184,7 @@ public class MobileDriverTest extends AbstractTest {
         Assert.assertTrue(screenshotFile2.exists(), "Screen captured.");
     }
 
-    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku No app installed
+    @Test(groups = Groups.SMOKE)
     @NeedsAppInstalled
     public void testT15_MobileDriver_changeOrientation() {
 
@@ -212,7 +212,7 @@ public class MobileDriverTest extends AbstractTest {
     }
 
     @Fails(ticketString = "MDC-128", validFor = "os.unter.test=ios")
-    @Test(groups = Groups.SMOKE, enabled = false) // TODO erku
+    @Test(groups = Groups.SMOKE) // TODO erku
     @NeedsAppInstalled
     public void testT18_MobileDriver_pressHomeButton() {
 

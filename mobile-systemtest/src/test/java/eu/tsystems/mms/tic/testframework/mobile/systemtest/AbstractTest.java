@@ -39,27 +39,26 @@ public abstract class AbstractTest extends TesterraTest {
     @BeforeClass(alwaysRun = true)
     public void prepareDevice() throws DeviceNotAvailableException {
 
-        //TODO how to achive that in testerra?
-        //        TestRunConfiguration.getInstance().addTestFramework("xeta-mobile");
-        mobileOperatingSystem = this.getOsByScope();
+        mobileOperatingSystem = this.getOsByTtBrowser();
         MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+
         //        mobileDriver.registerDeviceTest(new DeviceOnlineTest("www.google.de", "xpath=//*[@id='hplogo']"));
         //        mobileDriver.registerDeviceTest(new DeviceTest("App can be installed") {
-        //            @Override
         //            public boolean doDeviceTest(MobileDriver mobileDriver, TestDevice testDevice) throws Exception {
+        //
         //                installTestApp();
         //                return mobileDriver.isApplicationInstalled(getAppName());
         //            }
         //        });
-        //        mobileDriver.reserveDeviceByFilter(getDeviceFilterProperty());
+
         //        ClientListener.addGoogleChromePromoDialogListener();
         //        ClientListener.addGoogleChromeTermsAndConditionsListener();
         //        ClientListener.addGoogleLanguagePopupRemoverListener();
-        TestDevice device = mobileDriver.reserveDeviceByFilter(getDeviceFilterProperty());
+
+        TestDevice device = mobileDriver.reserveDeviceByFilter(this.getDeviceFilterProperty());
         mobileDriver.switchToDevice(device);
 
-
-        // mobileDriver.installApplication(getAppName()); // TODO erku no app installed
+        mobileDriver.installApplication(getAppName()); // TODO erku no app installed
     }
 
     @BeforeMethod(alwaysRun = true)
@@ -78,15 +77,19 @@ public abstract class AbstractTest extends TesterraTest {
         TimerUtils.sleep(20000); //TODO why?
     }
 
-    private MobileOperatingSystem getOsByScope() {
+    private MobileOperatingSystem getOsByTtBrowser() {
 
-        //        String scopeProperty = PropertyManager.getProperty("scope");
-        //        if (scopeProperty == null || scopeProperty.equalsIgnoreCase("int")) {
-        //            return MobileOperatingSystem.IOS;
-        //        } else {
-        //            return MobileOperatingSystem.ANDROID;
-        //        }
-        return MobileOperatingSystem.IOS;
+        final String property = PropertyManager.getProperty("tt.browser");
+
+        if (property == null) {
+            throw new RuntimeException("Please set property tt.browser");
+        }
+
+        if (property.equals(MobileOperatingSystem.IOS.getAssociatedBrowser())) {
+            return MobileOperatingSystem.IOS;
+        }
+
+        return MobileOperatingSystem.ANDROID;
     }
 
     /**
@@ -105,9 +108,8 @@ public abstract class AbstractTest extends TesterraTest {
         if (driver.isApplicationInstalled(appName)) {
             driver.launchApplication(appName, true, false);
         } else {
-            throw new TesterraRuntimeException("App war nichst installiert beim starten");
+            throw new TesterraRuntimeException("App war nicht installiert beim starten");
         }
-
     }
 
     protected void installTestApp() {
