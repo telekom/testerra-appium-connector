@@ -139,24 +139,25 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
     @Test(groups = {Groups.SMOKE})
     public void testT40_NativeMobileGuiElement_getProperty() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
+
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
-        String date = pickDatePage.getDate();
+
+        TestAppDatePickerPage testAppDatePickerPage = pickDatePage.setDate(dateString);
+        final String date = testAppDatePickerPage.getDate();
+
         if (mobileOperatingSystem == MobileOperatingSystem.IOS) {
-            Assert.assertTrue(date.contains("2012-12-12"), "Could not verify date property.");
+            Assert.assertTrue(date.contains("2012-12-12"), "Could verify date property.");
         } else {
-            Assert.assertEquals(date, dateString, "Could not verify date property.");
+            Assert.assertTrue(date.contains("2012/12/12"), "Could verify date property.");
         }
     }
 
     @Test(groups = {Groups.DEBUG})
     public void testT40N1_NativeMobileGuiElement_getInvalidProperty() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         Assert.assertThrows(ElementNotFoundException.class, () -> pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.GET_PROPERTY, ""));
     }
