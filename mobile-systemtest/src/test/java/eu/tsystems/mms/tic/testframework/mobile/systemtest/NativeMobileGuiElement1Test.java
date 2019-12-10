@@ -8,7 +8,6 @@ import eu.tsystems.mms.tic.testframework.mobile.device.MobileOperatingSystem;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.NativeMobileGuiElement;
 import eu.tsystems.mms.tic.testframework.mobile.systemtest.data.Groups;
 import eu.tsystems.mms.tic.testframework.mobile.systemtest.pages.testapp.AbstractTestAppPage;
-import eu.tsystems.mms.tic.testframework.mobile.systemtest.pages.testapp.IosTestAppContextPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemtest.pages.testapp.TestAppContextMenuPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemtest.pages.testapp.TestAppContextPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemtest.pages.testapp.TestAppDatePickerPage;
@@ -51,16 +50,14 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
     @Test
     public void testT34_NativeMobileGuiElement_isDisplayed() {
 
-        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         Assert.assertTrue(contextPage.isListEntryIsDisplayed("Control"), "Entry is displayed.");
     }
 
     @Test(groups = {Groups.SMOKE})
     public void testT34N_NativeMobileGuiElement_isDisplayed() {
 
-        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         TestAppContextMenuPage menuPage = contextPage.doLongClick();
         contextPage = menuPage.clickDelete();
         Assert.assertTrue(!(contextPage.isListEntryIsDisplayed("Control")), "Entry is not displayed.");
@@ -69,16 +66,14 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
     @Test(groups = {Groups.SMOKE})
     public void testT35_NativeMobileGuiElement_isPresent() {
 
-        TestAppContextPage testAppContextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage testAppContextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         Assert.assertTrue(testAppContextPage.isListEntryIsPresent("Control"), "Entry is present.");
     }
 
     @Test
     public void testT35N_NativeMobileGuiElement_isPresent() {
 
-        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         TestAppContextMenuPage menuPage = contextPage.doLongClick();
         contextPage = menuPage.clickDelete();
         Assert.assertTrue(!(contextPage.isListEntryIsPresent("Control")), "Entry is not present.");
@@ -144,22 +139,14 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
 
-        TestAppDatePickerPage testAppDatePickerPage = pickDatePage.setDate(dateString);
-        final String date = testAppDatePickerPage.getDate();
+        datePickerPage = pickDatePage.setDate(dateString);
+        final String date = datePickerPage.getDate();
 
         if (mobileOperatingSystem == MobileOperatingSystem.IOS) {
             Assert.assertTrue(date.contains("2012-12-12"), "Could verify date property.");
         } else {
             Assert.assertTrue(date.contains("2012/12/12"), "Could verify date property.");
         }
-    }
-
-    @Test(groups = {Groups.DEBUG})
-    public void testT40N1_NativeMobileGuiElement_getInvalidProperty() {
-
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
-        TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
-        Assert.assertThrows(ElementNotFoundException.class, () -> pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.GET_PROPERTY, ""));
     }
 
     @Test(expectedExceptions = ElementNotFoundException.class)
@@ -172,81 +159,79 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
     @Test
     public void testT41_NativeMobileGuiElement_checkChangedPropertyValue() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
 
-        pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.ASSERT_PROPERTY_VALUE, dateString);
+        Assert.assertEquals(datePickerPage.getDate(), "2012/12/12");
     }
 
     @Test
     public void testT41N_NativeMobileGuiElement_checkChangedPropertyValue() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
-        Assert.assertThrows(AssertionError.class, () -> pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.ASSERT_PROPERTY_VALUE, "06.12.2013"));
+        datePickerPage = pickDatePage.setDate(dateString);
+
+        Assert.assertNotEquals(datePickerPage.getDate(), "2013/12/06");
     }
 
     @Test
     public void testT42_NativeMobileGuiElement_checkChangedPropertyContains() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
 
-        pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.ASSERT_PROPERTY_CONTAINS, "12.12");
+        Assert.assertTrue(datePickerPage.getDate().contains("12/12"), "Date contains 12/12");
     }
 
     @Test
     public void testT42N_NativeMobileGuiElement_checkChangedPropertyContains() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
-        Assert.assertThrows(AssertionError.class, () -> pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.ASSERT_PROPERTY_CONTAINS, "11.12"));
+        datePickerPage = pickDatePage.setDate(dateString);
+
+        Assert.assertFalse(datePickerPage.getDate().contains("12/11"));
     }
 
     @Test
     public void testT43_NativeMobileGuiElement_checkWaitForChangedPropertyValue() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
+        pickDatePage = datePickerPage.pickDate();
 
-        Assert.assertTrue(pickDatePage.waitForCheckDatePropertyValue(dateString), "Date should be correct");
+        Assert.assertTrue(pickDatePage.waitForCheckDatePropertyValue("12.12.2012"), "Date should be correct");
     }
 
     @Test
     public void testT43N_NativeMobileGuiElement_checkWaitForChangedPropertyValue() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
+        pickDatePage = datePickerPage.pickDate();
 
-        Assert.assertTrue(!(pickDatePage.waitForCheckDatePropertyValue("06.03.2012")), "Date should not be correct");
+        Assert.assertFalse(pickDatePage.waitForCheckDatePropertyValue("06.03.2012"), "Date should not be correct");
     }
 
     @Test
     public void testT44_NativeMobileGuiElement_checkWaitForChangedPropertyContains() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
+        pickDatePage = datePickerPage.pickDate();
 
         Assert.assertTrue(pickDatePage.waitForCheckDatePropertyContains("12.12"), "Date should be correct");
     }
@@ -258,17 +243,17 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
                 .goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         final String dateString = "12.12.2012";
-        pickDatePage.setDateProperty(dateString);
+        datePickerPage = pickDatePage.setDate(dateString);
+        pickDatePage = datePickerPage.pickDate();
 
-        Assert.assertTrue(!(pickDatePage.waitForCheckDatePropertyContains("11.12")), "Date should not be correct");
+        Assert.assertFalse(pickDatePage.waitForCheckDatePropertyContains("11.12"), "Date should not be correct");
     }
 
     @Fails(description = "IOS App needs a fix.", validFor = "os.unter.test=ios")
     @Test
     public void testT45_NativeMobileGuiElement_listSelect() {
 
-        TestAppContextPage appContextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
+        TestAppContextPage appContextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
         final String textToSelect = "Remote";
         appContextPage.doListSelectAndClick(textToSelect);
         Assert.assertEquals(appContextPage.doGetClickedItems()[0], textToSelect, "List item has been clicked.");
@@ -277,15 +262,10 @@ public class NativeMobileGuiElement1Test extends AbstractTest {
     @Test
     public void testT46_NativeMobileGuiElement_scrollToListEntry() {
 
-        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppContextPage.class);
-        final String entryText;
-        if (contextPage instanceof IosTestAppContextPage) {
-            entryText = "Pixel";
-        } else {
-            entryText = "Multitasking";
-        }
-        Assert.assertTrue(!(contextPage.isListEntryIsDisplayed(entryText)), "Entry is displayed.");
+        TestAppContextPage contextPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppContextPage.class);
+        final String entryText = "Pixel";
+
+        Assert.assertFalse(contextPage.isListEntryIsDisplayed(entryText), "Entry is displayed.");
         contextPage.scrollToListEntry(entryText);
         Assert.assertTrue(contextPage.isListEntryIsDisplayed(entryText), "Entry is displayed.");
     }

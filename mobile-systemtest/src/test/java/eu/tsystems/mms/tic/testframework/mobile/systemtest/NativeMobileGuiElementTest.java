@@ -104,16 +104,14 @@ public class NativeMobileGuiElementTest extends AbstractTest {
     public void testT28_NativeMobileGuiElement_click_offset() {
 
         Client seeTestClient = MobileDriverManager.getMobileDriver().seeTestClient();
-        TestAppProgressPage progressPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppProgressPage.class);
+        TestAppProgressPage progressPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppProgressPage.class);
         progressPage.verifySeekBarProceeds(seeTestClient); // needs ios fix
     }
 
     @Test
     public void testT29_NativeMobileGuiElement_drag() {
 
-        TestAppDragnDropPage dragnDropPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDragnDropPage.class);
+        TestAppDragnDropPage dragnDropPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDragnDropPage.class);
         dragnDropPage.verifyDragnDrop();
     }
 
@@ -127,8 +125,7 @@ public class NativeMobileGuiElementTest extends AbstractTest {
     @Test
     public void testT30_NativeMobileGuiElement_setProperty_date() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
         datePickerPage = pickDatePage.setDate("04.04.2015");
         Assert.assertTrue(datePickerPage.getDate().equals("2015/4/4") || datePickerPage.getDate().equals("2015/04/04"),
@@ -138,10 +135,10 @@ public class NativeMobileGuiElementTest extends AbstractTest {
     @Test(expectedExceptions = InternalException.class)
     public void testT30N_NativeMobileGuiElement_setInvalidProperty() {
 
-        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class)
-                .goToActivity(TestAppDatePickerPage.class);
+        TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
-        pickDatePage.actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement.SET_PROPERTY, "04.04.2015");
+
+        pickDatePage.setDate("04.04.2015");
     }
 
     @Test

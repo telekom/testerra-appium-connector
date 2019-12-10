@@ -98,8 +98,7 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
     public Map<String, String> getProperties() {
 
         final ScreenDump screenDump = driver.getScreenDump(screenDumpType);
-        Map<String, String> attributes = screenDump.getAttributes(mobileLocator);
-        return attributes;
+        return screenDump.getAttributes(mobileLocator);
     }
 
     @Override
