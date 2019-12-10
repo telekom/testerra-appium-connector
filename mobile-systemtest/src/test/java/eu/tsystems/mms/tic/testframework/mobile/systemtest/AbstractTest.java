@@ -111,7 +111,7 @@ public abstract class AbstractTest extends TesterraTest {
         if (driver.isApplicationInstalled(appName)) {
 
             try {
-                driver.launchApplication(appName, true, false);
+                driver.launchApplication(appName, true, true);
             } catch (Exception e) {
 
                 if (mobileOperatingSystem.equals(MobileOperatingSystem.ANDROID)) {

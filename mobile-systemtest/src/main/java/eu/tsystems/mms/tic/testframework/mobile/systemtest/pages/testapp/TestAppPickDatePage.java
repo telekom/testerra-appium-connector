@@ -53,29 +53,5 @@ public abstract class TestAppPickDatePage extends AbstractTestAppPage {
         return datePicker.waitForPropertyContains("date", selectedDate);
     }
 
-    /**
-     * Performing an action on the datePicker GuiElement
-     *
-     * @param selectedDate Date string to check
-     */
-    public String actionOnDatePicker(TestAppEnumerations.methodsOnGuiElement action, String selectedDate) {
 
-        switch (action) {
-
-            case ASSERT_PROPERTY_VALUE:
-                datePicker.assertPropertyValue("date", selectedDate);
-                return null;
-            case ASSERT_PROPERTY_CONTAINS:
-                datePicker.assertPropertyContains("date", selectedDate);
-                return null;
-            case GET_PROPERTY:
-                return datePicker.getProperty("datee2");
-            case SET_PROPERTY:
-                datePicker.setProperty("datee2", selectedDate);
-                return null;
-            default:
-                throw new IllegalArgumentException("Action " + action + " not accepted for this method.");
-        }
-
-    }
 }
