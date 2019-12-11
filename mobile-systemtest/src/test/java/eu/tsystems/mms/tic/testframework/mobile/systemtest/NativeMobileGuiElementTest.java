@@ -138,7 +138,7 @@ public class NativeMobileGuiElementTest extends AbstractTest {
         TestAppDatePickerPage datePickerPage = PageFactory.getNew(TestAppHomePage.class).goToActivity(TestAppDatePickerPage.class);
         TestAppPickDatePage pickDatePage = datePickerPage.pickDate();
 
-        pickDatePage.setDate("04.04.2015");
+        pickDatePage.setDate("04.04.201511");
     }
 
     @Test
