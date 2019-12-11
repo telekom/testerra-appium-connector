@@ -16,9 +16,9 @@ import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.testng.Assert;
-import org.testng.annotations.AfterClass;
-import org.testng.annotations.BeforeClass;
+import org.testng.annotations.AfterSuite;
 import org.testng.annotations.BeforeMethod;
+import org.testng.annotations.BeforeSuite;
 
 import java.lang.reflect.Method;
 
@@ -38,7 +38,7 @@ public abstract class AbstractTest extends TesterraTest {
         PropertyManager.loadProperties("env/" + env + ".properties");
     }
 
-    @BeforeClass(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public void prepareDevice() throws DeviceNotAvailableException {
 
         mobileOperatingSystem = this.getOsByTtBrowser();
@@ -57,7 +57,6 @@ public abstract class AbstractTest extends TesterraTest {
         ClientListener.addGoogleChromeTermsAndConditionsListener();
         ClientListener.addGoogleLanguagePopupRemoverListener();
 
-
         TestDevice device = mobileDriver.reserveDeviceByFilter(this.getDeviceFilterProperty());
         mobileDriver.switchToDevice(device);
 
@@ -73,7 +72,7 @@ public abstract class AbstractTest extends TesterraTest {
     /**
      * Cleanup Test
      */
-    @AfterClass(alwaysRun = true)
+    @AfterSuite(alwaysRun = true)
     public void releaseDevice() {
 
         MobileDriverManager.releaseDriverFromThread();
