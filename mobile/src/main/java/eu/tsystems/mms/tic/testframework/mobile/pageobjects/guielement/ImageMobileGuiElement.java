@@ -25,15 +25,10 @@ public class ImageMobileGuiElement extends AbstractMobileGuiElement {
      * @param elementName the element name
      */
     public ImageMobileGuiElement(String elementName, String repositoryName) {
+
         MobileLocator mobileLocator = new MobileLocator(repositoryName, elementName, 0);
         mobileDriver = MobileDriverManager.getMobileDriver();
         setStrategy(new BasicMobileGuiElementStrategy(mobileDriver, mobileLocator, statusContainer));
-    }
-
-    @Override
-    public ImageMobileGuiElement setName(final String name) {
-
-        return (ImageMobileGuiElement) super.setName(name);
     }
 
 }

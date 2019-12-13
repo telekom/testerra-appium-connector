@@ -3,6 +3,7 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.mobile.MobileProperties;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.utils.FileUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -80,11 +81,13 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
      */
 
     public void setMonitoringActivated(boolean monitoringActivated) {
+
         this.monitoringActivated = monitoringActivated;
     }
 
     @Override
     public void onTestStart(ITestResult result) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
 
@@ -112,11 +115,13 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onTestSuccess(ITestResult result) {
+
         generateReport();
     }
 
     @Override
     public void onTestFailure(ITestResult result) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
 
@@ -125,7 +130,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
             mobileDriver.seeTestClient().report("Last Command: \n" + lastCommandResultMap.toString(), true);
 
             // also provide the screendump
-            String visualDump = mobileDriver.seeTestClient().getVisualDump(ScreenDumpType.NATIVE_INSTRUMENTED.toString());
+            String visualDump = mobileDriver.getScreenDump(ScreenDump.Type.NATIVE_INSTRUMENTED).getRawXmlString();
             mobileDriver.seeTestClient().report("Screen Dump: \n" + visualDump, true);
 
             Throwable throwable = result.getThrowable();
@@ -139,7 +144,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
                 mobileDriver.report("Screen on failure: " + throwable.toString(), true, false);
             } else {
                 mobileDriver.seeTestClient().report("Test failed because of a TestNG assertion, but the throwable of the result was " +
-                        "null. Check the Xeta Report!", false);
+                        "null. Check the Testerra Report!", false);
             }
         } catch (Exception e) {
             LOGGER.error("Exception on handling test failure.", e);
@@ -148,6 +153,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
     }
 
     private void generateReport() {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
             String pathToMobileReport = mobileDriver.seeTestClient().generateReport(false);
@@ -169,10 +175,12 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onStart(ITestContext context) {
+
     }
 
     @Override
     public void onFinish(ITestContext context) {
+
         try {
             MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
             if (monitoringActivated) {
@@ -195,6 +203,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onConfigurationFailure(ITestResult itr) {
+
         try {
             Throwable throwable = itr.getThrowable();
             if (throwable != null) {
@@ -212,6 +221,7 @@ public class SeeTestReportListener implements ITestListener, IConfigurationListe
 
     @Override
     public void onConfigurationSkip(ITestResult itr) {
+
         onConfigurationFailure(itr);
     }
 }

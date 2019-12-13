@@ -1,45 +1,42 @@
-
 description = 'Testerra Mobile'
 dependencies {
+
+    compile 'com.google.code.gson:gson:2.6.2'
+
     compile slf4j
     compile jersey_client
-    compile (testerraDriverUi) {
-//        exclude group: testerraGroup, module: 'core'
-    }
-    compile (testerraCoreInterop) {
-//        exclude group: testerraGroup, module: 'core'
-    }
+
+    compile(testerraDriverUi)
+    compile(testerraCoreInterop)
+
     compile seetest
     compile apache_commons
     compile jaxb
     compile activation
-    
+
     testCompile powermock
     testCompile mockito
 }
 
-
-test {
-    String[] s = [
-            'src/test/resources/MobileTestSuite.xml'
-    ]
-
-    def nr = findProperty("nr")
-    if (nr) {
-        setFailureCorridor(nr)
-        setCloseWindows()
-        setReportDir("report-testsundertest-0" + nr)
-        s = ['src/test/resources/testng/ReportTestsUnderTest' + nr + '.xml']
-    }
-
-    useTestNG() {
-        suites s
-        configFailurePolicy "continue"
-    }
-    options {
-        systemProperties(System.getProperties())
-    }
-}
-
-
-test.useTestNG()
+//test {
+//
+//    String[] s = [
+//            'src/test/resources/MobileTestSuite.xml'
+//    ]
+//
+//    def nr = findProperty("nr")
+//    if (nr) {
+//        setFailureCorridor(nr)
+//        setCloseWindows()
+//        setReportDir("report-testsundertest-0" + nr)
+//        s = ['src/test/resources/testng/ReportTestsUnderTest' + nr + '.xml']
+//    }
+//
+//    useTestNG() {
+//        suites s
+//        configFailurePolicy "continue"
+//    }
+//    options {
+//        systemProperties(System.getProperties())
+//    }
+//}
