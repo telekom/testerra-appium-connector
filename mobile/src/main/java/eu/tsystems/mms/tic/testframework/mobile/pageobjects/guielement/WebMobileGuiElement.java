@@ -25,6 +25,7 @@ public class WebMobileGuiElement extends AbstractMobileGuiElement {
      * @param elementLocatorString the element locator string
      */
     public WebMobileGuiElement(MobileDriver mobileDriver, String elementLocatorString) {
+
         MobileLocator mobileLocator = new MobileLocator(LocatorType.WEB.toString(), elementLocatorString, 0);
 
         if (mobileDriver == null) {
@@ -37,10 +38,12 @@ public class WebMobileGuiElement extends AbstractMobileGuiElement {
     }
 
     public WebMobileGuiElement(String elementLocatorString) {
+
         this(null, elementLocatorString);
     }
 
     public MobileDriver getMobileDriver() {
+
         return mobileDriver;
     }
 

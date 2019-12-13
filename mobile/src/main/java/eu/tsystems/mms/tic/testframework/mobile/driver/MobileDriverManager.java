@@ -55,16 +55,19 @@ public final class MobileDriverManager {
      */
     @Deprecated
     public static MobileDriver getMobileDriver(WebDriver webDriver) {
+
         return getMobileDriver();
     }
 
     public static void registerWebDriverFactory() {
+
         MobileGuiElementCoreFactory mobileGuiElementCoreFactory = new MobileGuiElementCoreFactory();
         GuiElement.registerGuiElementCoreFactory(mobileGuiElementCoreFactory, MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
         WebDriverManager.registerWebDriverFactory(new WebDriverAdapterFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }
 
     public static boolean hasActiveMobileDriver() {
+
         return DRIVERS.get() != null;
     }
 
@@ -73,10 +76,12 @@ public final class MobileDriverManager {
      */
     @Deprecated
     public static MobileDriver getMobileDriver(String sessionKey) {
+
         return getMobileDriver();
     }
 
     public static void main(String[] args) {
+
         MobileDriver mobileDriver = DRIVERS.get();
     }
 
@@ -86,14 +91,14 @@ public final class MobileDriverManager {
      * @return {@link MobileDriver}
      */
     public static MobileDriver getMobileDriver() {
+
         MobileDriver mobileDriver = DRIVERS.get();
         if (mobileDriver != null && mobileDriver.isValid()) {
             // A Driver was already instantiated
             LOGGER.debug("MobileDriver already instantiated, returning the existing instance.");
             return mobileDriver;
         } else {
-            String seeTestHost = PropertyManager.getProperty(MobileProperties.MOBILE_SERVER_HOST,
-                    DefaultParameter.MOBILE_SERVER_HOST).trim();
+            String seeTestHost = PropertyManager.getProperty(MobileProperties.MOBILE_SERVER_HOST, DefaultParameter.MOBILE_SERVER_HOST).trim();
             // create a new Driver instance with a seeTest Client underneath
             if (seeTestHost.startsWith("http")) {
                 GridClient gridClient;
@@ -126,6 +131,7 @@ public final class MobileDriverManager {
     }
 
     public static DeviceStore deviceStore() {
+
         return deviceStore;
     }
 
@@ -134,6 +140,7 @@ public final class MobileDriverManager {
      * Gives you a completely new MobileDriver instance on next getMobileDriver() call.
      */
     public static void releaseDriverFromThread() {
+
         MobileDriver mobileDriver = DRIVERS.get();
         if (mobileDriver != null) {
             mobileDriver.release();

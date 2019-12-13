@@ -23,12 +23,14 @@ import java.util.Map;
  * Strategy for all elements, that have access to a dump. Web, instrumented Native and not instrumented Native.
  */
 public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStrategy {
+
     private final ScreenDump.Type screenDumpType;
 
     private static final Logger LOGGER = LoggerFactory.getLogger(DumpBasedMobileGuiElementStrategy.class);
 
     public DumpBasedMobileGuiElementStrategy(MobileDriver mobileDriver, MobileLocator mobileLocator,
                                              StatusContainer statusContainer) {
+
         super(mobileDriver, mobileLocator, statusContainer);
         if (mobileLocator.zone.equals(LocatorType.NATIVE.toString())) {
             screenDumpType = ScreenDump.Type.NATIVE_INSTRUMENTED;
@@ -41,13 +43,15 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public String getSource() {
+
         final ScreenDump screenDump = driver.getScreenDump(screenDumpType);
         return screenDump.getContent(mobileLocator);
     }
 
     @Override
     public String getHint() {
-        Map<String, String> properties = getProperties();
+
+        Map<String, String> properties = this.getProperties();
         if (properties.containsKey("hint")) {
             return properties.get("hint");
         } else if (properties.containsKey("placeholder")) {
@@ -60,7 +64,8 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public Point getLocation() {
-        Map<String, String> properties = getProperties();
+
+        Map<String, String> properties = this.getProperties();
         try {
             Integer x = Integer.valueOf(properties.get("x"));
             Integer y = Integer.valueOf(properties.get("y"));
@@ -72,7 +77,8 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public String getProperty(String property) {
-        Map<String, String> attributes = getProperties();
+
+        Map<String, String> attributes = this.getProperties();
 
         if (attributes == null || !attributes.containsKey(property)) {
             try {
@@ -90,21 +96,24 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public Map<String, String> getProperties() {
+
         final ScreenDump screenDump = driver.getScreenDump(screenDumpType);
-        Map<String, String> attributes = screenDump.getAttributes(mobileLocator);
-        return attributes;
+        return screenDump.getAttributes(mobileLocator);
     }
 
     @Override
     public void setProperty(String property, String value) {
+
         driver.element().setProperty(mobileLocator, property, value);
     }
 
     @Override
     public boolean isDisplayed() {
-        boolean present = isPresent();
+
+        final boolean present = isPresent();
+
         if (present) {
-            Map<String, String> properties = getProperties();
+            final Map<String, String> properties = this.getProperties();
             if (properties.containsKey("width") && properties.containsKey("height")) {
                 String width = properties.get("width");
                 String height = properties.get("height");
@@ -122,14 +131,21 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public boolean isPresent() {
-        boolean elementFound = driver.element().isElementFound(mobileLocator);
+
+        //        final boolean elementFound = driver.element().isElementFound(mobileLocator);
+
+        // way much faster because of saved screendump instead of locating elements again and again
+        // speed is everything. I'am speed.
+        final boolean elementFound = this.getProperties() != null;
+        LOGGER.info(mobileLocator + " found: " + elementFound + ".");
         statusContainer.setStatus(mobileLocator + " found: " + elementFound + ".");
         return elementFound;
     }
 
     @Override
     public void assertMinimalSize(int width, int height) {
-        Map<String, String> properties = getProperties();
+
+        Map<String, String> properties = this.getProperties();
         String widthString = properties.get("width");
         String heightString = properties.get("height");
         int actualWidth = Integer.parseInt(widthString);
@@ -142,32 +158,38 @@ public class DumpBasedMobileGuiElementStrategy extends BasicMobileGuiElementStra
 
     @Override
     public void setText(String text) {
+
         driver.element().setProperty(mobileLocator, "text", text);
     }
 
     @Override
     public String getText() {
+
         return driver.element().getText(mobileLocator);
     }
 
     @Override
     public NativeMobileGuiElement getSubElement(String subElementLocator) {
+
         NativeMobileGuiElement subElement = new NativeMobileGuiElement(mobileLocator.locator + subElementLocator);
         return subElement;
     }
 
     @Override
     public void listPick(MobileGuiElement listEntry, boolean click) {
+
         throw new CommandNotSupportedException("listPick() is not supported for " + this.getClass().getSimpleName());
     }
 
     @Override
     public void listSelect(String elementLocator, int index, boolean click) {
+
         throw new CommandNotSupportedException("listSelect() is not supported for " + this.getClass().getSimpleName());
     }
 
     @Override
     public void scrollToListEntry(String elementLocator, int index) {
+
         throw new CommandNotSupportedException(
                 "scrollToListEntry() is not supported for " + this.getClass().getSimpleName());
     }
