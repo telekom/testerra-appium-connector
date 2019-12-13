@@ -5,6 +5,7 @@ import com.experitest.client.MobileListener;
 import eu.tsystems.mms.tic.testframework.mobile.device.DeviceLog;
 import eu.tsystems.mms.tic.testframework.mobile.device.TestDevice;
 import eu.tsystems.mms.tic.testframework.mobile.device.ViewOrientation;
+import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
@@ -22,6 +23,10 @@ public interface MobileDriver extends TakesScreenshot {
     void clearDeviceTests();
 
     void setFiringKeyEvents(boolean b);
+
+    void clearScreenDumpCaches();
+
+    ScreenDump getScreenDump(ScreenDump.Type type);
 
     boolean closeApplication(String packageName);
 
@@ -149,7 +154,8 @@ public interface MobileDriver extends TakesScreenshot {
     @Override
     <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException;
 
-    <X> X getScreenshotAs(OutputType<X> target, boolean stichScreenshots) throws WebDriverException;
+    @Deprecated
+    <X> X getScreenshotAs(OutputType<X> target, boolean stitchScreenshots) throws WebDriverException;
 
     void releaseAllDevices();
 

@@ -2,17 +2,12 @@ package eu.tsystems.mms.tic.testframework.mobile.pageobjects;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.concurrent.TimeUnit;
 
 import org.openqa.selenium.WebDriver;
-
-import com.google.common.base.Stopwatch;
-
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.mobilepageobject.MobileGuiElementCheckFieldAction;
 import eu.tsystems.mms.tic.testframework.mobile.mobilepageobject.SetContainingPageFieldAction;
-import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.pageobjects.AbstractPage;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.FieldAction;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.FieldWithActionConfig;
@@ -26,12 +21,6 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.SetNameFiel
 public class MobilePage extends AbstractPage {
 
     protected MobileDriver driver;
-
-    private ScreenDump nativeScreenDump;
-
-    private static final int MAX_CACHE_TIME_IN_SECONDS = 10;
-
-    private Stopwatch timeSinceCache;
 
     public MobilePage() {
         driver = MobileDriverManager.getMobileDriver();
@@ -65,26 +54,5 @@ public class MobilePage extends AbstractPage {
     @Override
     protected void checkPagePreparation() {
 
-    }
-
-    private void cacheScreenDump(ScreenDump.Type screenDumpType) {
-        nativeScreenDump = new ScreenDump(driver.seeTestClient().getVisualDump(screenDumpType.toString()));
-        timeSinceCache = Stopwatch.createStarted();
-    }
-
-    public void clearCachedMobileGuiElements() {
-        nativeScreenDump = null;
-    }
-
-    public ScreenDump getScreenDump(ScreenDump.Type screenDumpType) {
-        if (nativeScreenDump == null) {
-            cacheScreenDump(screenDumpType);
-        } else {
-            long elapsed = timeSinceCache.elapsed(TimeUnit.SECONDS);
-            if (elapsed > MAX_CACHE_TIME_IN_SECONDS) {
-                cacheScreenDump(screenDumpType);
-            }
-        }
-        return nativeScreenDump;
     }
 }

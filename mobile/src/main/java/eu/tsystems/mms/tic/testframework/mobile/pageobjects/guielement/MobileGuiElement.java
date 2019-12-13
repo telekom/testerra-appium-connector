@@ -6,7 +6,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.Checkable;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.Nameable;
 import org.openqa.selenium.Point;
 
-import java.awt.*;
+import java.awt.Color;
 import java.util.Map;
 
 /**
@@ -284,9 +284,10 @@ public interface MobileGuiElement extends Checkable, Nameable {
      * To be able to cache whole pages, the element needs to access the cache of the page it is defined in.
      * With this setter, the element gets to know which page that is.
      *
-     * @param mobilePage MobilePage this element is defined in.
+     * @param page MobilePage this element is defined in.
      */
-    void setContainingPage(MobilePage mobilePage);
+    @Deprecated
+    void setContainingPage(MobilePage page);
 
     /**
      * returns the text of the hint (android) or placeholder (ios)

@@ -16,15 +16,19 @@ import java.util.Map;
  * Created by rnhb on 22.12.2015.
  */
 public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStrategy {
+
     private static final Logger LOGGER = LoggerFactory.getLogger(NativeMobileGuiElementStrategy.class);
 
     public NativeMobileGuiElementStrategy(MobileDriver mobileDriver, MobileLocator mobileLocator, StatusContainer statusContainer) {
+
         super(mobileDriver, mobileLocator, statusContainer);
     }
 
     @Override
     public boolean isDisplayed() {
+
         Map<String, String> properties = getProperties();
+
         if (properties == null) {
             statusContainer.setStatus(mobileLocator + " is not present. ");
             return false;
@@ -40,6 +44,7 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
 
     @Override
     public boolean isPresent() {
+
         Map<String, String> properties = getProperties();
         if (properties == null) {
             statusContainer.setStatus(mobileLocator + " is not present. ");
@@ -51,6 +56,7 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
     }
 
     private boolean propertyHasValue(Map<String, String> properties, MobileGuiElementProperty property, String expectedValue) {
+
         if (properties.containsKey(property.toString())) {
             String propertyValue = properties.get(property.toString());
             return expectedValue.equals(propertyValue);
@@ -61,6 +67,7 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
 
     @Override
     public void setText(String text) {
+
         int length = driver.element().getText(mobileLocator).length();
         if (length > 0) {
             for (int i = 0; i < length; i++) {
@@ -72,6 +79,7 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
 
     @Override
     public String getText() {
+
         String text = driver.element().getText(mobileLocator);
         if (text == null || "".equals(text) || "null".equals(text)) {
             String propertyText = null;
@@ -102,6 +110,7 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
 
     @Override
     public void listPick(MobileGuiElement listEntry, boolean click) {
+
         MobileLocator listEntryLocator = listEntry.getLocator();
         driver.element().listPick(mobileLocator.zone, mobileLocator.locator, listEntryLocator.zone,
                 listEntryLocator.locator, listEntryLocator.index, click);
@@ -109,11 +118,15 @@ public class NativeMobileGuiElementStrategy extends DumpBasedMobileGuiElementStr
 
     @Override
     public void listSelect(String elementLocator, int index, boolean click) {
+
+        driver.clearScreenDumpCaches();
         driver.element().listSelect(mobileLocator.locator, elementLocator, mobileLocator.index, click);
     }
 
     @Override
     public void scrollToListEntry(String elementLocator, int index) {
+
+        driver.clearScreenDumpCaches();
         driver.element().listVisible(mobileLocator.locator, elementLocator, index);
     }
 }

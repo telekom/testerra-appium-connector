@@ -3,9 +3,9 @@ plugins {
 }
 
 repositories {
-//    mavenLocal()
+    mavenLocal()
     mavenCentral()
-//    jcenter()
+    jcenter()
 }
 
 allprojects {
@@ -38,6 +38,8 @@ allprojects {
 
 ext {
 
+    testerra_mobile = project(':mobile')
+
     activation = 'javax.activation:activation:1.1.1'
 
     seleniumVersion = '3.13.0'
@@ -59,7 +61,6 @@ ext {
     apache_commons = [
             'commons-io:commons-io:2.4',
             'commons-net:commons-net:3.2',
-            'commons-lang:commons-lang:2.6',
             'org.apache.commons:commons-lang3:3.5',
             'org.apache.commons:commons-csv:1.5'
     ]
@@ -86,21 +87,24 @@ ext {
 }
 
 subprojects {
+
     apply plugin: 'java'
     sourceCompatibility = 1.8
 
     repositories {
-        mavenLocal()
 
-        maven { url "http://repo.maven.apache.org/maven2" }
         /**
          * You should setup your gradle artifactory repository first
-         * @see {https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
+         * @see{https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
          */
+
+        mavenLocal()
+        mavenCentral()
         jcenter()
-        maven { url "http://repo.experitest.com:8010/Maven2" }
+        maven { url "https://cloud.experitest.com/repo/" }
     }
 }
+
 dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
 }
