@@ -48,6 +48,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
     private final boolean skipHttpsWarning = PropertyManager.getBooleanProperty(MobileProperties.MOBILE_SKIP_BROWSER_HTTPS_WARNING, DefaultParameter.MOBILE_SKIP_BROWSER_HTTPS_WARNING);
 
     public MobileWebDriverAdapter(MobileDriver mobileDriver) {
+
         this.mobileDriver = mobileDriver;
         navigationAdapter = new MobileWebDriverNavigationAdapter(mobileDriver);
         optionsAdapter = new MobileWebDriverOptionsAdapter(mobileDriver);
@@ -56,6 +57,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public void get(String urlToLaunch) {
+
         TestDevice activeDevice = mobileDriver.getActiveDevice();
         String browserName = PropertyManager.getProperty(TesterraProperties.BROWSER);
         if (browserName == null ||
@@ -80,6 +82,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
     }
 
     private void skipUntrustedWebsiteWarning() {
+
         TestDevice activeDevice = mobileDriver.getActiveDevice();
         if (activeDevice != null) {
             String browser = activeDevice.getOperatingSystem().getAssociatedBrowser();
@@ -123,7 +126,10 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getCurrentUrl() {
+
         String browser = PropertyManager.getProperty(TesterraProperties.BROWSER);
+        mobileDriver.clearScreenDumpCaches();
+
         switch (browser) {
             case MobileBrowsers.mobile_chrome: {
                 NativeMobileGuiElement urlInputField = new NativeMobileGuiElement("xpath=//*[@id='url_bar']");
@@ -148,11 +154,13 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getTitle() {
+
         return (String) executeScript("result=document.title");
     }
 
     @Override
     public List<WebElement> findElements(By by) {
+
         ScreenDump screenDump = mobileDriver.getScreenDump(ScreenDump.Type.WEB);
         String seeTestXpath = ByTranslator.translateForSeeTest(by);
         MobileLocator mobileLocator = new MobileLocator(LocatorType.WEB.toString(), seeTestXpath, 0);
@@ -172,6 +180,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public WebElement findElement(By by) {
+
         String translatedBy = ByTranslator.translateForSeeTest(by);
         MobileLocator mobileLocator = new MobileLocator(LocatorType.WEB.toString(), translatedBy, 0);
         if (mobileDriver.element().isElementFound(mobileLocator)) {
@@ -185,11 +194,13 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getPageSource() {
+
         return mobileDriver.getScreenDump(ScreenDump.Type.WEB).getRawXmlString();
     }
 
     @Override
     public void close() {
+
         try {
             String currentlyRunningApplication = mobileDriver.getCurrentlyRunningApplication();
             mobileDriver.closeApplication(currentlyRunningApplication);
@@ -210,6 +221,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public Set<String> getWindowHandles() {
+
         HashSet<String> strings = new HashSet<String>();
         strings.add(getWindowHandle());
         return strings;
@@ -217,26 +229,31 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public String getWindowHandle() {
+
         return "browser";
     }
 
     @Override
     public TargetLocator switchTo() {
+
         return targetLocatorAdapter;
     }
 
     @Override
     public Navigation navigate() {
+
         return navigationAdapter;
     }
 
     @Override
     public Options manage() {
+
         return optionsAdapter;
     }
 
     @Override
     public Object executeScript(String s, Object... objects) {
+
         if (s.startsWith("return")) {
             s = s.replace("return", "result=");
         }
@@ -254,6 +271,7 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
 
     @Override
     public Object executeAsyncScript(String s, Object... objects) {
+
         return executeScript(s, objects);
     }
 
@@ -264,10 +282,12 @@ public class MobileWebDriverAdapter implements WebDriver, JavascriptExecutor, Ta
      */
     @Override
     public <X> X getScreenshotAs(OutputType<X> target) throws WebDriverException {
+
         return this.mobileDriver.getScreenshotAs(target);
     }
 
     public boolean adaptsMobileDriver(MobileDriver mobileDriver) {
+
         return this.mobileDriver.equals(mobileDriver);
     }
 }

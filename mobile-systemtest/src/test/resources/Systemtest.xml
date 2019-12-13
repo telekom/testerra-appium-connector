@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+<suite name="Systemtest" verbose="10" configfailurepolicy="continue" parallel="false">
+
+    <listeners>
+        <!--        <listener class-name="eu.tsystems.mms.tic.testframework.report.TesterraListener"/>-->
+    </listeners>
+
+    <test name="regression" parallel="false">
+        <classes>
+            <!--            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.WebMobileGuiElementTest"/>-->
+            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.NativeMobileGuiElementTest"/>
+            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.NativeMobileGuiElement1Test"/>
+            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.NativeMobileGuiElement2Test"/>
+            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.MobileDriverTest"/>
+        </classes>
+    </test>
+
+    <test name="regression api" parallel="false">
+        <groups>
+            <run>
+                <include name="regression"/>
+            </run>
+        </groups>
+        <classes>
+            <!--            <class name="eu.tsystems.mms.tic.testframework.mobile.systemtest.CloudAPITest"/>-->
+        </classes>
+    </test>
+</suite>

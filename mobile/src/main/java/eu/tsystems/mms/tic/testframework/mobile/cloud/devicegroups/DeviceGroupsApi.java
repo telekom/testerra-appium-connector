@@ -21,6 +21,7 @@ public class DeviceGroupsApi extends AbstractCloudApi {
     private final String prefix = "device-groups/";
 
     public DeviceGroups getDeviceGroups() {
+
         JsonObject jsonObject = get(prefix);
         JsonObject data = jsonObject.getAsJsonObject("data");
 
@@ -35,19 +36,23 @@ public class DeviceGroupsApi extends AbstractCloudApi {
     }
 
     public Projects getProjectsOfDeviceGroup(DeviceGroup deviceGroup) {
+
         return getProjectsOfDeviceGroup(deviceGroup.id);
     }
 
     public Projects getProjectsOfDeviceGroup(String groupId) {
+
         JsonObject jsonObject = get(prefix + groupId + "/projects");
         return ProjectsApi.parseFromJson(jsonObject);
     }
 
     public MobileDevices getDevicesOfDeviceGroup(DeviceGroup deviceGroup) {
+
         return getDevicesOfDeviceGroup(deviceGroup.id);
     }
 
     public MobileDevices getDevicesOfDeviceGroup(String groupId) {
+
         JsonObject jsonObject = get(prefix + groupId + "/devices");
         Gson gson = new Gson();
         MobileDevices mobileDevices = new MobileDevices();
@@ -59,20 +64,24 @@ public class DeviceGroupsApi extends AbstractCloudApi {
     }
 
     public void addDevice(DeviceGroup deviceGroup, MobileDevice mobileDevice) {
+
         JsonObject jsonObject = put(prefix + deviceGroup.id + "/devices", "deviceIdList=" + mobileDevice.id);
     }
 
     public void addDevices(DeviceGroup deviceGroup, MobileDevices mobileDevices) {
+
         List<String> deviceIdList = mobileDevices.elements.values().stream().map(mobileDevice -> mobileDevice.id).collect(Collectors.toList());
         String deviceIds = deviceIdList.toString().replace("[", "").replace("]", "");
         JsonObject jsonObject = put(prefix + deviceGroup.id + "/devices", "deviceIdList=" + deviceIds);
     }
 
     public void removeDevice(DeviceGroup deviceGroup, MobileDevice mobileDevice) {
+
         JsonObject jsonObject = delete(prefix + deviceGroup.id + "/devices", "deviceIdList=" + mobileDevice.id);
     }
 
     public void removeDevices(DeviceGroup deviceGroup, MobileDevices mobileDevices) {
+
         List<String> deviceIdList = mobileDevices.elements.values().stream().map(mobileDevice -> mobileDevice.id).collect(Collectors.toList());
         String deviceIds = deviceIdList.toString().replace("[", "").replace("]", "");
         JsonObject jsonObject = delete(prefix + deviceGroup.id + "/devices", "deviceIdList=" + deviceIds);
