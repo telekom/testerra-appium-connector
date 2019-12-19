@@ -1,0 +1,88 @@
+= Create a new project
+
+== Mandatory steps
+
+=== Perquisites
+
+=== Testerra setup
+
+The Testerra mobile framework is deployed to https://bintray.com/bintray/jcenter.
+
+For Testerra mobile you need at least the following dependencies for Gradle or Maven.
+
+.build.gradle
+[source,gradle,role="primary"]
+----
+apply plugin: 'java'
+
+// Its highly recommended to normalize your project to Unicode
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = "UTF-8"
+
+dependencies {
+    compile 'eu.tsystems.mms.tic.testerra:mobile:1-SNAPSHOT'
+}
+----
+
+.pom.xml
+[source,xml,role="secondary"]
+----
+<project>
+    <properties>
+        <maven.compiler.source>1.8</maven.compiler.source>
+        <maven.compiler.target>1.8</maven.compiler.target>
+        <!-- Its highly recommended to normalize your project to Unicode -->
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>eu.tsystems.mms.tic.testerra</groupId>
+            <artifactId>mobile</artifactId>
+            <version>1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>
+----
+
+If you're already a user of the Testerra framework or you are familiar with it, you will now know about the following project structure.
+In some text paragraphs we will just link the Testerra framework documentation, because the setup is mostly the same as for mobile.
+
+=== Create project structure
+
+Your project structure should comply with these simple constraints.
+
+* `src/main` Contains all the code for your project like <<PageObjects>>, Models and language specific resources.
+* `src/test` Contains all test related code like your Tests, Test-Suites, Test-Data and Testerra related setup.
+
+=== Create test.properties
+
+Create a new file at `src/test/resources` with the name `test.properties`.
+
+.test.properties
+[source,properties,subs="attributes"]
+----
+#Set the browser
+{browser}=mobile_chrome
+
+#Set the start page
+{baseurl}=http://example.org
+
+#Set your experitest mobile cloud configuration
+tt.mobile.server.host=localhost
+tt.mobile.server.port=8889
+
+tt.mobile.grid.user=your_user_name
+tt.mobile.grid.password=your_password
+tt.mobile.grid.project=your_project
+
+#set your device filter
+tt.mobile.device.filter=os.type=android
+----
+
+TIP: All defined properties can be overwritten later by adding system parameters to your command +
+ (e.a `-D{browser}=mobile_safari`)
+
+All supported mobile browsers are listed HERE [PLEASE ADD LINK TODO]
+
+

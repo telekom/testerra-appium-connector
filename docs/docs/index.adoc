@@ -10,3 +10,11 @@ Testerra Mobile is mainly developed by the T-Systems Multimedia Solutions expert
 == Prerequisites
 
 To run mobile tests with Testerra Mobile an running instance of SeeTest Automation Client on your local machine or an remote instance is necessary.
+
+'''
+
+= Getting Started
+
+include::getting-started.adoc[leveloffset=+1]
+
+'''
