@@ -85,4 +85,165 @@ TIP: All defined properties can be overwritten later by adding system parameters
 
 All supported mobile browsers are listed HERE [PLEASE ADD LINK TODO]
 
+=== Create Page Class
+
+Now its time to create a first simple page class.
+It should be saved at path `src\main\java\<package>`.
+The following example represents the website example.org.
+It contains one possible link to click and one method to test.
+
+.New page class
+[source,java]
+----
+import eu.tsystems.mms.tic.testframework.pageobjects.Page;
+
+public class ExamplePage extends Page {
+
+    @Check
+    private GuiElement moreInformationLink = new GuiElement(driver, By.partialLinkText("More information"));
+
+    public ExamplePage(WebDriver driver) {
+        super(driver);
+    }
+
+    public void clickOnMoreInformation() {
+        moreInformationLink.click();
+    }
+}
+----
+
+[TIP]
+======
+The basic Page class added all the page object functionality of Testerra to your project.
+See <<PageObjects>> chapter for more details.
+
+The GuiElement describes the elements like links, buttons, etc. on your page.
+Learn more about GuiElements in <<GuiElements>>.
+======
+
+=== Create Test Class and Test Method
+
+Next create a simple test class with a test method.
+The test class needs to extend from `TesterraTest`.
+It should be located at path `src\test\java\<package>`.
+To stick to the example above, here is a very simple test class which navigates to exampe.org and clicks on the link defined on the example page.
+Again, probably imports must be made in IDE.
+
+.New test class
+[source,java]
+----
+public class ExampleTest extends TesterraTest {
+
+    @Test
+    public void testT01_My_first_test() {
+
+        WebDriver driver = WebDriverManager.getWebDriver();
+        ExamplePage examplePage = PageFactory.create(ExamplePage.class, driver);
+        examplePage.clickOnMoreInformation();
+    }
+}
+----
+
+NOTE: By extending from `TesterraTest` all runtime features are loaded automatically.
+
+=== Setup a test suite
+
+To customize the executing of your tests, you have to create a TestNG suite file `suite.xml` and locate it at `src/test/resources`
+
+.suite.xml
+[source,xml]
+----
+<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
+<suite name="Suite1" verbose="1" thread-count="10" configfailurepolicy="continue" parallel="false">
+    <test name="Test1" parallel="methods">
+        <classes>
+            <class name="ExampleTest"/>
+        </classes>
+    </test>
+</suite>
+----
+
+=== Setup test build target
+
+In order to get tests to work, you need to setup a build target `test` in your project.
+
+.build.gradle
+[source,gradle,role="primary"]
+----
+test {
+    useTestNG() {
+        suites file('src/test/resources/suite.xml')
+    }
+
+    testLogging {
+        outputs.upToDateWhen { false }
+        showStandardStreams = true
+    }
+
+    // Important: Forward all JVM properties like proxy settings to TestNG
+    options {
+        systemProperties(System.getProperties())
+    }
+
+    // basically execution returns "GREEN" (framework exits with exit code > 0 if there were failures)
+    ignoreFailures = true
+}
+----
+
+.pom.xml
+[source,xml,role="secondary"]
+----
+<project>
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-surefire-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                    <testFailureIgnore>true</testFailureIgnore>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <profiles>
+        <profile>
+            <id>mySuite</id>
+            <build>
+                <plugins>
+                    <plugin>
+                        <artifactId>maven-surefire-plugin</artifactId>
+                        <configuration>
+                            <skip>false</skip>
+                            <suiteXmlFiles>
+                                <suiteXmlFile>src/test/resources/suite.xml</suiteXmlFile>
+                            </suiteXmlFiles>
+                        </configuration>
+                    </plugin>
+                </plugins>
+            </build>
+        </profile>
+    </profiles>
+</project>
+----
+
+=== Run the tests
+
+Finally you are good to run your very first test by entering the following command:
+
+.Gradle
+[source,bash,role="primary"]
+----
+gradle test
+----
+
+.Maven
+[source,bash,role="secondary"]
+----
+mvn test
+----
+
+=== Testerra Report
+
+The Testerra test report is automatically generated and can be found at `<project>/testerra-report/index.html`.
 
