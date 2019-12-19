@@ -64,6 +64,7 @@ Create a new file at `src/test/resources` with the name `test.properties`.
 ----
 #Set the browser
 {browser}=mobile_chrome
+tt.browser.version=
 
 #Set the start page
 {baseurl}=http://example.org
@@ -240,7 +241,7 @@ gradle test
 .Maven
 [source,bash,role="secondary"]
 ----
-mvn test
+mvn test -PmySuite
 ----
 
 === Testerra Report
