@@ -127,7 +127,7 @@ Learn more about GuiElements in <<GuiElements>>.
 Next create a simple test class with a test method.
 The test class needs to extend from `TesterraTest`.
 It should be located at path `src\test\java\<package>`.
-To stick to the example above, here is a very simple test class which navigates to exampe.org and clicks on the link defined on the example page.
+To stick to the example above, here is a very simple test class which navigates to example.org and clicks on the link defined on the example page.
 Again, probably imports must be made in IDE.
 
 .New test class
@@ -135,10 +135,30 @@ Again, probably imports must be made in IDE.
 ----
 public class ExampleTest extends TesterraTest {
 
+  @BeforeSuite(alwaysRun = true)
+    public void setupMobileDriver() {
+
+        MobileDriver driver = MobileDriverManager.getMobileDriver();
+
+        if (driver.getActiveDevice() == null) {
+            driver.reserveDeviceByFilter();
+        }
+    }
+
+
+    @AfterSuite(alwaysRun = true)
+    public void teardownMobileDriver() {
+        MobileDriverManager.releaseDriverFromThread();
+    }
+
     @Test
     public void testT01_My_first_test() {
 
         WebDriver driver = WebDriverManager.getWebDriver();
+
+        // Call the base url, because "getMobileDriver" will just give you a session of the mobile
+        driver.get(PropertyManager.getProperty("tt.baseurl"));
+
         ExamplePage examplePage = PageFactory.create(ExamplePage.class, driver);
         examplePage.clickOnMoreInformation();
     }
