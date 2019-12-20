@@ -1,8 +1,18 @@
 = Create a new project
 
-== Mandatory steps
+include::properties/property-attributes.adoc[]
 
-=== Perquisites
+== System requirements
+
+* Testerra is based on Java.You need a JDK 8 or later.
+* Execute your tests with *Maven* or *Gradle*
+* You will need a connection to your ExperiTest Cloud (Self Hosted at your LAN or use an internet instance)
+** You will need a valid user and password
+** You will need a assigned project with assigned devices
+** For project and device assignments please contact the administrator of your ExperiTest Cloud Team
+* If you want to execute local tests, you will need the current SeeTest Client installed
+
+== Mandatory steps
 
 === Testerra setup
 
@@ -59,26 +69,28 @@ Your project structure should comply with these simple constraints.
 
 Create a new file at `src/test/resources` with the name `test.properties`.
 
+For simplicity in this example we will configure our environment based on an local execution with SeeTest Client.
+
 .test.properties
 [source,properties,subs="attributes"]
 ----
 #Set the browser
 {browser}=mobile_chrome
-tt.browser.version=
+{browser_version}=78
 
 #Set the start page
 {baseurl}=http://example.org
 
 #Set your experitest mobile cloud configuration
-tt.mobile.server.host=localhost
-tt.mobile.server.port=8889
+{mobile_server_host}=localhost
+{mobile_server_port}=8889
 
-tt.mobile.grid.user=your_user_name
-tt.mobile.grid.password=your_password
-tt.mobile.grid.project=your_project
+{mobile_grid_user}=your_user_name
+{mobile_grid_password}=your_password
+{mobile_grid_project}=your_project
 
-#set your device filter
-tt.mobile.device.filter=os.type=android
+#set your device filter - will filter for android devices only
+{mobile_device_filter}=os.type=android
 ----
 
 TIP: All defined properties can be overwritten later by adding system parameters to your command +

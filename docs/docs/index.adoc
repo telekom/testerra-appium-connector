@@ -18,3 +18,8 @@ To run mobile tests with Testerra Mobile an running instance of SeeTest Automati
 include::getting-started.adoc[leveloffset=+1]
 
 '''
+
+'''
+
+= Appendix
+include::properties.adoc[leveloffset=+1]
