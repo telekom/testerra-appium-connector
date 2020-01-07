@@ -106,7 +106,7 @@ Again, probably imports must be made in IDE.
 ----
 public class ExampleTest extends TesterraTest {
 
-  @BeforeSuite(alwaysRun = true)
+    @BeforeSuite(alwaysRun = true)
     public void setupMobileDriver() {
 
         MobileDriver driver = MobileDriverManager.getMobileDriver();
