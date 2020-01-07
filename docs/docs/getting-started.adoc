@@ -14,7 +14,7 @@ include::properties/property-attributes.adoc[]
 
 == Mandatory steps
 
-=== Testerra setup
+=== Testerra mobile setup
 
 The Testerra mobile framework is deployed to https://bintray.com/bintray/jcenter.
 
@@ -25,10 +25,6 @@ For Testerra mobile you need at least the following dependencies for Gradle or M
 ----
 apply plugin: 'java'
 
-// Its highly recommended to normalize your project to Unicode
-compileJava.options.encoding = 'UTF-8'
-compileTestJava.options.encoding = "UTF-8"
-
 dependencies {
     compile 'eu.tsystems.mms.tic.testerra:mobile:1-SNAPSHOT'
 }
@@ -38,13 +34,6 @@ dependencies {
 [source,xml,role="secondary"]
 ----
 <project>
-    <properties>
-        <maven.compiler.source>1.8</maven.compiler.source>
-        <maven.compiler.target>1.8</maven.compiler.target>
-        <!-- Its highly recommended to normalize your project to Unicode -->
-        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    </properties>
-
     <dependencies>
         <dependency>
             <groupId>eu.tsystems.mms.tic.testerra</groupId>
