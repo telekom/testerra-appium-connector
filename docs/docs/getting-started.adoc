@@ -4,7 +4,7 @@ include::properties/property-attributes.adoc[]
 
 == System requirements
 
-* Testerra is based on Java.You need a JDK 8 or later.
+* Testerra Mobile is based on Java.You need a JDK 8 or later.
 * Execute your tests with *Maven* or *Gradle*
 * You will need a connection to your ExperiTest Cloud (Self Hosted at your LAN or use an internet instance)
 ** You will need a valid user and password
@@ -55,19 +55,14 @@ dependencies {
 </project>
 ----
 
-If you're already a user of the Testerra framework or you are familiar with it, you will now know about the following project structure.
-In some text paragraphs we will just link the Testerra framework documentation, because the setup is mostly the same as for mobile.
+If you aren't already a user of the Testerra framework, please refer to the Testerra framework documentation to setup your initial project structure.
 
-=== Create project structure
+// TODO add link here!
 
-Your project structure should comply with these simple constraints.
+=== Customize test.properties
 
-* `src/main` Contains all the code for your project like <<PageObjects>>, Models and language specific resources.
-* `src/test` Contains all test related code like your Tests, Test-Suites, Test-Data and Testerra related setup.
-
-=== Create test.properties
-
-Create a new file at `src/test/resources` with the name `test.properties`.
+According to the Testerra framework documentation you setup a `test.properties` file.
+Now you have to append it with some mobile related test properties.
 
 For simplicity in this example we will configure our environment based on an local execution with SeeTest Client.
 
@@ -97,42 +92,6 @@ TIP: All defined properties can be overwritten later by adding system parameters
  (e.a `-D{browser}=mobile_safari`)
 
 All supported mobile browsers are listed HERE [PLEASE ADD LINK TODO]
-
-=== Create Page Class
-
-Now its time to create a first simple page class.
-It should be saved at path `src\main\java\<package>`.
-The following example represents the website example.org.
-It contains one possible link to click and one method to test.
-
-.New page class
-[source,java]
-----
-import eu.tsystems.mms.tic.testframework.pageobjects.Page;
-
-public class ExamplePage extends Page {
-
-    @Check
-    private GuiElement moreInformationLink = new GuiElement(driver, By.partialLinkText("More information"));
-
-    public ExamplePage(WebDriver driver) {
-        super(driver);
-    }
-
-    public void clickOnMoreInformation() {
-        moreInformationLink.click();
-    }
-}
-----
-
-[TIP]
-======
-The basic Page class added all the page object functionality of Testerra to your project.
-See <<PageObjects>> chapter for more details.
-
-The GuiElement describes the elements like links, buttons, etc. on your page.
-Learn more about GuiElements in <<GuiElements>>.
-======
 
 === Create Test Class and Test Method
 
@@ -179,104 +138,8 @@ public class ExampleTest extends TesterraTest {
 
 NOTE: By extending from `TesterraTest` all runtime features are loaded automatically.
 
-=== Setup a test suite
+=== Setup a test suite and execute
 
-To customize the executing of your tests, you have to create a TestNG suite file `suite.xml` and locate it at `src/test/resources`
+This part is equal to the Testerra framework, so please follow the instructions as documented in Testerra framework documentation.
 
-.suite.xml
-[source,xml]
-----
-<!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Suite1" verbose="1" thread-count="10" configfailurepolicy="continue" parallel="false">
-    <test name="Test1" parallel="methods">
-        <classes>
-            <class name="ExampleTest"/>
-        </classes>
-    </test>
-</suite>
-----
-
-=== Setup test build target
-
-In order to get tests to work, you need to setup a build target `test` in your project.
-
-.build.gradle
-[source,gradle,role="primary"]
-----
-test {
-    useTestNG() {
-        suites file('src/test/resources/suite.xml')
-    }
-
-    testLogging {
-        outputs.upToDateWhen { false }
-        showStandardStreams = true
-    }
-
-    // Important: Forward all JVM properties like proxy settings to TestNG
-    options {
-        systemProperties(System.getProperties())
-    }
-
-    // basically execution returns "GREEN" (framework exits with exit code > 0 if there were failures)
-    ignoreFailures = true
-}
-----
-
-.pom.xml
-[source,xml,role="secondary"]
-----
-<project>
-    <build>
-        <plugins>
-            <plugin>
-                <artifactId>maven-surefire-plugin</artifactId>
-                <configuration>
-                    <skip>true</skip>
-                    <testFailureIgnore>true</testFailureIgnore>
-                </configuration>
-            </plugin>
-        </plugins>
-    </build>
-
-    <profiles>
-        <profile>
-            <id>mySuite</id>
-            <build>
-                <plugins>
-                    <plugin>
-                        <artifactId>maven-surefire-plugin</artifactId>
-                        <configuration>
-                            <skip>false</skip>
-                            <suiteXmlFiles>
-                                <suiteXmlFile>src/test/resources/suite.xml</suiteXmlFile>
-                            </suiteXmlFiles>
-                        </configuration>
-                    </plugin>
-                </plugins>
-            </build>
-        </profile>
-    </profiles>
-</project>
-----
-
-=== Run the tests
-
-Finally you are good to run your very first test by entering the following command:
-
-.Gradle
-[source,bash,role="primary"]
-----
-gradle test
-----
-
-.Maven
-[source,bash,role="secondary"]
-----
-mvn test -PmySuite
-----
-
-=== Testerra Report
-
-The Testerra test report is automatically generated and can be found at `<project>/testerra-report/index.html`.
-
+// TODO add link here.
