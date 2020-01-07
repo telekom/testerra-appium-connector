@@ -53,11 +53,12 @@ public abstract class AbstractTest extends TesterraTest {
         //            }
         //        });
 
+        TestDevice device = mobileDriver.reserveDeviceByFilter(this.getDeviceFilterProperty());
+
         ClientListener.addGoogleChromePromoDialogListener();
         ClientListener.addGoogleChromeTermsAndConditionsListener();
         ClientListener.addGoogleLanguagePopupRemoverListener();
 
-        TestDevice device = mobileDriver.reserveDeviceByFilter(this.getDeviceFilterProperty());
         mobileDriver.switchToDevice(device);
 
         mobileDriver.installApplication(getAppName());

@@ -1,5 +1,14 @@
 package eu.tsystems.mms.tic.testframework.mobile.monitor;
 
+import eu.tsystems.mms.tic.testframework.internal.ConsumptionMeasurementsCollector;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
+import eu.tsystems.mms.tic.testframework.report.utils.ReportUtils;
+import org.apache.commons.csv.CSVFormat;
+import org.apache.commons.csv.CSVParser;
+import org.apache.commons.csv.CSVRecord;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.IOException;
 import java.io.Reader;
 import java.io.StringReader;
@@ -8,16 +17,6 @@ import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-
-import org.apache.commons.csv.CSVFormat;
-import org.apache.commons.csv.CSVParser;
-import org.apache.commons.csv.CSVRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import eu.tsystems.mms.tic.testframework.internal.ConsumptionMeasurementsCollector;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriver;
-import eu.tsystems.mms.tic.testframework.report.utils.ReportUtils;
 
 /**
  * Created by sbke on 29.11.2017.
@@ -29,10 +28,12 @@ public class AppMonitor {
     private static final Logger LOGGER = LoggerFactory.getLogger(AppMonitor.class);
 
     public AppMonitor(MobileDriver driver) {
+
         this.driver = driver;
     }
 
     public void createReportTab() throws IOException {
+
         String monitorDataString = driver.seeTestClient().getMonitorsData("");
         if (checkMonitoringDataIsEmpty(monitorDataString)) {
             LOGGER.error("No monitoring data has been recorded.");
@@ -46,6 +47,7 @@ public class AppMonitor {
     }
 
     private void addDeviceMeasurements(ConsumptionMeasurementsCollector cmc, List<CSVRecord> csvRecords) {
+
         ConsumptionMeasurementsCollector.ContextMeasurement deviceCpuUsage =
                 new ConsumptionMeasurementsCollector.ContextMeasurement("CPU", "CPU", "%");
         ConsumptionMeasurementsCollector.ContextMeasurement deviceMemUsage =
@@ -57,6 +59,7 @@ public class AppMonitor {
 
     private void addDeviceRecordsToMeasurementsCollector(CSVRecord csvRecord, ConsumptionMeasurementsCollector cmc,
                                                          ConsumptionMeasurementsCollector.ContextMeasurement appCpuUsage, ConsumptionMeasurementsCollector.ContextMeasurement appMemUsage) {
+
         Long timestamp = getTimeStamp(csvRecord);
         long cpuValue = getDeviceCpuValue(csvRecord);
         cmc.addValue(appCpuUsage, cpuValue, timestamp);
@@ -65,6 +68,7 @@ public class AppMonitor {
     }
 
     private String getDeviceNameFromMonitorsData(String monitorData) {
+
         if (monitorData.indexOf("\n") > 0) {
             return monitorData.substring(0, monitorData.indexOf("\n"));
         } else {
@@ -73,6 +77,7 @@ public class AppMonitor {
     }
 
     private List<CSVRecord> getCsvRecords(String monitorDataString) throws IOException {
+
         if (monitorDataString.indexOf("\n") > 0) {
             monitorDataString = monitorDataString.substring(monitorDataString.indexOf("\n") + 1);
             Reader in = new StringReader(monitorDataString);
@@ -84,9 +89,10 @@ public class AppMonitor {
     }
 
     private Long getTimeStamp(CSVRecord csvRecord) {
+
         String dateString = csvRecord.get("Date");
         Locale timeStampLocale;
-        if(dateString.contains("MESZ")) {
+        if (dateString.contains("MESZ") || dateString.contains("MEZ")) {
             timeStampLocale = Locale.GERMAN;
         } else {
             timeStampLocale = Locale.ENGLISH;
@@ -97,14 +103,17 @@ public class AppMonitor {
     }
 
     private long getDeviceCpuValue(CSVRecord csvRecord) {
+
         return getValueFromCsv(csvRecord, "cpu", "");
     }
 
     private long getDeviceMemoryValue(CSVRecord csvRecord) {
+
         return getValueFromCsv(csvRecord, "memory", "");
     }
 
     private long getValueFromCsv(CSVRecord csvRecord, String prefix, String packageName) {
+
         String value = csvRecord.get(prefix + packageName);
         if (value.isEmpty()) {
             return 0;
@@ -114,6 +123,7 @@ public class AppMonitor {
     }
 
     private boolean checkMonitoringDataIsEmpty(String monitoringData) {
+
         if (monitoringData != null) {
             monitoringData = monitoringData.replaceAll("\\s*", "");
             return monitoringData.isEmpty();

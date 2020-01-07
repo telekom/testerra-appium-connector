@@ -41,11 +41,11 @@ public class MobileDriverTest extends AbstractTest {
         }
 
         if (m.getAnnotation(NeedsAppInstalled.class) != null) {
-            installTestApp(); //TODO erku No app installed
+            installTestApp();
         }
     }
 
-    @Test(enabled = false) // TODO erku No app installed
+    @Test()
     @NeedsAppInstalled
     public void testT02N_MobileDriver_isApplicationInstalled() throws DeviceNotAvailableException {
 
@@ -61,7 +61,7 @@ public class MobileDriverTest extends AbstractTest {
         assertTestAppIsRunning();
     }
 
-    @Test(enabled = false) // TODO erku No app installed)
+    @Test()
     @NeedsAppInstalled
     public void testT04_MobileDriver_closeApplication() throws DeviceNotAvailableException {
 
@@ -71,7 +71,7 @@ public class MobileDriverTest extends AbstractTest {
         assertTestAppIsNotRunning();
     }
 
-    @Test(enabled = false) // TODO erku No app installed)
+    @Test()
     @NeedsAppInstalled
     public void testT05_MobileDriver_uninstall() throws DeviceNotAvailableException {
 
@@ -203,7 +203,7 @@ public class MobileDriverTest extends AbstractTest {
     }
 
     @Fails(description = "shake device not supported by most devices")
-    @Test(enabled = false) // TODO erku needs app
+    @Test()
     @NeedsAppInstalled
     public void testT16_MobileDriver_shakeDevice() {
 
@@ -212,7 +212,7 @@ public class MobileDriverTest extends AbstractTest {
     }
 
     @Fails(ticketString = "MDC-128", validFor = "os.unter.test=ios")
-    @Test(groups = Groups.SMOKE) // TODO erku
+    @Test(groups = Groups.SMOKE)
     @NeedsAppInstalled
     public void testT18_MobileDriver_pressHomeButton() {
 
