@@ -95,13 +95,13 @@ All supported mobile browsers are listed HERE [PLEASE ADD LINK TODO]
 
 === Create Test Class and Test Method
 
-Next create a simple test class with a test method.
-The test class needs to extend from `TesterraTest`.
-It should be located at path `src\test\java\<package>`.
-To stick to the example above, here is a very simple test class which navigates to example.org and clicks on the link defined on the example page.
-Again, probably imports must be made in IDE.
+To create an initial test class and test method please take a look at the Testerra framework documentation.
+// TODO add link here.
 
-.New test class
+The setup is equal to it, with the following difference.
+For mobile tests you have to reserve and release the device that you want to use for your test in a configuration method like `@BeforeSuite` and `@AfterMethod`.
+
+.Mobile test class
 [source,java]
 ----
 public class ExampleTest extends TesterraTest {
@@ -136,10 +136,7 @@ public class ExampleTest extends TesterraTest {
 }
 ----
 
-NOTE: By extending from `TesterraTest` all runtime features are loaded automatically.
-
 === Setup a test suite and execute
 
 This part is equal to the Testerra framework, so please follow the instructions as documented in Testerra framework documentation.
-
 // TODO add link here.
