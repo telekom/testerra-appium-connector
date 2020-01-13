@@ -7,43 +7,45 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.mobile.adapter.MobileWebDriverAdapter;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
-import eu.tsystems.mms.tic.testframework.mobile.adapter.MobileWebDriverAdapter;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
-
 public class WebDriverAdapterFactory extends WebDriverFactory {
-//    @Override
-//    public WebDriver getRawWebDriver(WebDriverRequest webDriverRequest) {
-//        // you can implement your own WebDriverRequest "next to" DesktopWebDriverRequest with mobile options you
-//        // need. - pele 19.07.2017
-//        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
-//        return new MobileWebDriverAdapter(mobileDriver);
-//    }
-//
-//    @Override
-//    public void setupSession(EventFiringWebDriver eventFiringWebDriver, String sessionId, String browser) {
-//        // you CAN do something, but you don't need to . :) - pele 19.07.2017
-//    }
 
     @Override
-    protected WebDriverRequest buildRequest(WebDriverRequest webDriverRequest) {
-        return null;
+    protected WebDriverRequest buildRequest(WebDriverRequest request) {
+
+        MobileWebDriverRequest r;
+
+        if (request instanceof MobileWebDriverRequest) {
+            r = (MobileWebDriverRequest) request;
+        } else if (request instanceof UnspecificWebDriverRequest) {
+            r = new MobileWebDriverRequest();
+            r.copyFrom(request);
+        } else {
+            throw new TesterraSystemException(request.getClass().getSimpleName() + " is not allowed here");
+        }
+
+
+        return r;
     }
 
     @Override
-    protected DesiredCapabilities buildCapabilities(DesiredCapabilities desiredCapabilities,
-            WebDriverRequest webDriverRequest) {
-        return null;
+    protected DesiredCapabilities buildCapabilities(DesiredCapabilities desiredCapabilities, WebDriverRequest webDriverRequest) {
+        // TODO - maybe we need to do something here?
+        return desiredCapabilities;
     }
 
     @Override
     protected WebDriver getRawWebDriver(WebDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities) {
 
-        MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
+        final MobileDriver mobileDriver = MobileDriverManager.getMobileDriver();
         return new MobileWebDriverAdapter(mobileDriver);
     }
 
