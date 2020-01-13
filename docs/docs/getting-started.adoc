@@ -1,0 +1,131 @@
+= Create a new project
+
+include::properties/property-attributes.adoc[]
+
+== System requirements
+
+* Testerra Mobile is based on Java.You need a JDK 8 or later.
+* Execute your tests with *Maven* or *Gradle*
+* You will need a connection to your ExperiTest Cloud (Self Hosted at your LAN or use an internet instance)
+** You will need a valid user and password
+** You will need a assigned project with assigned devices
+** For project and device assignments please contact the administrator of your ExperiTest Cloud Team
+* If you want to execute local tests, you will need the current SeeTest Client installed
+
+== Mandatory steps
+
+=== Testerra mobile setup
+
+The Testerra mobile framework is deployed to https://bintray.com/bintray/jcenter.
+
+For Testerra mobile you need at least the following dependencies for Gradle or Maven.
+
+.build.gradle
+[source,gradle,role="primary"]
+----
+apply plugin: 'java'
+
+dependencies {
+    compile 'eu.tsystems.mms.tic.testerra:mobile:1-SNAPSHOT'
+}
+----
+
+.pom.xml
+[source,xml,role="secondary"]
+----
+<project>
+    <dependencies>
+        <dependency>
+            <groupId>eu.tsystems.mms.tic.testerra</groupId>
+            <artifactId>mobile</artifactId>
+            <version>1-SNAPSHOT</version>
+        </dependency>
+    </dependencies>
+</project>
+----
+
+If you aren't already a user of the Testerra framework, please refer to the Testerra framework documentation to setup your initial project structure.
+
+// TODO add link here!
+
+=== Customize test.properties
+
+According to the Testerra framework documentation you setup a `test.properties` file.
+Now you have to append it with some mobile related test properties.
+
+For simplicity in this example we will configure our environment based on an local execution with SeeTest Client.
+
+.test.properties
+[source,properties,subs="attributes"]
+----
+#Set the browser
+{browser}=mobile_chrome
+{browser_version}=78
+
+#Set the start page
+{baseurl}=http://example.org
+
+#Set your experitest mobile cloud configuration
+{mobile_server_host}=localhost
+{mobile_server_port}=8889
+
+{mobile_grid_user}=your_user_name
+{mobile_grid_password}=your_password
+{mobile_grid_project}=your_project
+
+#set your device filter - will filter for android devices only
+{mobile_device_filter}=os.type=android
+----
+
+TIP: All defined properties can be overwritten later by adding system parameters to your command +
+ (e.a `-D{browser}=mobile_safari`)
+
+All supported mobile browsers are listed HERE [PLEASE ADD LINK TODO]
+
+=== Create Test Class and Test Method
+
+To create an initial test class and test method please take a look at the Testerra framework documentation.
+// TODO add link here.
+
+The setup is equal to it, with the following difference.
+For mobile tests you have to reserve and release the device that you want to use for your test in a configuration method like `@BeforeSuite` and `@AfterMethod`.
+
+.Mobile test class
+[source,java]
+----
+public class ExampleTest extends TesterraTest {
+
+    @BeforeSuite(alwaysRun = true)
+    public void setupMobileDriver() {
+
+        MobileDriver driver = MobileDriverManager.getMobileDriver();
+
+        if (driver.getActiveDevice() == null) {
+            driver.reserveDeviceByFilter();
+        }
+    }
+
+
+    @AfterSuite(alwaysRun = true)
+    public void teardownMobileDriver() {
+        MobileDriverManager.releaseDriverFromThread();
+    }
+
+    @Test
+    public void testT01_My_first_test() {
+
+        WebDriver driver = WebDriverManager.getWebDriver();
+
+        // Call the base url, because "getMobileDriver" will just give you a session of the mobile
+        driver.get(PropertyManager.getProperty("tt.baseurl"));
+
+        ExamplePage examplePage = PageFactory.create(ExamplePage.class, driver);
+        examplePage.clickOnMoreInformation();
+    }
+}
+----
+
+=== Setup a test suite and execute
+
+This part is equal to the Testerra framework, so please follow the instructions as documented in Testerra framework documentation.
+// TODO add link here.
