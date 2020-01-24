@@ -7,7 +7,7 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileDriverManager;
 import eu.tsystems.mms.tic.testframework.mobile.pageobjects.guielement.ScreenDump;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.report.Report;
-import eu.tsystems.mms.tic.testframework.report.model.steps.TestStepController;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -40,7 +40,8 @@ public class MobileScreenshotGrabber implements ScreenshotCollector {
                     final Screenshot screenshot = Report.provideScreenshot(screenshotFile, visualDumpFile, Report.Mode.MOVE);
 
                     screenshots.add(screenshot);
-                    TestStepController.addScreenshotsToCurrentAction(null, screenshot);
+
+                    ExecutionContextController.getCurrentMethodContext().steps().getCurrentTestStep().getCurrentTestStepAction().addScreenshot(screenshot);
                 }
             } catch (Exception e) {
                 LOGGER.error("Exception on handling test failure.", e);

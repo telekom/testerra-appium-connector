@@ -329,8 +329,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
         if (takeScreenshots && !screenshotsDisabled) {
             final File screenshotFile = prepareNewScreenshot();
-            final Screenshot screenshot = this.publishScreenshotToMethodContext(screenshotFile, null);
-            TestStepController.addScreenshotsToCurrentAction(screenshot, null);
+            this.publishScreenshotToMethodContext(screenshotFile, null);
         }
     }
 
@@ -346,6 +345,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
             MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
             screenshot.errorContextId = currentMethodContext.id;
             currentMethodContext.screenshots.add(screenshot);
+            currentMethodContext.steps().getCurrentTestStep().getCurrentTestStepAction().addScreenshot(screenshot);
             return screenshot;
 
         } catch (IOException e) {
@@ -361,8 +361,7 @@ public abstract class BaseMobileDriver implements MobileDriver {
         if (takeScreenshots && !screenshotsDisabled) {
             if (takeOnlyBeforeScreenshots) {
                 if (beforeScreenshot != null) {
-                    final Screenshot screenshot = this.publishScreenshotToMethodContext(beforeScreenshot, null);
-                    TestStepController.addScreenshotsToCurrentAction(screenshot, null);
+                    this.publishScreenshotToMethodContext(beforeScreenshot, null);
                 }
             } else {
                 if (delayBetweenScreenshotsInMs > 0) {
@@ -371,11 +370,8 @@ public abstract class BaseMobileDriver implements MobileDriver {
 
                 // Providing screenshots to method context...
                 final File afterScreenshotFile = prepareNewScreenshot();
-                final Screenshot screenshotBefore = this.publishScreenshotToMethodContext(beforeScreenshot, null);
-                final Screenshot screenshotAfter = this.publishScreenshotToMethodContext(afterScreenshotFile, null);
-
-                // provide screenshot to current test step...
-                TestStepController.addScreenshotsToCurrentAction(screenshotBefore, screenshotAfter);
+                this.publishScreenshotToMethodContext(beforeScreenshot, null);
+                this.publishScreenshotToMethodContext(afterScreenshotFile, null);
             }
 
             beforeScreenshot = null;
@@ -1314,8 +1310,6 @@ public abstract class BaseMobileDriver implements MobileDriver {
     }
 
     public void publishScreenshotToReport(File screenshotFile, File visualDumpFile) {
-
-        Screenshot screenshot = publishScreenshotToMethodContext(screenshotFile, visualDumpFile);
-        TestStepController.addScreenshotsToCurrentAction(screenshot, null);
+        publishScreenshotToMethodContext(screenshotFile, visualDumpFile);
     }
 }
