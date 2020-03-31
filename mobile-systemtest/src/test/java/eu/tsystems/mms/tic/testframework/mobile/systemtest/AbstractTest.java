@@ -154,7 +154,7 @@ public abstract class AbstractTest extends TesterraTest {
 
     protected void assertTestAppIsNotRunning() {
 
-        ThrowablePackedResponse<Boolean> sequence = new Timer().executeSequence(new Timer.Sequence<Boolean>() {
+        ThrowablePackedResponse<Boolean> sequence = new Timer(1_000, 15_000).executeSequence(new Timer.Sequence<Boolean>() {
 
             @Override
             public void run() throws Throwable {
