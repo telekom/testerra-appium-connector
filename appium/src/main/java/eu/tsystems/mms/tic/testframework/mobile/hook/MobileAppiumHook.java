@@ -23,8 +23,8 @@ package eu.tsystems.mms.tic.testframework.mobile.hook;
 
 import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
-import eu.tsystems.mms.tic.testframework.mobile.adapter.AppiumDriverFactory;
-import eu.tsystems.mms.tic.testframework.mobile.adapter.AppiumGuiElementCoreFactory;
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
+import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreFactory;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 
