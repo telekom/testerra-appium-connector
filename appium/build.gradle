@@ -1,0 +1,47 @@
+description = 'Testerra Mobile Appium'
+
+dependencies {
+
+    compile group: 'io.appium', name: 'java-client', version: '7.3.0'
+    compile 'com.google.code.gson:gson:2.8.5'
+
+    compile(testerraDriverUi) {
+        exclude group: 'com.google.guava', module: 'guava'
+    }
+
+//    compile('org.testng:testng:7.2.0') {
+    // We have to exclude this here, because testng is using 25.1-android in dependency com.google.inject:guice:4.1.0
+    // This will lead to a version clash with selenium and this will produce ImmutableMapErrors on WebDriverManager.getWebDriver
+//        exclude group: 'com.google.guava', module: 'guava'
+//    }
+
+//    compile slf4j
+//    compile jersey_client
+//
+//    compile(testerraDriverUi)
+//    compile(testerraCoreInterop)
+//
+//    compile apache_commons
+//    compile jaxb
+//    compile activation
+//
+//    testCompile powermock
+//    testCompile mockito
+}
+
+
+configurations.all {
+    resolutionStrategy {
+
+        // fail eagerly on version conflict (includes transitive dependencies)
+        // e.g. multiple different versions of the same dependency (group and name are equal)
+//        failOnVersionConflict()
+
+        // prefer modules that are part of this build (multi-project or composite build) over external modules
+//        preferProjectModules()
+
+        // force certain versions of dependencies (including transitive)
+        //  *append new forced modules:
+//        force 'com.google.guava:guava:25.1-jre'
+    }
+}

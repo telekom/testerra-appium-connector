@@ -17,26 +17,3 @@ dependencies {
     testCompile powermock
     testCompile mockito
 }
-
-//test {
-//
-//    String[] s = [
-//            'src/test/resources/MobileTestSuite.xml'
-//    ]
-//
-//    def nr = findProperty("nr")
-//    if (nr) {
-//        setFailureCorridor(nr)
-//        setCloseWindows()
-//        setReportDir("report-testsundertest-0" + nr)
-//        s = ['src/test/resources/testng/ReportTestsUnderTest' + nr + '.xml']
-//    }
-//
-//    useTestNG() {
-//        suites s
-//        configFailurePolicy "continue"
-//    }
-//    options {
-//        systemProperties(System.getProperties())
-//    }
-//}
