@@ -20,7 +20,7 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.mobile.adapter;
+package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
