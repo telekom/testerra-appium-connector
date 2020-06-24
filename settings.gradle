@@ -2,4 +2,7 @@ rootProject.name = 'mobile'
 
 include ':mobile'
 include ':mobile-systemtest'
+
+include ':appium'
 //includeBuild "../testerra"
+
