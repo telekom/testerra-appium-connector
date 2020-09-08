@@ -34,6 +34,7 @@ import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.awt.Color;
@@ -74,6 +75,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
+    @Deprecated
     public void scrollToElement() {
 
         this.scrollToElement(0);
@@ -107,11 +109,17 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public void select() {
 
+        if (!isSelected()) {
+            click();
+        }
     }
 
     @Override
     public void deselect() {
 
+        if (isSelected()) {
+            click();
+        }
     }
 
     @Override
@@ -135,14 +143,17 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
+    @Deprecated
     public void clickAbsolute() {
 
         click();
     }
 
     @Override
+    @Deprecated
     public void mouseOverAbsolute2Axis() {
 
+        // TODO mouseOverAbsolute2Axis
     }
 
     @Override
@@ -166,7 +177,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public String getTagName() {
 
-        return null;
+        return getWebElement().getTagName();
     }
 
     @Override
@@ -184,6 +195,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public GuiElement getSubElement(Locate locator) {
 
+        // TODO getSubElement
         return null;
     }
 
@@ -206,89 +218,104 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
+    @Deprecated
     public void mouseOver() {
 
+        this.hover();
     }
 
     @Override
     public void hover() {
 
+        final Actions action = new Actions(driver);
+        action.moveToElement(this.getWebElement()).build().perform();
     }
 
     @Override
     public void contextClick() {
 
+        final Actions actions = new Actions(driver);
+        actions.moveToElement(getWebElement()).contextClick().build().perform();
     }
 
     @Override
+    @Deprecated
     public void mouseOverJS() {
 
+        this.mouseOver();
     }
 
     @Override
     public Select getSelectElement() {
 
-        return null;
+        return new Select(this.getWebElement());
     }
 
     @Override
     public List<String> getTextsFromChildren() {
 
+        // TODO getTextsFromChildren
         return null;
     }
 
     @Override
     public void doubleClick() {
-
+        // TODO doubleClick
     }
 
     @Override
     public void highlight() {
-
+        // TODO highlight
     }
 
     @Override
     public void highlight(Color color) {
-
+        // TODO highlight
     }
 
     @Override
     public void swipe(int offsetX, int offSetY) {
-
+        // TODO swipe
     }
 
     @Override
     public int getLengthOfValueAfterSendKeys(String textToInput) {
 
+        // TODO getLengthOfValueAfterSendKeys
         return 0;
     }
 
     @Override
     public int getNumberOfFoundElements() {
 
+        // TODO getNumberOfFoundElements
         return 0;
     }
 
     @Override
+    @Deprecated
     public void rightClick() {
 
         this.contextClick();
     }
 
     @Override
+    @Deprecated
     public void rightClickJS() {
 
         this.contextClick();
     }
 
     @Override
+    @Deprecated
     public void doubleClickJS() {
-
+        // TODO doubleClickJS
     }
 
     @Override
     public File takeScreenshot() {
 
+        // TODO takeScreenshot
         return null;
     }
 
@@ -308,6 +335,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean anyFollowingTextNodeContains(String contains) {
 
+        // TODO anyFollowingTextNodeContains
         return false;
     }
 
@@ -320,7 +348,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean isVisible(boolean complete) {
 
-        // TODO
+        // TODO isVisible
         return false;
     }
 
@@ -345,6 +373,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean isSelectable() {
 
+        // TODO isSelectable
         return false;
     }
 
