@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testframework.mobile.hook;
 import eu.tsystems.mms.tic.testframework.common.TesterraCommons;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileBrowsers;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreFactory;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
@@ -42,8 +43,8 @@ public class MobileAppiumHook implements ModuleHook {
     public void init() {
 
         TesterraCommons.init();
-        WebDriverManager.registerWebDriverFactory(new AppiumDriverFactory(), "mobile_safari");
-        GuiElement.registerGuiElementCoreFactory(new AppiumGuiElementCoreFactory(), "mobile_safari");
+        WebDriverManager.registerWebDriverFactory(new AppiumDriverFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
+        GuiElement.registerGuiElementCoreFactory(new AppiumGuiElementCoreFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }
 
     @Override

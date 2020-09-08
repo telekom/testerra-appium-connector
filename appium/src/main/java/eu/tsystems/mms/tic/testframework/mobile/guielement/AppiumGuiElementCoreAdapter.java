@@ -22,10 +22,13 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
+import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
+import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
@@ -33,6 +36,7 @@ import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
 
+import java.awt.Color;
 import java.io.File;
 import java.util.List;
 
@@ -43,7 +47,7 @@ import java.util.List;
  *
  * @author Eric Kubenka
  */
-public class AppiumGuiElementCoreAdapter implements GuiElementCore {
+public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
     private final WebDriver driver;
     private final By by;
@@ -63,11 +67,6 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
         return this.guiElementData.webElement;
     }
 
-    private void find() {
-
-        this.guiElementData.webElement = this.driver.findElement(this.by);
-    }
-
     @Override
     public By getBy() {
 
@@ -77,11 +76,32 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public void scrollToElement() {
 
+        this.scrollToElement(0);
     }
 
     @Override
+    @Deprecated
     public void scrollToElement(int yOffset) {
 
+        final Point location = getWebElement().getLocation();
+        final int x = location.getX();
+        final int y = location.getY() - yOffset;
+        log().trace("Scrolling into view: " + x + ", " + y);
+
+        JSUtils.executeScript(driver, "scroll(" + x + ", " + y + ");");
+    }
+
+    @Override
+    public void scrollIntoView() {
+
+        this.scrollIntoView(new Point(0, 0));
+    }
+
+    @Override
+    public void scrollIntoView(Point offset) {
+
+        JSUtils utils = new JSUtils();
+        utils.scrollToCenter(guiElementData.webDriver, getWebElement(), offset);
     }
 
     @Override
@@ -97,24 +117,27 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public void type(String text) {
 
-        find();
-        this.clear();
-        this.guiElementData.webElement.sendKeys(text);
+        clear();
+        getWebElement().sendKeys(text);
     }
 
     @Override
     public void click() {
 
+        getWebElement().click();
     }
 
     @Override
+    @Deprecated
     public void clickJS() {
 
+        click();
     }
 
     @Override
     public void clickAbsolute() {
 
+        click();
     }
 
     @Override
@@ -125,18 +148,19 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public void submit() {
 
+        getWebElement().submit();
     }
 
     @Override
     public void sendKeys(CharSequence... charSequences) {
 
+        getWebElement().sendKeys(charSequences);
     }
 
     @Override
     public void clear() {
 
-        find();
-        this.guiElementData.webElement.clear();
+        getWebElement().clear();
     }
 
     @Override
@@ -148,7 +172,13 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public GuiElement getSubElement(By byLocator, String description) {
 
-        return null;
+        return getSubElement(by).setName(description);
+    }
+
+    @Override
+    public GuiElement getSubElement(By by) {
+
+        return getSubElement(Locate.by(by));
     }
 
     @Override
@@ -158,31 +188,35 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     }
 
     @Override
-    public GuiElement getSubElement(By by) {
-
-        return null;
-    }
-
-    @Override
     public Point getLocation() {
 
-        return null;
+        return this.getWebElement().getLocation();
     }
 
     @Override
     public Dimension getSize() {
 
-        return null;
+        return this.getWebElement().getSize();
     }
 
     @Override
     public String getCssValue(String cssIdentifier) {
 
-        return null;
+        return this.getWebElement().getCssValue(cssIdentifier);
     }
 
     @Override
     public void mouseOver() {
+
+    }
+
+    @Override
+    public void hover() {
+
+    }
+
+    @Override
+    public void contextClick() {
 
     }
 
@@ -214,6 +248,11 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     }
 
     @Override
+    public void highlight(Color color) {
+
+    }
+
+    @Override
     public void swipe(int offsetX, int offSetY) {
 
     }
@@ -233,11 +272,13 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public void rightClick() {
 
+        this.contextClick();
     }
 
     @Override
     public void rightClickJS() {
 
+        this.contextClick();
     }
 
     @Override
@@ -254,13 +295,14 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public boolean isPresent() {
 
-        return false;
+        find();
+        return this.guiElementData.webElement != null;
     }
 
     @Override
     public boolean isEnabled() {
 
-        return false;
+        return getWebElement().isEnabled();
     }
 
     @Override
@@ -272,32 +314,32 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
     @Override
     public boolean isDisplayed() {
 
-        find();
-        return this.guiElementData.webElement.isDisplayed();
+        return getWebElement().isDisplayed();
     }
 
     @Override
     public boolean isVisible(boolean complete) {
 
+        // TODO
         return false;
     }
 
     @Override
     public boolean isSelected() {
 
-        return false;
+        return this.getWebElement().isSelected();
     }
 
     @Override
     public String getText() {
 
-        return null;
+        return this.getWebElement().getText();
     }
 
     @Override
     public String getAttribute(String attributeName) {
 
-        return null;
+        return this.getWebElement().getAttribute(attributeName);
     }
 
     @Override
@@ -305,4 +347,14 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore {
 
         return false;
     }
+
+    private void find() {
+
+        try {
+            this.guiElementData.webElement = this.driver.findElement(this.by);
+        } catch (Exception e) {
+            throw new ElementNotFoundException("GuiElement not found: " + this.toString(), e);
+        }
+    }
+
 }

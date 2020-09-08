@@ -23,10 +23,11 @@
 package eu.tsystems.mms.tic.testframework.mobile;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.ios.IOSElement;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
 import org.openqa.selenium.By;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -37,6 +38,7 @@ import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
 
+import java.io.File;
 import java.net.MalformedURLException;
 import java.net.URL;
 
@@ -49,8 +51,8 @@ import java.net.URL;
 public class AppiumDriverTest {
 
     private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
-    protected IOSDriver<IOSElement> driver = null;
-
+    //    protected IOSDriver<IOSElement> driver = null;
+    protected AndroidDriver<AndroidElement> driver = null;
 
     @BeforeMethod
     public void setUp() throws MalformedURLException {
@@ -58,9 +60,12 @@ public class AppiumDriverTest {
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setCapability("testName", "Demo Tests");
         dc.setCapability("accessKey", accessKey);
-        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-        dc.setBrowserName(MobileBrowserType.SAFARI);
-        driver = new IOSDriver<>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
+        //        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
+        dc.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
+        //        dc.setBrowserName(MobileBrowserType.SAFARI);
+        dc.setBrowserName(MobileBrowserType.CHROMIUM);
+        //        driver = new IOSDriver<>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
+        driver = new AndroidDriver<AndroidElement>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
     }
 
     @Test
@@ -69,13 +74,14 @@ public class AppiumDriverTest {
         driver.rotate(ScreenOrientation.PORTRAIT);
         driver.get("https://www.google.com");
         new WebDriverWait(driver, 10).until(driver1 -> {
-            ExpectedCondition<WebElement> q = ExpectedConditions.presenceOfElementLocated(By.name("q"));
+            ExpectedCondition<WebElement> q = ExpectedConditions.presenceOfElementLocated(By.xpath("//input[@name='q']"));
             return q;
         });
-        WebElement searchBar = driver.findElement(By.name("q"));
 
+        File screenshotAs = driver.getScreenshotAs(OutputType.FILE);
+        System.out.println(screenshotAs.getAbsolutePath());
+        WebElement searchBar = driver.findElement(By.xpath("//input[@name='q']"));
         searchBar.sendKeys("Experitest");
-        driver.findElement(By.xpath("//*[@css='BUTTON.Tg7LZd']")).click();
     }
 
     @AfterMethod
