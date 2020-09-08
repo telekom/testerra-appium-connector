@@ -22,23 +22,17 @@
 
 package eu.tsystems.mms.tic.testframework.mobile;
 
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverProxy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
-import org.testng.annotations.AfterMethod;
-import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
-
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Proxy;
 
 /**
  * Date: 24.06.2020
@@ -48,26 +42,17 @@ import java.lang.reflect.Proxy;
  */
 public class TesterraAppiumDriverTest extends TesterraTest {
 
-    protected WebDriver driver = null;
-    protected WebDriver rawAppiumDriver = null;
-    protected AppiumDriver<MobileElement> appiumDriver = null;
-
-    @BeforeMethod
-    public void setUp() {
-
-        driver = WebDriverManager.getWebDriver();
-        WebDriver rawDriver = ((EventFiringWebDriver) driver).getWrappedDriver();
-
-        final InvocationHandler invocationHandler = Proxy.getInvocationHandler(rawDriver);
-        rawAppiumDriver = ((WebDriverProxy) invocationHandler).getWrappedWebDriver();
-        appiumDriver = (AppiumDriver<MobileElement>) rawAppiumDriver;
-    }
+    private AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 
     @Test
     public void testT01_DoGoogleSearch() {
 
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+
         appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
         driver.get("https://www.google.com");
+
         UITestUtils.takeScreenshot(driver, true);
         appiumDriver.rotate(ScreenOrientation.PORTRAIT);
         UITestUtils.takeScreenshot(driver, true);
@@ -76,11 +61,5 @@ public class TesterraAppiumDriverTest extends TesterraTest {
         guiElement.asserts().assertIsPresent();
         guiElement.asserts().assertIsDisplayed();
         guiElement.type("Experitest");
-    }
-
-    @AfterMethod
-    public void tearDown() {
-
-        //        System.out.println("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
     }
 }

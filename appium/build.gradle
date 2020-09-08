@@ -7,6 +7,8 @@ dependencies {
     compile('eu.tsystems.mms.tic.testerra:driver-ui:1.0-RC-8') {
         exclude group: 'com.google.guava', module: 'guava'
     }
+
+    compile 'eu.tsystems.mms.tic.testerra:report:1.0-RC-8'
 }
 
 configurations.all {
