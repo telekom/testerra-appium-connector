@@ -28,6 +28,7 @@ import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
+import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileBrowserType;
 import org.openqa.selenium.SessionNotCreatedException;
@@ -47,7 +48,8 @@ import java.net.URL;
  */
 public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
-    private static final String ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
+    private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
+    private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
 
     @Override
     protected AppiumDriverRequest buildRequest(WebDriverRequest webDriverRequest) {
@@ -75,21 +77,35 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
     @Override
     protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities) {
 
-        if (webDriverRequest.browser != null && webDriverRequest.browser.equals("mobile_safari")) {
-
-            desiredCapabilities.setCapability("testName", "Demo Tests");
-            desiredCapabilities.setCapability("accessKey", ACCESS_KEY);
-            desiredCapabilities.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-            desiredCapabilities.setBrowserName(MobileBrowserType.SAFARI);
-
-            try {
-                return new IOSDriver<>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), desiredCapabilities);
-            } catch (MalformedURLException e) {
-                throw new SessionNotCreatedException("Could not create session, because URL invalid");
-            }
+        // early exit.
+        if (webDriverRequest.browser == null) {
+            throw new TesterraRuntimeException("DriverRequest was null.");
         }
 
-        throw new TesterraRuntimeException("Mobile Browser not supported.");
+        // general caps
+        desiredCapabilities.setCapability("testName", "Demo Tests");
+        desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
+
+        switch (webDriverRequest.browser) {
+            case MobileBrowsers.mobile_safari:
+                desiredCapabilities.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
+                desiredCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+                try {
+                    return new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
+                } catch (MalformedURLException e) {
+                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
+                }
+            case MobileBrowsers.mobile_chrome:
+                desiredCapabilities.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
+                desiredCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
+                try {
+                    return new AndroidDriver<>(new URL(GRID_URL), desiredCapabilities);
+                } catch (MalformedURLException e) {
+                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
+                }
+            default:
+                throw new TesterraRuntimeException("Mobile Browser not supported.");
+        }
     }
 
     @Override

@@ -47,7 +47,7 @@ ext {
             'org.slf4j:slf4j-log4j12:1.8.0-beta2'
     ]
 
-    seetest = 'com.experitest:seetest-client:12.11'
+    seetest = 'com.experitest:seetest-client:20.7'
 
     jersey_client = 'org.glassfish.jersey.core:jersey-client:2.26'
 
@@ -65,7 +65,7 @@ ext {
             'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
     ]
 
-    testerraVersion = '1-SNAPSHOT'
+    testerraVersion = '1.0-RC-8'
     testerraGroup = 'eu.tsystems.mms.tic.testerra'
     testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
     testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
