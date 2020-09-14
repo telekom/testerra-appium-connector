@@ -22,16 +22,29 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
+import eu.tsystems.mms.tic.testframework.internal.Timings;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.frames.FrameLogic;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
+import eu.tsystems.mms.tic.testframework.utils.ObjectUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
+import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebElementProxy;
+import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
+import org.openqa.selenium.Rectangle;
+import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.interactions.Actions;
@@ -39,7 +52,9 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.awt.Color;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.function.Predicate;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -49,6 +64,8 @@ import java.util.List;
  * @author Eric Kubenka
  */
 public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
+
+    private static final int DELAY_AFTER_GUIELEMENT_FIND_MILLIS = PropertyManager.getIntProperty(TesterraProperties.DELAY_AFTER_GUIELEMENT_FIND_MILLIS);
 
     private final WebDriver driver;
     private final By by;
@@ -183,20 +200,44 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public GuiElement getSubElement(By byLocator, String description) {
 
-        return getSubElement(by).setName(description);
+        return getSubElement(byLocator).setName(description);
     }
 
     @Override
-    public GuiElement getSubElement(By by) {
+    public GuiElement getSubElement(By byLocator) {
 
-        return getSubElement(Locate.by(by));
+        return getSubElement(Locate.by(byLocator));
     }
 
     @Override
     public GuiElement getSubElement(Locate locator) {
 
-        // TODO getSubElement
-        return null;
+        final FrameLogic frameLogic = guiElementData.frameLogic;
+        GuiElement[] frames = null;
+        if (frameLogic != null) {
+            frames = frameLogic.getFrames();
+        }
+
+        String abstractLocatorString = locator.getBy().toString();
+        if (abstractLocatorString.toLowerCase().contains("xpath")) {
+            int i = abstractLocatorString.indexOf(":") + 1;
+            String xpath = abstractLocatorString.substring(i).trim();
+            String prevXPath = xpath;
+            // Check if locator does not start with dot, ignoring a leading parenthesis for choosing the n-th element
+            if (xpath.startsWith("/")) {
+                xpath = xpath.replaceFirst("/", "./");
+                log().warn(String.format("Replaced absolute xpath locator \"%s\" to relative: \"%s\"", prevXPath, xpath));
+                locator = Locate.by(By.xpath(xpath));
+            } else if (!xpath.startsWith(".")) {
+                xpath = "./" + xpath;
+                log().warn(String.format("Added relative xpath locator for children to \"%s\": \"%s\"", prevXPath, xpath));
+                locator = Locate.by(By.xpath(xpath));
+            }
+        }
+
+        GuiElement subElement = new GuiElement(this.driver, locator, frames);
+        subElement.setParent(this);
+        return subElement;
     }
 
     @Override
@@ -254,8 +295,17 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public List<String> getTextsFromChildren() {
 
-        // TODO getTextsFromChildren
-        return null;
+        final List<WebElement> childElements = this.getWebElement().findElements(By.xpath(".//*"));
+        final ArrayList<String> childTexts = new ArrayList<>();
+
+        for (final WebElement childElement : childElements) {
+            final String text = childElement.getText();
+            if (StringUtils.isNotBlank(text)) {
+                childTexts.add(text);
+            }
+        }
+
+        return childTexts;
     }
 
     @Override
@@ -264,13 +314,9 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
-    public void highlight() {
-        // TODO highlight
-    }
-
-    @Override
     public void highlight(Color color) {
-        // TODO highlight
+
+        JSUtils.highlightWebElement(driver, this.getWebElement(), color);
     }
 
     @Override
@@ -288,7 +334,11 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public int getNumberOfFoundElements() {
 
-        // TODO getNumberOfFoundElements
+        // isPresent() is the save way of getWebElement()
+        if (isPresent()) {
+            return this.find();
+        }
+
         return 0;
     }
 
@@ -322,8 +372,14 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean isPresent() {
 
-        find();
-        return this.guiElementData.webElement != null;
+        try {
+            log().debug("isPresent(): trying to find WebElement");
+            find();
+        } catch (Exception e) {
+            log().debug("isPresent(): Element not found: " + by, e);
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -335,8 +391,8 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean anyFollowingTextNodeContains(String contains) {
 
-        // TODO anyFollowingTextNodeContains
-        return false;
+        final GuiElement textNode = this.getSubElement(Locate.by(By.xpath(String.format(".//*[contains(text(),'%s')]", contains))));
+        return textNode.isPresent();
     }
 
     @Override
@@ -348,8 +404,16 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean isVisible(boolean complete) {
 
-        // TODO isVisible
-        return false;
+        if (!isDisplayed()) return false;
+        final Rectangle viewport = WebDriverUtils.getViewport(driver);
+        final WebElement webElement = getWebElement();
+
+        // getRect doesn't work
+        final Point elementLocation = webElement.getLocation();
+        final Dimension elementSize = webElement.getSize();
+        final java.awt.Rectangle viewportRect = new java.awt.Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
+        final java.awt.Rectangle elementRect = new java.awt.Rectangle(elementLocation.x, elementLocation.y, elementSize.width, elementSize.height);
+        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
     }
 
     @Override
@@ -377,12 +441,128 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
         return false;
     }
 
-    private void find() {
+    private int find() {
 
+        //        try {
+        //            this.guiElementData.webElement = this.driver.findElement(this.by);
+        //        } catch (Exception e) {
+        //            throw new ElementNotFoundException("GuiElement not found: " + this.toString(), e);
+        //        }
+        //    }
+        //
+        //    private int findee() {
+
+        int findCounter = -1;
+        int numberOfFoundElements = 0;
+        long start = System.currentTimeMillis();
+        guiElementData.webElement = null;
+        GuiElementCore parent = guiElementData.parent;
+        Exception notFoundCause = null;
         try {
-            this.guiElementData.webElement = this.driver.findElement(this.by);
+            List<WebElement> elements;
+            if (parent != null) {
+                elements = parent.getWebElement().findElements(by);
+            } else {
+                elements = this.driver.findElements(by);
+            }
+            if (elements != null) {
+                final Locate selector = guiElementData.guiElement.getLocator();
+                Predicate<WebElement> filter = selector.getFilter();
+                if (filter != null) {
+                    elements.removeIf(webElement -> !filter.test(webElement));
+                }
+                if (selector.isUnique() && elements.size() > 1) {
+                    throw new Exception("To many WebElements found (" + elements.size() + ")");
+                }
+                numberOfFoundElements = elements.size();
+
+                findCounter = setWebElement(elements);
+            }
         } catch (Exception e) {
-            throw new ElementNotFoundException("GuiElement not found: " + this.toString(), e);
+            notFoundCause = e;
+        }
+        throwExceptionIfWebElementIsNull(notFoundCause);
+
+        logTimings(start, findCounter);
+
+        if (DELAY_AFTER_GUIELEMENT_FIND_MILLIS > 0) {
+            TimerUtils.sleep(DELAY_AFTER_GUIELEMENT_FIND_MILLIS);
+        }
+        return numberOfFoundElements;
+    }
+
+    private int setWebElement(List<WebElement> elements) {
+
+        int numberOfFoundElements = elements.size();
+        if (numberOfFoundElements < guiElementData.index + 1) {
+            throw new StaleElementReferenceException("Request index of GuiElement was " + guiElementData.index + ", but only " + numberOfFoundElements + " were found. There you go, GuiElementList-Fanatics!");
+        }
+
+        if (numberOfFoundElements > 0) {
+            // webelement to set
+            WebElement webElement = elements.get(Math.max(0, guiElementData.index));
+
+            // check for shadowRoot
+            if (guiElementData.shadowRoot) {
+                Object o = JSUtils.executeScript(driver, "return arguments[0].shadowRoot", webElement);
+                if (o instanceof WebElement) {
+                    webElement = (WebElement) o;
+                }
+            }
+
+            // proxy the web element for logging
+            WebElementProxy webElementProxy = new WebElementProxy(driver, webElement);
+            Class[] interfaces = ObjectUtils.getAllInterfacesOf(webElement);
+            webElement = ObjectUtils.simpleProxy(WebElement.class, webElementProxy, interfaces);
+
+            // set webelement
+            guiElementData.webElement = webElement;
+            GuiElementData.WEBELEMENT_MAP.put(webElement, guiElementData.guiElement);
+
+            // find timings
+            int findCounter = Timings.raiseFindCounter();
+            if (numberOfFoundElements > 1 && guiElementData.index == -1) {
+                log().debug("find()#" + findCounter + ": GuiElement " + toString() + " was found " + numberOfFoundElements + " times. Will use the first occurrence.");
+            } else {
+                log().debug("find()#" + findCounter + ": GuiElement " + toString() + " was found.");
+            }
+            return findCounter;
+        } else {
+            log().debug("find(): GuiElement " + toString() + " was NOT found. Element list has 0 entries.");
+            return -1;
+        }
+    }
+
+    private void throwExceptionIfWebElementIsNull(Exception cause) {
+
+        if (guiElementData.webElement == null) {
+            String message = "GuiElement not found: " + toString();
+
+            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
+            if (currentMethodContext != null) {
+                currentMethodContext.errorContext().setThrowable(message, cause);
+            }
+
+            throw new ElementNotFoundException(message, cause);
+        }
+    }
+
+    private void logTimings(long start, int findCounter) {
+
+        if (findCounter != -1) {
+            GuiElementCore parent = guiElementData.parent;
+            long end = System.currentTimeMillis();
+            long ms = end - start;
+            if (parent != null) {
+                Timings.TIMING_GUIELEMENT_FIND_WITH_PARENT.put(findCounter, ms);
+            } else {
+                Timings.TIMING_GUIELEMENT_FIND.put(findCounter, ms);
+            }
+
+            final long limit = Timings.LARGE_LIMIT;
+            if (ms >= limit) {
+                log().warn("find()#" + findCounter + " of GuiElement " + toString() + " took longer than " + limit + " ms.");
+            }
         }
     }
 
