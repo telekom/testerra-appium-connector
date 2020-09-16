@@ -11,6 +11,14 @@ dependencies {
     compile 'eu.tsystems.mms.tic.testerra:report:1.0-RC-10'
 }
 
+task regressionTest(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/Smoketest.xml'
+        configFailurePolicy "continue"
+    }
+}
+
+
 configurations.all {
     resolutionStrategy {
 

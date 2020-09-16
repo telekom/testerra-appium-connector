@@ -20,7 +20,7 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.mobile;
+package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import io.appium.java_client.android.AndroidDriver;
