@@ -22,8 +22,10 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
+import eu.tsystems.mms.tic.testframework.internal.Viewport;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import io.appium.java_client.AppiumDriver;
@@ -61,7 +63,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
         driver.get("https://the-internet.herokuapp.com/dropdown");
 
 
-        final WebDriver driver2 = WebDriverManager.getWebDriver();
+        final WebDriver driver2 = WebDriverManager.getWebDriver("second");
         final AppiumDriver<MobileElement> appiumDriver2 = appiumDriverManager.fromWebDriver(driver2);
 
         appiumDriver2.rotate(ScreenOrientation.PORTRAIT);
@@ -72,7 +74,17 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
     }
 
     @Test
-    public void testT03_takeScreenshot() {
+    public void testT03_startSessionTwice() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+
+        driver.get("https://the-internet.herokuapp.com/dropdown");
+        Assert.assertEquals(WebDriverManager.getWebDriver(), driver, "Driver equals");
+    }
+
+    @Test
+    public void testT04_takeScreenshot() {
 
         final WebDriver driver = WebDriverManager.getWebDriver();
         final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
@@ -85,5 +97,35 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
         appiumDriver.rotate(ScreenOrientation.PORTRAIT);
         final Screenshot screenshotPortrait = UITestUtils.takeScreenshot(driver, true);
         Assert.assertNotNull(screenshotPortrait, "Screenshot created.");
+    }
+
+    @Test
+    public void testT05_executeJavaScript() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/");
+
+        final Object returnValue = JSUtils.executeScript(driver, "var test ='test'; return test;");
+        Assert.assertNotNull(returnValue, "JS returned a value.");
+        Assert.assertEquals(returnValue.toString(), "test", "Returned value equals.");
+    }
+
+    @Test
+    public void testT06_getViewport() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/");
+
+        final Viewport viewport = JSUtils.getViewport(driver);
+        Assert.assertNotNull(viewport, "JSUtils Viewport received.");
+
+        Object x = JSUtils.executeScript(driver, "return window.pageXOffset.toString();");
+        Object y = JSUtils.executeScript(driver, "return window.pageYOffset.toString();");
+        Object w = JSUtils.executeScript(driver, "return window.innerWidth.toString();");
+        Object h = JSUtils.executeScript(driver, "return window.innerHeight.toString();");
+
+        // TODO throws error ... may change it in testerra.
+        //        final Rectangle viewportRectangle = WebDriverUtils.getViewport(driver);
+        //        Assert.assertNotNull(viewportRectangle, "WebDriver Viewport created");
     }
 }

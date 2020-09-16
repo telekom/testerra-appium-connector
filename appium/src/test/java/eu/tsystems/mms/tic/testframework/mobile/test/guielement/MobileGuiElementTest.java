@@ -132,7 +132,7 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         buttonRemove.asserts().assertIsDisplayed();
 
         buttonRemove.click();
-        buttonAdd.asserts().assertIsNotDisplayed();
+        buttonRemove.asserts().assertIsNotDisplayed();
     }
 
     @Test
@@ -195,4 +195,86 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         Assert.assertFalse(checkboxOne.isSelected(), "Checkbox selected.");
     }
 
+    @Test
+    public void testT12_isVisible() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/");
+
+        final GuiElement link = new GuiElement(driver, Locate.by(By.linkText("WYSIWYG Editor")));
+        Assert.assertTrue(link.isVisible(true), "Link is visible");
+    }
+
+    @Test
+    public void testT13_getSubElement() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/forgot_password");
+
+        final GuiElement contentWrapper = new GuiElement(driver, Locate.by(By.xpath("//*[@id='content']")));
+        contentWrapper.asserts().assertIsDisplayed();
+
+        final GuiElement formElement = contentWrapper.getSubElement(Locate.by(By.xpath(".//*[@id='forgot_password']")));
+        formElement.asserts().assertIsDisplayed();
+
+        final GuiElement buttonElement = formElement.getSubElement(Locate.by(By.xpath(".//button[@id='form_submit']")));
+        buttonElement.asserts().assertIsDisplayed();
+    }
+
+    @Test
+    public void testT14_shadowDom() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/shadowdom");
+
+        final GuiElement shadowRoot = new GuiElement(driver, Locate.by(By.xpath("(//my-paragraph)[2]"))).shadowRoot();
+        shadowRoot.asserts().assertIsPresent();
+
+        final GuiElement shadowRootSubElement = shadowRoot.getSubElement(Locate.by(By.xpath(".//li[contains(text(), 'In a list!')]")));
+        shadowRootSubElement.asserts().assertIsDisplayed();
+    }
+
+    @Test
+    public void testT15_withFrames() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/nested_frames");
+
+        final GuiElement frameTop = new GuiElement(driver, Locate.by(By.xpath(".//frame[@name='frame-top']")));
+        frameTop.asserts().assertIsPresent();
+
+        final GuiElement frameBottom = new GuiElement(driver, Locate.by(By.xpath(".//frame[@name='frame-bottom']")));
+        frameBottom.asserts().assertIsPresent();
+
+        final GuiElement frameTopMiddle = new GuiElement(driver, Locate.by(By.xpath("//frame[@name='frame-middle']")), frameTop);
+        frameTopMiddle.asserts().assertIsPresent();
+
+        final GuiElement topMiddleContent = new GuiElement(driver, Locate.by(By.xpath("//*[@id='content' and text()='MIDDLE']")), frameTopMiddle);
+        topMiddleContent.asserts().assertIsPresent();
+
+        final GuiElement frameTopLeft = frameTop.getSubElement(Locate.by(By.xpath(".//frame[@name='frame-left']")));
+        frameTopLeft.asserts().assertIsPresent();
+    }
+
+    @Test
+    public void testTXX_dragAndDropElements() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/shadowdom");
+
+        final GuiElement draggable = new GuiElement(driver, Locate.by(By.xpath("//*[@id='column-a']")));
+        final GuiElement dropLocation = new GuiElement(driver, Locate.by(By.xpath("//*[@id='column-b']")));
+
+        draggable.asserts().assertIsDisplayed();
+        dropLocation.asserts().assertIsDisplayed();
+
+        // TODO action here
+
+        String text = dropLocation.getSubElement(Locate.by(By.xpath("//header"))).getText();
+        Assert.assertEquals(text, "A", "A successfully dropped.");
+    }
+
+    // scroll into view
+
 }
+
