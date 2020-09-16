@@ -268,8 +268,9 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public void hover() {
 
-        final Actions action = new Actions(driver);
-        action.moveToElement(this.getWebElement()).build().perform();
+        // Caused by: org.openqa.selenium.WebDriverException: Not Implemented (Method 'mouseMoveTo' is not implemented)
+        log().warn("AppiumGuiElement does not support method hover(), will use click()!");
+        this.click();
     }
 
     @Override
@@ -435,6 +436,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
+    @Deprecated
     public boolean isSelectable() {
 
         // TODO isSelectable
