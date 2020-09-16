@@ -20,7 +20,7 @@
   ~
   -->
 <!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd" >
-<suite name="Appium Regression Tests" verbose="10" configfailurepolicy="continue" thread-count="3" parallel="false">
+<suite name="Appium Regression Tests" verbose="10" configfailurepolicy="continue" thread-count="5" parallel="false">
 
     <test name="AppiumDriverTests" parallel="false">
         <classes>

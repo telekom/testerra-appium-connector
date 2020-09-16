@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 
@@ -33,7 +34,7 @@ import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
  *
  * @author Eric Kubenka
  */
-public class AbstractAppiumTest extends TesterraTest {
+public class AbstractAppiumTest extends TesterraTest implements Loggable {
 
     protected AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 

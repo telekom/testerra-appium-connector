@@ -37,7 +37,6 @@ import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.ObjectUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
-import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebElementProxy;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
@@ -406,7 +405,18 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     public boolean isVisible(boolean complete) {
 
         if (!isDisplayed()) return false;
-        final Rectangle viewport = WebDriverUtils.getViewport(driver);
+
+        final Object x = JSUtils.executeScript(driver, "return window.pageXOffset.toString();");
+        final Object y = JSUtils.executeScript(driver, "return window.pageYOffset.toString();");
+        final Object w = JSUtils.executeScript(driver, "return window.innerWidth.toString();");
+        final Object h = JSUtils.executeScript(driver, "return window.innerHeight.toString();");
+
+        final Rectangle viewport = new Rectangle(
+                Double.valueOf(x.toString()).intValue(),
+                Double.valueOf(y.toString()).intValue(),
+                Double.valueOf(h.toString()).intValue(),
+                Double.valueOf(w.toString()).intValue());
+
         final WebElement webElement = getWebElement();
 
         // getRect doesn't work
