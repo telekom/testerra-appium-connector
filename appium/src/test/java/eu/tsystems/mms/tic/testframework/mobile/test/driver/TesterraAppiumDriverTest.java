@@ -69,7 +69,6 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
         appiumDriver2.rotate(ScreenOrientation.PORTRAIT);
         driver2.get("https://the-internet.herokuapp.com/checkboxes");
 
-
         Assert.assertNotEquals(driver, driver2, "Driver equals");
     }
 
@@ -128,4 +127,5 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
         //        final Rectangle viewportRectangle = WebDriverUtils.getViewport(driver);
         //        Assert.assertNotNull(viewportRectangle, "WebDriver Viewport created");
     }
+
 }

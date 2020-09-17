@@ -33,4 +33,15 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
  */
 public class AppiumDriverRequest extends WebDriverRequest {
 
+    private AppiumDeviceQuery appiumDeviceQuery;
+
+    public AppiumDeviceQuery getAppiumDeviceQuery() {
+
+        return appiumDeviceQuery;
+    }
+
+    public void setAppiumDeviceQuery(AppiumDeviceQuery appiumDeviceQuery) {
+
+        this.appiumDeviceQuery = appiumDeviceQuery;
+    }
 }

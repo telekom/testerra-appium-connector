@@ -165,7 +165,7 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         final List<WebElement> options = selectElement.getOptions();
         Assert.assertNotEquals(options.size(), 0, "One ore more options shown.");
 
-        selectElement.selectByVisibleText("Option 2");
+        selectElement.selectByIndex(2);
         Assert.assertEquals(selectElement.getFirstSelectedOption().getText(), "Option 2", "Selected option matches.");
     }
 
@@ -256,7 +256,7 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         frameTopLeft.asserts().assertIsPresent();
     }
 
-    @Test
+    @Test(enabled = false)
     public void testTXX_dragAndDropElements() {
 
         final WebDriver driver = WebDriverManager.getWebDriver();

@@ -42,7 +42,6 @@ import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Point;
-import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -119,7 +118,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     public void scrollIntoView(Point offset) {
 
         JSUtils utils = new JSUtils();
-        utils.scrollToCenter(guiElementData.webDriver, getWebElement(), offset);
+        utils.scrollToCenter(driver, getWebElement(), offset);
     }
 
     @Override
@@ -404,33 +403,41 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public boolean isVisible(boolean complete) {
 
-        if (!isDisplayed()) return false;
+        scrollIntoView();
+        return this.isDisplayed();
 
-        final Object x = JSUtils.executeScript(driver, "return window.pageXOffset.toString();");
-        final Object y = JSUtils.executeScript(driver, "return window.pageYOffset.toString();");
-        final Object w = JSUtils.executeScript(driver, "return window.innerWidth.toString();");
-        final Object h = JSUtils.executeScript(driver, "return window.innerHeight.toString();");
+        // the testerra way of doing this is not supported on mobile devices, because sometimes the element rect get exorbitant height/width values
+        // my guess :: the high end pixel phone s(4k)
 
-        final Rectangle viewport = new Rectangle(
-                Double.valueOf(x.toString()).intValue(),
-                Double.valueOf(y.toString()).intValue(),
-                Double.valueOf(h.toString()).intValue(),
-                Double.valueOf(w.toString()).intValue());
+        //        if (!isDisplayed()) return false;
 
-        final WebElement webElement = getWebElement();
-
-        // getRect doesn't work
-        final Point elementLocation = webElement.getLocation();
-        final Dimension elementSize = webElement.getSize();
-        final java.awt.Rectangle viewportRect = new java.awt.Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
-        final java.awt.Rectangle elementRect = new java.awt.Rectangle(elementLocation.x, elementLocation.y, elementSize.width, elementSize.height);
-        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
+        //        final Object x = JSUtils.executeScript(driver, "return window.pageXOffset.toString();");
+        //        final Object y = JSUtils.executeScript(driver, "return window.pageYOffset.toString();");
+        //        final Object w = JSUtils.executeScript(driver, "return window.innerWidth.toString();");
+        //        final Object h = JSUtils.executeScript(driver, "return window.innerHeight.toString();");
+        //
+        //        final Rectangle viewport = new Rectangle(
+        //                Double.valueOf(x.toString()).intValue(),
+        //                Double.valueOf(y.toString()).intValue(),
+        //                Double.valueOf(h.toString()).intValue(),
+        //                Double.valueOf(w.toString()).intValue());
+        //
+        //        final WebElement webElement = getWebElement();
+        //
+        //        // getRect doesn't work
+        //        final Point elementLocation = webElement.getLocation();
+        //        final Dimension elementSize = webElement.getSize();
+        //        final java.awt.Rectangle viewportRect = new java.awt.Rectangle(viewport.x, viewport.y, viewport.width, viewport.height);
+        //        final java.awt.Rectangle elementRect = new java.awt.Rectangle(elementLocation.x, elementLocation.y, elementSize.width, elementSize.height);
+        //        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
     }
 
     @Override
     public boolean isSelected() {
 
-        return this.getWebElement().isSelected();
+        final String checked = this.getWebElement().getAttribute("checked");
+        final String selected = this.getWebElement().getAttribute("selected");
+        return checked.equalsIgnoreCase("true") || selected.equalsIgnoreCase("true");
     }
 
     @Override
