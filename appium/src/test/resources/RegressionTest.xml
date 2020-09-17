@@ -24,7 +24,7 @@
 
     <test name="AppiumDriverTests" parallel="false">
         <classes>
-            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.TesterraAppiumDriverTest"/>
+<!--            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.TesterraAppiumDriverTest"/>-->
         </classes>
     </test>
 
