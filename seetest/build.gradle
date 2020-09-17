@@ -2,7 +2,6 @@ apply plugin: 'java'
 apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
-
 //apply from: rootProject.file('release-bintray.gradle')
 
 ext {
@@ -21,13 +20,7 @@ repositories {
 }
 
 dependencies {
-
-    implementation 'eu.tsystems.mms.tic.testerra:driver-ui:' + testerraVersion
-    implementation 'eu.tsystems.mms.tic.testerra:report:' + testerraVersion
-
-    implementation 'com.google.code.gson:gson:2.8.5'
-
-    compile group: 'io.appium', name: 'java-client', version: '7.3.0'
+    compile project(':appium')
 }
 
 task regressionTest(type: Test) {

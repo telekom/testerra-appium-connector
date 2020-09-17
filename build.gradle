@@ -1,103 +1,21 @@
 plugins {
-    id 'java'
+    id "com.jfrog.bintray" version "1.8.5"
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
-}
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
 
-allprojects {
-
-    group 'eu.tsystems.mms.tic.testerra'
-    version '1-SNAPSHOT'
-
-    apply plugin: 'java'
-    apply plugin: 'maven'
-    apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
-
-    publishing {
-        publications {
-            mavenJava(MavenPublication) {
-                from components.java
-            }
-        }
-
-        repositories {
-            maven {
-                url System.getProperty("deployUrl", "none")
-                credentials {
-                    username System.getProperty("deployUsername", "none")
-                    password System.getProperty("deployPassword", "none")
-                }
-            }
-        }
-    }
-}
-
-ext {
-
-    testerra_mobile = project(':mobile')
-
-    activation = 'javax.activation:activation:1.1.1'
-
-    slf4j = [
-            'org.slf4j:slf4j-api:1.8.0-beta2',
-            'org.slf4j:slf4j-log4j12:1.8.0-beta2'
+task publishToBintray(type: GradleBuild) {
+    tasks = [
+            'core:bintrayUpload',
+            'core-interop:bintrayUpload',
+            'image-processing:bintrayUpload',
+            'driver-ui:bintrayUpload',
+            'driver-ui-desktop:bintrayUpload',
+            'surefire-connector:bintrayUpload',
+            'bmp:bintrayUpload',
+            'bup:bintrayUpload',
+            'mail-connector:bintrayUpload'
     ]
-
-    seetest = 'com.experitest:seetest-client:20.7'
-
-    jersey_client = 'org.glassfish.jersey.core:jersey-client:2.26'
-
-    apache_commons = [
-            'commons-io:commons-io:2.4',
-            'commons-net:commons-net:3.2',
-            'org.apache.commons:commons-lang3:3.5',
-            'org.apache.commons:commons-csv:1.5'
-    ]
-
-    jaxbVersion = '2.2.11'
-    jaxb = [
-            'javax.xml.bind:jaxb-api:' + jaxbVersion,
-            'com.sun.xml.bind:jaxb-core:' + jaxbVersion,
-            'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
-    ]
-
-    testerraVersion = '1.0-RC-8'
-    testerraGroup = 'eu.tsystems.mms.tic.testerra'
-    testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
-    testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
-
-    powermockVersion = '1.7.3'
-    powermock = [
-            'org.powermock:powermock-module-testng:' + powermockVersion,
-            'org.powermock:powermock-api-mockito2:' + powermockVersion
-    ]
-
-    mockito = 'org.mockito:mockito-core:2.8.9'
-}
-
-subprojects {
-
-    apply plugin: 'java'
-    sourceCompatibility = 1.8
-
-    repositories {
-
-        /**
-         * You should setup your gradle artifactory repository first
-         * @see{https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
-         */
-
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { url "https://cloud.experitest.com/repo/" }
-    }
-}
-
-test {
-    useTestNG()
 }
