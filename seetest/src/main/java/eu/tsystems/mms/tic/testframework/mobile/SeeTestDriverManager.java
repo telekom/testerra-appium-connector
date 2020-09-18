@@ -49,6 +49,13 @@ public class SeeTestDriverManager implements Loggable {
 
     private final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 
+    /**
+     * Transfer a {@link WebDriver} to {@link SeeTestClient} by using {@link AppiumDriver}
+     * See here for more https://docs.experitest.com/pages/viewpage.action?pageId=55281084
+     *
+     * @param driver {@link WebDriver}
+     * @return SeeTestClient
+     */
     public SeeTestClient fromWebDriver(WebDriver driver) {
 
         // TODO check for concrete instance type
