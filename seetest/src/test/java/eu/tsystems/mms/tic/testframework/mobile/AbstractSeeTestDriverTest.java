@@ -22,10 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile;
 
-import com.experitest.appium.SeeTestClient;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
-import org.openqa.selenium.WebDriver;
-import org.testng.annotations.Test;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 
 /**
  * Date: 17.09.2020
@@ -33,18 +30,9 @@ import org.testng.annotations.Test;
  *
  * @author Eric Kubenka
  */
-public class SeeTestDriverTest extends AbstractSeeTestDriverTest {
+public abstract class AbstractSeeTestDriverTest extends TesterraTest {
 
-    @Test
-    public void testT01_instantiateDriver() {
+    protected SeeTestDriverManager seeTestDriverManager = new SeeTestDriverManager();
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final SeeTestClient seeTestClient = this.seeTestDriverManager.fromWebDriver(driver);
-    }
-
-    @Test(enabled = false)
-    public void testT02_instantiateSeeTestClient() {
-
-    }
 
 }

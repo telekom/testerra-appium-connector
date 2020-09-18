@@ -39,12 +39,19 @@ import java.lang.reflect.Proxy;
  */
 public class AppiumDriverManager {
 
-
+    /**
+     * Returns an {@link AppiumDriver}
+     *
+     * @param driver {@link WebDriver}
+     * @return AppiumDriver
+     */
     public AppiumDriver<MobileElement> fromWebDriver(WebDriver driver) {
 
         final WebDriver rawDriver = ((EventFiringWebDriver) driver).getWrappedDriver();
         final InvocationHandler invocationHandler = Proxy.getInvocationHandler(rawDriver);
         final WebDriver rawAppiumDriver = ((WebDriverProxy) invocationHandler).getWrappedWebDriver();
+
+
         return (AppiumDriver<MobileElement>) rawAppiumDriver;
     }
 }

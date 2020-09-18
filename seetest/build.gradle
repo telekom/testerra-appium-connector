@@ -17,10 +17,15 @@ ext {
 
 repositories {
     mavenCentral()
+
+    maven {
+        url "https://cloud.experitest.com/repo/"
+    }
 }
 
 dependencies {
     compile project(':appium')
+    compile group: 'com.experitest', name: 'appium-seetest-extension', version: '+'
 }
 
 task regressionTest(type: Test) {

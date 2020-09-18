@@ -22,6 +22,16 @@
 
 package eu.tsystems.mms.tic.testframework.mobile;
 
+import com.experitest.appium.SeeTestClient;
+import com.experitest.client.Client;
+import com.experitest.client.GridClient;
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.MobileElement;
+import org.openqa.selenium.WebDriver;
+
 /**
  * Wrap an {@link io.appium.java_client.AppiumDriver}
  * <p>
@@ -30,7 +40,39 @@ package eu.tsystems.mms.tic.testframework.mobile;
  *
  * @author Eric Kubenka
  */
-public class SeeTestDriverManager {
+public class SeeTestDriverManager implements Loggable {
+
+    String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
+
+    String seeTestHost = PropertyManager.getProperty("tt.mobile.server.host");
+    int port = PropertyManager.getIntProperty("tt.mobile.server.port");
+
+    private final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
+
+    public SeeTestClient fromWebDriver(WebDriver driver) {
+
+        // TODO check for concrete instance type
+        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+        return fromAppiumDriver(appiumDriver);
+    }
+
+    public SeeTestClient fromAppiumDriver(AppiumDriver driver) {
+
+        return new SeeTestClient(driver);
+    }
+
+    public void create() {
+
+        log().info("Creating GridMobileDriver, connecting to SeeTest Grid at {} with access key.", seeTestHost);
+        final GridClient gridClient = new GridClient(accessKey, seeTestHost);
+        gridClient.enableVideoRecording();
+
+
+        Client client = gridClient.lockDeviceForExecution("Demo Tests", "", true, 30, 60000);
+        client.startVideoRecord();
+        //            client.startVideoRecord();
+        //        return gridClient;
+    }
 
 
 }
