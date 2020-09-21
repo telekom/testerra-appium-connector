@@ -1,11 +1,8 @@
 :browser:                           tt.browser
-:browser_version:                   tt.browser.version
 :baseurl:                           tt.baseurl
 
-:mobile_server_host:                tt.mobile.server.host
-:mobile_server_port:                tt.mobile.server.port
-:mobile_grid_user:                  tt.mobile.grid.user
-:mobile_grid_password:              tt.mobile.grid.password
-:mobile_grid_project:               tt.mobile.grid.project
+:mobile_server_url:                tt.mobile.server.host
+:mobile_access_key:                tt.mobile.server.port
 
-:mobile_device_filter:              tt.mobile.device.filter
+:mobile_device_query_ios:              tt.mobile.device.query.ios
+:mobile_device_query_android:          tt.mobile.device.query.android
