@@ -27,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
 import eu.tsystems.mms.tic.testframework.internal.Timings;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
@@ -35,9 +36,12 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.frames.FrameLogic;
 import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
-import eu.tsystems.mms.tic.testframework.utils.ObjectUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebElementProxy;
+import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.touch.LongPressOptions;
+import io.appium.java_client.touch.TapOptions;
+import io.appium.java_client.touch.offset.ElementOption;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -45,7 +49,6 @@ import org.openqa.selenium.Point;
 import org.openqa.selenium.StaleElementReferenceException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.interactions.Actions;
 import org.openqa.selenium.support.ui.Select;
 
 import java.awt.Color;
@@ -66,14 +69,18 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     private static final int DELAY_AFTER_GUIELEMENT_FIND_MILLIS = PropertyManager.getIntProperty(TesterraProperties.DELAY_AFTER_GUIELEMENT_FIND_MILLIS);
 
     private final WebDriver driver;
+    private final AppiumDriver appiumDriver;
     private final By by;
     private final GuiElementData guiElementData;
+
+    private static final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 
     public AppiumGuiElementCoreAdapter(By by, WebDriver webDriver, GuiElementData guiElementData) {
 
         this.by = by;
         this.driver = webDriver;
         this.guiElementData = guiElementData;
+        this.appiumDriver = appiumDriverManager.fromWebDriver(this.driver);
     }
 
     @Override
@@ -105,7 +112,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
         final int y = location.getY() - yOffset;
         log().trace("Scrolling into view: " + x + ", " + y);
 
-        JSUtils.executeScript(driver, "scroll(" + x + ", " + y + ");");
+        JSUtils.executeScript(appiumDriver, "scroll(" + x + ", " + y + ");");
     }
 
     @Override
@@ -118,7 +125,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     public void scrollIntoView(Point offset) {
 
         JSUtils utils = new JSUtils();
-        utils.scrollToCenter(driver, getWebElement(), offset);
+        utils.scrollToCenter(appiumDriver, getWebElement(), offset);
     }
 
     @Override
@@ -168,7 +175,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Deprecated
     public void mouseOverAbsolute2Axis() {
 
-        // TODO mouseOverAbsolute2Axis
+        throw new MobileActionNotSupportedException("mouseOverAbsolute2Axis() not supported on mobile GuiElement");
     }
 
     @Override
@@ -274,8 +281,10 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public void contextClick() {
 
-        final Actions actions = new Actions(driver);
-        actions.moveToElement(getWebElement()).contextClick().build().perform();
+        final ElementOption elementOption = new ElementOption().withElement(appiumDriver.findElement(this.by));
+        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
+        action.longPress(new LongPressOptions().withElement(elementOption));
+        action.perform();
     }
 
     @Override
@@ -309,13 +318,17 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
     @Override
     public void doubleClick() {
-        // TODO doubleClick
+
+        final ElementOption elementOption = new ElementOption().withElement(getWebElement());
+        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
+        final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
+        action.tap(tapOptions).perform();
     }
 
     @Override
     public void highlight(Color color) {
 
-        JSUtils.highlightWebElement(driver, this.getWebElement(), color);
+        JSUtils.highlightWebElement(appiumDriver, this.getWebElement(), color);
     }
 
     @Override
@@ -326,8 +339,8 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     public int getLengthOfValueAfterSendKeys(String textToInput) {
 
-        // TODO getLengthOfValueAfterSendKeys
-        return 0;
+        this.sendKeys(textToInput);
+        return this.getWebElement().getAttribute("value").length();
     }
 
     @Override
@@ -358,7 +371,8 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Override
     @Deprecated
     public void doubleClickJS() {
-        // TODO doubleClickJS
+
+        this.doubleClick();
     }
 
     @Override
@@ -456,20 +470,10 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     @Deprecated
     public boolean isSelectable() {
 
-        // TODO isSelectable
-        return false;
+        throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
     }
 
     private int find() {
-
-        //        try {
-        //            this.guiElementData.webElement = this.driver.findElement(this.by);
-        //        } catch (Exception e) {
-        //            throw new ElementNotFoundException("GuiElement not found: " + this.toString(), e);
-        //        }
-        //    }
-        //
-        //    private int findee() {
 
         int findCounter = -1;
         int numberOfFoundElements = 0;
@@ -482,7 +486,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
             if (parent != null) {
                 elements = parent.getWebElement().findElements(by);
             } else {
-                elements = this.driver.findElements(by);
+                elements = this.appiumDriver.findElements(by);
             }
             if (elements != null) {
                 final Locate selector = guiElementData.guiElement.getLocator();
@@ -523,16 +527,16 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
             // check for shadowRoot
             if (guiElementData.shadowRoot) {
-                Object o = JSUtils.executeScript(driver, "return arguments[0].shadowRoot", webElement);
+                Object o = JSUtils.executeScript(appiumDriver, "return arguments[0].shadowRoot", webElement);
                 if (o instanceof WebElement) {
                     webElement = (WebElement) o;
                 }
             }
 
             // proxy the web element for logging
-            WebElementProxy webElementProxy = new WebElementProxy(driver, webElement);
-            Class[] interfaces = ObjectUtils.getAllInterfacesOf(webElement);
-            webElement = ObjectUtils.simpleProxy(WebElement.class, webElementProxy, interfaces);
+            //            WebElementProxy webElementProxy = new WebElementProxy(driver, webElement);
+            //            Class[] interfaces = ObjectUtils.getAllInterfacesOf(webElement);
+            //            webElement = ObjectUtils.simpleProxy(WebElement.class, webElementProxy, interfaces);
 
             // set webelement
             guiElementData.webElement = webElement;

@@ -240,7 +240,7 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         final WebDriver driver = WebDriverManager.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/nested_frames");
 
-        final GuiElement frameTop = new GuiElement(driver, Locate.by(By.xpath(".//frame[@name='frame-top']")));
+        final GuiElement frameTop = new GuiElement(driver, Locate.by(By.xpath("//frame[@name='frame-top']")));
         frameTop.asserts().assertIsPresent();
 
         final GuiElement frameBottom = new GuiElement(driver, Locate.by(By.xpath(".//frame[@name='frame-bottom']")));
@@ -254,6 +254,17 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
 
         final GuiElement frameTopLeft = frameTop.getSubElement(Locate.by(By.xpath(".//frame[@name='frame-left']")));
         frameTopLeft.asserts().assertIsPresent();
+    }
+
+    @Test
+    public void testT16_contextClick() {
+
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        driver.get("https://the-internet.herokuapp.com/context_menu");
+
+        final GuiElement elementToClick = new GuiElement(driver, Locate.by(By.xpath("//*[@id='hot-spot']")));
+        elementToClick.asserts().assertIsDisplayed();
+        elementToClick.contextClick();
     }
 
     @Test(enabled = false)
