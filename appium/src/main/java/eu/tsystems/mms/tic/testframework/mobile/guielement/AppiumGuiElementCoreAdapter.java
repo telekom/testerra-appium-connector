@@ -38,10 +38,12 @@ import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.android.AndroidTouchAction;
+import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.LongPressOptions;
 import io.appium.java_client.touch.TapOptions;
+import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
+import io.appium.java_client.touch.offset.PointOption;
 import org.apache.commons.lang.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Dimension;
@@ -53,6 +55,7 @@ import org.openqa.selenium.support.ui.Select;
 
 import java.awt.Color;
 import java.io.File;
+import java.time.Duration;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.function.Predicate;
@@ -274,15 +277,16 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     public void hover() {
 
         // Caused by: org.openqa.selenium.WebDriverException: Not Implemented (Method 'mouseMoveTo' is not implemented)
-        log().warn("AppiumGuiElement does not support method hover(), will use click()!");
-        this.click();
+        throw new MobileActionNotSupportedException("hover() is not supported on mobile element.s");
     }
 
     @Override
     public void contextClick() {
 
         final ElementOption elementOption = new ElementOption().withElement(appiumDriver.findElement(this.by));
-        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
+        final TouchAction action = new TouchAction<>(appiumDriver);
+
+        //        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
         action.longPress(new LongPressOptions().withElement(elementOption));
         action.perform();
     }
@@ -320,7 +324,9 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     public void doubleClick() {
 
         final ElementOption elementOption = new ElementOption().withElement(getWebElement());
-        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
+        final TouchAction action = new TouchAction<>(appiumDriver);
+
+        //        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
         final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
         action.tap(tapOptions).perform();
     }
@@ -332,8 +338,17 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     @Override
-    public void swipe(int offsetX, int offSetY) {
-        // TODO swipe
+    public void swipe(int offsetX, int offsetY) {
+
+        TouchAction touchAction = new TouchAction(appiumDriver);
+
+        final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(getWebElement()));
+        touchAction.tap(tapOption);
+        touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
+        touchAction.moveTo(new PointOption().withCoordinates(offsetX, offsetY));
+        touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
+        touchAction.release();
+        touchAction.perform();
     }
 
     @Override
