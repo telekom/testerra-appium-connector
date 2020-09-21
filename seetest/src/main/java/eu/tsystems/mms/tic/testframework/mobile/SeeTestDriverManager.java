@@ -58,7 +58,6 @@ public class SeeTestDriverManager implements Loggable {
      */
     public SeeTestClient fromWebDriver(WebDriver driver) {
 
-        // TODO check for concrete instance type
         final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
         return fromAppiumDriver(appiumDriver);
     }
@@ -66,19 +65,6 @@ public class SeeTestDriverManager implements Loggable {
     public SeeTestClient fromAppiumDriver(AppiumDriver driver) {
 
         return new SeeTestClient(driver);
-    }
-
-    public void create() {
-
-        log().info("Creating GridMobileDriver, connecting to SeeTest Grid at {} with access key.", seeTestHost);
-        final GridClient gridClient = new GridClient(accessKey, seeTestHost);
-        gridClient.enableVideoRecording();
-
-
-        Client client = gridClient.lockDeviceForExecution("Demo Tests", "", true, 30, 60000);
-        client.startVideoRecord();
-        //            client.startVideoRecord();
-        //        return gridClient;
     }
 
 
