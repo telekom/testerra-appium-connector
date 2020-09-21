@@ -51,7 +51,6 @@ public class AppiumDriverManager {
         final InvocationHandler invocationHandler = Proxy.getInvocationHandler(rawDriver);
         final WebDriver rawAppiumDriver = ((WebDriverProxy) invocationHandler).getWrappedWebDriver();
 
-
         return (AppiumDriver<MobileElement>) rawAppiumDriver;
     }
 }
