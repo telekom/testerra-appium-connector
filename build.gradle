@@ -8,14 +8,6 @@ apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
 
 task publishToBintray(type: GradleBuild) {
     tasks = [
-            'core:bintrayUpload',
-            'core-interop:bintrayUpload',
-            'image-processing:bintrayUpload',
-            'driver-ui:bintrayUpload',
-            'driver-ui-desktop:bintrayUpload',
-            'surefire-connector:bintrayUpload',
-            'bmp:bintrayUpload',
-            'bup:bintrayUpload',
-            'mail-connector:bintrayUpload'
+            'appium:bintrayUpload',
     ]
 }
