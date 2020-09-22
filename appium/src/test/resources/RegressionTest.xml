@@ -20,15 +20,15 @@
   ~
   -->
 <!DOCTYPE suite SYSTEM "https://testng.org/testng-1.0.dtd" >
-<suite name="Appium Regression Tests" verbose="10" configfailurepolicy="continue" thread-count="5" parallel="false">
+<suite name="Appium Regression Tests" verbose="10" configfailurepolicy="continue" parallel="false">
 
     <test name="AppiumDriverTests" parallel="false">
         <classes>
-<!--            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.TesterraAppiumDriverTest"/>-->
+            <!--            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.TesterraAppiumDriverTest"/>-->
         </classes>
     </test>
 
-    <test name="AppiumGuiElementTest" parallel="methods">
+    <test name="AppiumGuiElementTest" parallel="methods" thread-count="2">
         <classes>
             <class name="eu.tsystems.mms.tic.testframework.mobile.test.guielement.MobileGuiElementTest"/>
         </classes>
