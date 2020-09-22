@@ -3,7 +3,7 @@ apply plugin: 'maven'
 apply plugin: 'maven-publish'
 
 
-//apply from: rootProject.file('release-bintray.gradle')
+apply from: project.file('release-bintray.gradle')
 
 ext {
     testerraVersion = '[1.0-RC,2-SNAPSHOT)'
@@ -32,8 +32,7 @@ dependencies {
 
 task regressionTest(type: Test) {
     useTestNG() {
-        suites 'src/test/resources/Smoketest.xml'
-        configFailurePolicy "continue"
+        suites 'src/test/resources/RegressionTest.xml'
     }
 }
 

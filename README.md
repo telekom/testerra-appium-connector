@@ -12,6 +12,10 @@ Testerra Mobile will register with Testerra Hooking system and uses the event bu
 
 
 ## Test
+Run following command 
+```gradle
+gradle clean regressionTest
+```
 
 
 ## Functions
