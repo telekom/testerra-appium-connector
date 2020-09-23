@@ -1,27 +1,4 @@
-apply plugin: 'java'
-apply plugin: 'maven'
-apply plugin: 'maven-publish'
-
-
-apply from: project.file('release-bintray.gradle')
-
-ext {
-    testerraVersion = '[1.0-RC,2-SNAPSHOT)'
-    moduleVersion = '1-SNAPSHOT'
-    if (System.properties.containsKey('moduleVersion')) {
-        moduleVersion = System.getProperty('moduleVersion')
-    }
-
-    group 'eu.tsystems.mms.tic.testerra'
-    version moduleVersion
-}
-
-repositories {
-    mavenCentral()
-}
-
 dependencies {
-
     compile 'eu.tsystems.mms.tic.testerra:driver-ui:' + testerraVersion
     compile 'eu.tsystems.mms.tic.testerra:report:' + testerraVersion
 
@@ -35,6 +12,9 @@ task regressionTest(type: Test) {
         suites 'src/test/resources/RegressionTest.xml'
     }
 }
+
+apply from: rootProject.file('release-bintray.gradle')
+
 
 configurations.all {
     resolutionStrategy {
