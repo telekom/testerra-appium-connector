@@ -4,10 +4,97 @@ plugins {
 
 apply plugin: 'java'
 apply plugin: 'maven'
-apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
+apply plugin: 'maven-publish'
+
+ext {
+    doNotPublish = this.&dnp
+
+    testerraVersion = '[1.0-RC,2-SNAPSHOT)'
+    moduleVersion = '1-SNAPSHOT'
+    if (System.properties.containsKey('moduleVersion')) {
+        moduleVersion = System.getProperty('moduleVersion')
+    }
+}
+
+def dnp(prj) {
+    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
+    prj.jar.enabled = true
+    prj.publish.enabled = false
+    prj.publishToMavenLocal.enabled = false
+    println("Do not publish JAR from " + prj)
+}
+
+allprojects {
+    group 'eu.tsystems.mms.tic.testerra'
+    version moduleVersion
+}
+
+subprojects {
+
+    apply plugin: 'java'
+    apply plugin: 'maven'
+    apply plugin: 'maven-publish'
+    apply plugin: 'jacoco' // code-coverage
+
+    // important!
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+
+    publishing {
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            archiveClassifier.set('sources')
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
+        }
+
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+            }
+        }
+
+        repositories {
+            maven {
+                url System.getProperty("deployUrl", "none")
+                credentials {
+                    username System.getProperty("deployUsername", "none")
+                    password System.getProperty("deployPassword", "none")
+                }
+            }
+        }
+    }
+
+
+    tasks.whenTaskAdded { t ->
+        if (t.name.startsWith("publish")) {
+            boolean e = t.project.publish.enabled
+            if (!e) {
+                println "Not running publish for " + t.project.name
+                t.enabled = false
+            }
+        }
+    }
+
+    test {
+        useTestNG()
+    }
+}
 
 task publishToBintray(type: GradleBuild) {
     tasks = [
             'appium:bintrayUpload',
     ]
 }
+
+

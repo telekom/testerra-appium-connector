@@ -1,4 +1,4 @@
-rootProject.name = 'mobile'
+rootProject.name = 'testerra-mobile'
 
 include 'appium'
 
