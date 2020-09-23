@@ -44,9 +44,6 @@ public class SeeTestDriverManager implements Loggable {
 
     String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
 
-    String seeTestHost = PropertyManager.getProperty("tt.mobile.server.host");
-    int port = PropertyManager.getIntProperty("tt.mobile.server.port");
-
     private final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 
     /**
