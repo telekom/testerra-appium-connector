@@ -1,5 +1,0 @@
-= Overview of all Testerra properties
-
-== Testerra Mobile properties
-
-include::properties/mobile-properties.adoc[leveloffset=+1]

@@ -1,26 +1,66 @@
 plugins {
-    id 'java'
+    id "com.jfrog.bintray" version "1.8.5"
 }
 
-repositories {
-    mavenLocal()
-    mavenCentral()
-    jcenter()
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+ext {
+    doNotPublish = this.&dnp
+
+    testerraVersion = '[1.0-RC,2-SNAPSHOT)'
+    moduleVersion = '1-SNAPSHOT'
+    if (System.properties.containsKey('moduleVersion')) {
+        moduleVersion = System.getProperty('moduleVersion')
+    }
+}
+
+def dnp(prj) {
+    // Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
+    prj.jar.enabled = true
+    prj.publish.enabled = false
+    prj.publishToMavenLocal.enabled = false
+    println("Do not publish JAR from " + prj)
 }
 
 allprojects {
-
     group 'eu.tsystems.mms.tic.testerra'
-    version '1-SNAPSHOT'
+    version moduleVersion
+}
+
+subprojects {
 
     apply plugin: 'java'
     apply plugin: 'maven'
-    apply plugin: 'maven-publish' // tasks publish and publishToMavenLocal
+    apply plugin: 'maven-publish'
+    apply plugin: 'jacoco' // code-coverage
+
+    // important!
+    repositories {
+        mavenLocal()
+        mavenCentral()
+        jcenter()
+    }
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
 
     publishing {
+
+        task sourcesJar(type: Jar, dependsOn: classes) {
+            archiveClassifier.set('sources')
+            from sourceSets.main.allSource
+        }
+
+        artifacts {
+            archives sourcesJar
+        }
+
         publications {
             mavenJava(MavenPublication) {
                 from components.java
+                artifact sourcesJar
             }
         }
 
@@ -34,81 +74,27 @@ allprojects {
             }
         }
     }
-}
 
-ext {
 
-    testerra_mobile = project(':mobile')
+    tasks.whenTaskAdded { t ->
+        if (t.name.startsWith("publish")) {
+            boolean e = t.project.publish.enabled
+            if (!e) {
+                println "Not running publish for " + t.project.name
+                t.enabled = false
+            }
+        }
+    }
 
-    activation = 'javax.activation:activation:1.1.1'
-
-    seleniumVersion = '3.13.0'
-    selenium = [
-            'org.seleniumhq.selenium:selenium-remote-driver:' + seleniumVersion,
-            'org.seleniumhq.selenium:selenium-java:' + seleniumVersion,
-            'org.seleniumhq.selenium:selenium-server:' + seleniumVersion
-    ]
-
-    slf4j = [
-            'org.slf4j:slf4j-api:1.8.0-beta2',
-            'org.slf4j:slf4j-log4j12:1.8.0-beta2'
-    ]
-
-    seetest = 'com.experitest:seetest-client:12.11'
-
-    jersey_client = 'org.glassfish.jersey.core:jersey-client:2.26'
-
-    apache_commons = [
-            'commons-io:commons-io:2.4',
-            'commons-net:commons-net:3.2',
-            'org.apache.commons:commons-lang3:3.5',
-            'org.apache.commons:commons-csv:1.5'
-    ]
-
-    jaxbVersion = '2.2.11'
-    jaxb = [
-            'javax.xml.bind:jaxb-api:' + jaxbVersion,
-            'com.sun.xml.bind:jaxb-core:' + jaxbVersion,
-            'com.sun.xml.bind:jaxb-impl:' + jaxbVersion
-    ]
-
-    testerraVersion = '1-SNAPSHOT'
-    testerraGroup = 'eu.tsystems.mms.tic.testerra'
-    testerraDriverUi = testerraGroup + ":driver-ui:" + testerraVersion
-    testerraCoreInterop = testerraGroup + ":core-interop:" + testerraVersion
-
-    powermockVersion = '1.7.3'
-    powermock = [
-            'org.powermock:powermock-module-testng:' + powermockVersion,
-            'org.powermock:powermock-api-mockito2:' + powermockVersion
-    ]
-
-    mockito = 'org.mockito:mockito-core:2.8.9'
-}
-
-subprojects {
-
-    apply plugin: 'java'
-    sourceCompatibility = 1.8
-
-    repositories {
-
-        /**
-         * You should setup your gradle artifactory repository first
-         * @see{https://confluence.t-systems-mms.eu/display/xeta/Development+Setup}
-         */
-
-        mavenLocal()
-        mavenCentral()
-        jcenter()
-        maven { url "https://cloud.experitest.com/repo/" }
+    test {
+        useTestNG()
     }
 }
 
-dependencies {
-    testCompile group: 'junit', name: 'junit', version: '4.12'
+task publishToBintray(type: GradleBuild) {
+    tasks = [
+            'appium:bintrayUpload',
+    ]
 }
 
-test {
-    useTestNG()
-}
+
