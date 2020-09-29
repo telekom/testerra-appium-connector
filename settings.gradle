@@ -1,5 +1,4 @@
-rootProject.name = 'mobile'
+rootProject.name = 'testerra-mobile'
 
-include ':mobile'
-include ':mobile-systemtest'
-//includeBuild "../testerra"
+include 'appium'
+
