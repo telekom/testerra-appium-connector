@@ -25,6 +25,7 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
+import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
@@ -89,7 +90,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
         }
 
         // general caps
-        desiredCapabilities.setCapability("testName", "Demo Tests"); // TODO here
+        desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
         switch (webDriverRequest.browser) {

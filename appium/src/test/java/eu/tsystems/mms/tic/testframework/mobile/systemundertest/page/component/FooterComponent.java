@@ -20,52 +20,33 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.mobile.systemundertest.page;
+package eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.component;
 
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
-import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
+import eu.tsystems.mms.tic.testframework.pageobjects.Page;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
 /**
- * Startpage
+ * Describe footer, etc.
  * <p>
- * Date: 17.09.2020
- * Time: 13:06
+ * Date: 14.05.2020
+ * Time: 12:53
  *
  * @author Eric Kubenka
  */
-public class StartPage extends AbstractInternetPage {
+public class FooterComponent extends Page {
 
     @Check
-    private GuiElement linkLogin = new GuiElement(this.getWebDriver(), Locate.by(By.linkText("Form Authentication")));
+    private GuiElement sectionFooter = new GuiElement(this.getWebDriver(), Locate.by(By.id("page-footer")));
 
     @Check
-    private GuiElement linkTables = new GuiElement(this.getWebDriver(), Locate.by(By.linkText("Sortable Data Tables")));
+    private GuiElement linkElementalSelenium = sectionFooter.getSubElement(Locate.by(By.xpath("//a")));
 
-    /**
-     * Constructor for existing sessions.
-     *
-     * @param driver .
-     */
-    public StartPage(WebDriver driver) {
+    public FooterComponent(WebDriver driver) {
 
         super(driver);
-    }
-
-    public LoginPage goToLoginPage() {
-
-        this.linkLogin.scrollIntoView();
-        this.linkLogin.click();
-        return PageFactory.create(LoginPage.class, this.getWebDriver());
-    }
-
-    public TablePage goToTablePage() {
-
-        this.linkTables.scrollIntoView();
-        this.linkTables.click();
-        return PageFactory.create(TablePage.class, this.getWebDriver());
     }
 }
