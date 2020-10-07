@@ -25,10 +25,14 @@ package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 import eu.tsystems.mms.tic.testframework.exceptions.PageNotFoundException;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.LoginPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.StartPage;
+import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.TablePage;
+import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.component.FooterComponent;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.WebDriver;
+import org.testng.Assert;
 import org.testng.annotations.Test;
 
 /**
@@ -43,9 +47,9 @@ public class MobilePageTest extends AbstractAppiumTest {
     public void testT01_instantiatePage() {
 
         final WebDriver driver = WebDriverManager.getWebDriver();
-        driver.get("https://the-internet.herokuapp.com/");
 
         StartPage startPage = PageFactory.create(StartPage.class, driver);
+        FooterComponent footerComponent = PageFactory.create(FooterComponent.class, driver);
     }
 
     @Test(expectedExceptions = PageNotFoundException.class)
@@ -70,5 +74,34 @@ public class MobilePageTest extends AbstractAppiumTest {
         loginPage = loginPage.doSubmitAndExpectedError();
         loginPage.messages().isErrorShown("your username is invalid");
     }
+
+    @Test
+    public void testT04_entryNotPresentOnTable() {
+
+        TestStep.begin("1. Init driver");
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        StartPage startPage = PageFactory.create(StartPage.class, driver);
+
+        TestStep.begin("2. Navigate to tables");
+        TablePage tablePage = startPage.goToTablePage();
+
+        TestStep.begin("3. Assert user not shown.");
+        Assert.assertFalse(tablePage.isUserShown("Test", "Michael"));
+    }
+
+    @Test
+    public void testT05_entryPresentOnTable() {
+
+        TestStep.begin("1. Init driver");
+        final WebDriver driver = WebDriverManager.getWebDriver();
+        StartPage startPage = PageFactory.create(StartPage.class, driver);
+
+        TestStep.begin("2. Navigate to tables");
+        TablePage tablePage = startPage.goToTablePage();
+
+        TestStep.begin("3. Assert user shown.");
+        Assert.assertTrue(tablePage.isUserShown("Smith", "John"));
+    }
+
 
 }

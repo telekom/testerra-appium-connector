@@ -25,7 +25,6 @@ package eu.tsystems.mms.tic.testframework.mobile.guielement;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.constants.TesterraProperties;
 import eu.tsystems.mms.tic.testframework.exceptions.ElementNotFoundException;
-import eu.tsystems.mms.tic.testframework.internal.Timings;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
@@ -286,7 +285,6 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
         final ElementOption elementOption = new ElementOption().withElement(appiumDriver.findElement(this.by));
         final TouchAction action = new TouchAction<>(appiumDriver);
 
-        //        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
         action.longPress(new LongPressOptions().withElement(elementOption));
         action.perform();
     }
@@ -326,7 +324,6 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
         final ElementOption elementOption = new ElementOption().withElement(getWebElement());
         final TouchAction action = new TouchAction<>(appiumDriver);
 
-        //        final AndroidTouchAction action = new AndroidTouchAction(appiumDriver);
         final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
         action.tap(tapOptions).perform();
     }
@@ -490,9 +487,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
     private int find() {
 
-        int findCounter = -1;
         int numberOfFoundElements = 0;
-        long start = System.currentTimeMillis();
         guiElementData.webElement = null;
         GuiElementCore parent = guiElementData.parent;
         Exception notFoundCause = null;
@@ -514,22 +509,22 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
                 }
                 numberOfFoundElements = elements.size();
 
-                findCounter = setWebElement(elements);
+                setWebElement(elements);
             }
         } catch (Exception e) {
             notFoundCause = e;
         }
-        throwExceptionIfWebElementIsNull(notFoundCause);
 
-        logTimings(start, findCounter);
+        throwExceptionIfWebElementIsNull(notFoundCause);
 
         if (DELAY_AFTER_GUIELEMENT_FIND_MILLIS > 0) {
             TimerUtils.sleep(DELAY_AFTER_GUIELEMENT_FIND_MILLIS);
         }
+
         return numberOfFoundElements;
     }
 
-    private int setWebElement(List<WebElement> elements) {
+    private void setWebElement(List<WebElement> elements) {
 
         int numberOfFoundElements = elements.size();
         if (numberOfFoundElements < guiElementData.index + 1) {
@@ -537,7 +532,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
         }
 
         if (numberOfFoundElements > 0) {
-            // webelement to set
+
             WebElement webElement = elements.get(Math.max(0, guiElementData.index));
 
             // check for shadowRoot
@@ -548,26 +543,11 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
                 }
             }
 
-            // proxy the web element for logging
-            //            WebElementProxy webElementProxy = new WebElementProxy(driver, webElement);
-            //            Class[] interfaces = ObjectUtils.getAllInterfacesOf(webElement);
-            //            webElement = ObjectUtils.simpleProxy(WebElement.class, webElementProxy, interfaces);
-
             // set webelement
             guiElementData.webElement = webElement;
             GuiElementData.WEBELEMENT_MAP.put(webElement, guiElementData.guiElement);
-
-            // find timings
-            int findCounter = Timings.raiseFindCounter();
-            if (numberOfFoundElements > 1 && guiElementData.index == -1) {
-                log().debug("find()#" + findCounter + ": GuiElement " + toString() + " was found " + numberOfFoundElements + " times. Will use the first occurrence.");
-            } else {
-                log().debug("find()#" + findCounter + ": GuiElement " + toString() + " was found.");
-            }
-            return findCounter;
         } else {
             log().debug("find(): GuiElement " + toString() + " was NOT found. Element list has 0 entries.");
-            return -1;
         }
     }
 
@@ -582,25 +562,6 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
             }
 
             throw new ElementNotFoundException(message, cause);
-        }
-    }
-
-    private void logTimings(long start, int findCounter) {
-
-        if (findCounter != -1) {
-            GuiElementCore parent = guiElementData.parent;
-            long end = System.currentTimeMillis();
-            long ms = end - start;
-            if (parent != null) {
-                Timings.TIMING_GUIELEMENT_FIND_WITH_PARENT.put(findCounter, ms);
-            } else {
-                Timings.TIMING_GUIELEMENT_FIND.put(findCounter, ms);
-            }
-
-            final long limit = Timings.LARGE_LIMIT;
-            if (ms >= limit) {
-                log().warn("find()#" + findCounter + " of GuiElement " + toString() + " took longer than " + limit + " ms.");
-            }
         }
     }
 
