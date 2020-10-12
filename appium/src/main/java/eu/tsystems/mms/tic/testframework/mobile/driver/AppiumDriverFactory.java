@@ -85,7 +85,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
     protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities) {
 
         // early exit.
-        if (webDriverRequest.browser == null) {
+        if (webDriverRequest.getBrowser() == null) {
             throw new TesterraRuntimeException("DriverRequest was null.");
         }
 
@@ -93,7 +93,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
         desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
-        switch (webDriverRequest.browser) {
+        switch (webDriverRequest.getBrowser()) {
             case MobileBrowsers.mobile_safari:
 
                 desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_IOS);
