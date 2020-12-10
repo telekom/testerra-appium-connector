@@ -9,6 +9,11 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ## Usage
 
+### Dependencies
+
+* Latest version: `1-SNAPSHOT`
+* Required Testerra version: `1-0-RC-13`
+
 Include the following dependency in your project.
 
 Gradle:
