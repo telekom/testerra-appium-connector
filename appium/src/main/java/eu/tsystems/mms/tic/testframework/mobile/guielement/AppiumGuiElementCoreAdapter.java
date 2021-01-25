@@ -32,8 +32,6 @@ import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.frames.FrameLogic;
-import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
-import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import io.appium.java_client.AppiumDriver;
@@ -552,15 +550,8 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
     }
 
     private void throwExceptionIfWebElementIsNull(Exception cause) {
-
         if (guiElementData.webElement == null) {
-            String message = "GuiElement not found: " + toString();
-
-            MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
-            if (currentMethodContext != null) {
-                currentMethodContext.errorContext().setThrowable(message, cause);
-            }
-
+            final String message = "GuiElement not found: " + toString();
             throw new ElementNotFoundException(message, cause);
         }
     }

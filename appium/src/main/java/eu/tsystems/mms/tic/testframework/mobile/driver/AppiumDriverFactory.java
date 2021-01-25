@@ -23,8 +23,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraSystemException;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
@@ -69,7 +67,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
             r = new AppiumDriverRequest();
             r.copyFrom(webDriverRequest);
         } else {
-            throw new TesterraSystemException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
+            throw new RuntimeException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
         }
 
         return r;
@@ -86,7 +84,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
         // early exit.
         if (webDriverRequest.getBrowser() == null) {
-            throw new TesterraRuntimeException("DriverRequest was null.");
+            throw new RuntimeException("DriverRequest was null.");
         }
 
         // general caps
@@ -125,7 +123,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
                 }
 
             default:
-                throw new TesterraRuntimeException("Mobile Browser not supported.");
+                throw new RuntimeException("Mobile Browser not supported.");
         }
     }
 

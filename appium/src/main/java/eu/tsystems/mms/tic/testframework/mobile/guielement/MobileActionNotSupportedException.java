@@ -22,7 +22,6 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
-import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
 
 /**
  * For actions that are not support on mobile devies, we can throw this one
@@ -32,7 +31,7 @@ import eu.tsystems.mms.tic.testframework.exceptions.TesterraRuntimeException;
  *
  * @author Eric Kubenka
  */
-public class MobileActionNotSupportedException extends TesterraRuntimeException {
+public class MobileActionNotSupportedException extends RuntimeException {
 
     public MobileActionNotSupportedException(String msg) {
 
