@@ -558,7 +558,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
             MethodContext currentMethodContext = ExecutionContextController.getCurrentMethodContext();
             if (currentMethodContext != null) {
-                currentMethodContext.errorContext().setThrowable(message, cause);
+                currentMethodContext.getErrorContext().setThrowable(message, cause);
             }
 
             throw new ElementNotFoundException(message, cause);
