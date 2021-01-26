@@ -22,7 +22,7 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:appium-connector:1.0-RC-2'
+implementation 'eu.tsystems.mms.tic.testerra:appium:1.0-RC-2'
 ````
 
 Maven:
@@ -31,7 +31,7 @@ Maven:
 
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
-    <artifactId>appium-connector</artifactId>
+    <artifactId>appium</artifactId>
     <version>1.0-RC-2</version>
 </dependency>
 ````
