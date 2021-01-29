@@ -32,7 +32,7 @@ Maven:
 <dependency>
     <groupId>eu.tsystems.mms.tic.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>1.0-RC-2</version>
+    <version>1.0-RC-3</version>
 </dependency>
 ````
 
