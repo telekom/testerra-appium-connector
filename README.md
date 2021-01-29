@@ -9,11 +9,11 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ## Releases
 
-* Latest Release: `1.0-RC-2`
+* Latest Release: `1.0-RC-3`
 
 ## Requirements
 
-* Testerra in Version `1.0-RC-20`
+* Testerra in Version `1.0-RC-21`
 
 ## Usage
 
@@ -22,7 +22,7 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:appium:1.0-RC-2'
+implementation 'eu.tsystems.mms.tic.testerra:appium:1.0-RC-3'
 ````
 
 Maven:
