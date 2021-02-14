@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 
 /**
@@ -31,7 +32,7 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverRequest extends WebDriverRequest {
+public class AppiumDriverRequest extends AbstractWebDriverRequest {
 
     private AppiumDeviceQuery appiumDeviceQuery;
 

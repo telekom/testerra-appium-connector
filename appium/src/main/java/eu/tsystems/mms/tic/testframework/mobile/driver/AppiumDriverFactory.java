@@ -25,6 +25,7 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
@@ -60,18 +61,21 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
     @Override
     protected AppiumDriverRequest buildRequest(WebDriverRequest webDriverRequest) {
 
-        AppiumDriverRequest r;
+        AppiumDriverRequest finalRequest;
 
         if (webDriverRequest instanceof AppiumDriverRequest) {
-            r = (AppiumDriverRequest) webDriverRequest;
+            finalRequest = (AppiumDriverRequest) webDriverRequest;
         } else if (webDriverRequest instanceof UnspecificWebDriverRequest) {
-            r = new AppiumDriverRequest();
-            r.copyFrom(webDriverRequest);
+            finalRequest = new AppiumDriverRequest();
+            finalRequest.setSessionKey(finalRequest.getSessionKey());
+            finalRequest.setBrowser(finalRequest.getBrowser());
+            finalRequest.setBrowserVersion(finalRequest.getBrowserVersion());
+            finalRequest.getBaseUrl().ifPresent(finalRequest::setBaseUrl);
         } else {
             throw new RuntimeException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
         }
 
-        return r;
+        return finalRequest;
     }
 
     @Override
@@ -102,7 +106,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
                     final IOSDriver<IOSElement> driver = new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
                     final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
                     log().info("iOS Session created for: " + appiumDeviceQuery.toString());
-                    driver.get(WebDriverManager.getBaseURL());
+                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
                     throw new SessionNotCreatedException("Could not create session, because URL invalid");
@@ -117,7 +121,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
                     final AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(new URL(GRID_URL), desiredCapabilities);
                     final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
                     log().info("Android Session created for: " + appiumDeviceQuery.toString());
-                    driver.get(WebDriverManager.getBaseURL());
+                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
                     throw new SessionNotCreatedException("Could not create session, because URL invalid");
