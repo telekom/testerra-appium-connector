@@ -65,10 +65,10 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
             finalRequest = (AppiumDriverRequest) webDriverRequest;
         } else if (webDriverRequest instanceof UnspecificWebDriverRequest) {
             finalRequest = new AppiumDriverRequest();
-            finalRequest.setSessionKey(finalRequest.getSessionKey());
-            finalRequest.setBrowser(finalRequest.getBrowser());
-            finalRequest.setBrowserVersion(finalRequest.getBrowserVersion());
-            finalRequest.getBaseUrl().ifPresent(finalRequest::setBaseUrl);
+            finalRequest.setSessionKey(webDriverRequest.getSessionKey());
+            finalRequest.setBrowser(webDriverRequest.getBrowser());
+            finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
+            webDriverRequest.getBaseUrl().ifPresent(finalRequest::setBaseUrl);
         } else {
             throw new RuntimeException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
         }
