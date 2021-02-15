@@ -23,10 +23,9 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 
 /**
- * Extends {@link WebDriverRequest}
+ * Extends {@link AbstractWebDriverRequest}
  * Date: 24.06.2020
  * Time: 13:29
  *

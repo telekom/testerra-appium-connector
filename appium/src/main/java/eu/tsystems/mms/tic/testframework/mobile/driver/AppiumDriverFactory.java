@@ -28,8 +28,6 @@ import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
@@ -59,7 +57,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
     private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
 
     @Override
-    protected AppiumDriverRequest buildRequest(WebDriverRequest webDriverRequest) {
+    protected AppiumDriverRequest buildRequest(AbstractWebDriverRequest webDriverRequest) {
 
         AppiumDriverRequest finalRequest;
 
