@@ -551,8 +551,7 @@ public class AppiumGuiElementCoreAdapter implements GuiElementCore, Loggable {
 
     private void throwExceptionIfWebElementIsNull(Exception cause) {
         if (guiElementData.webElement == null) {
-            final String message = "GuiElement not found: " + toString();
-            throw new ElementNotFoundException(message, cause);
+            throw new ElementNotFoundException(this.guiElementData.guiElement, cause);
         }
     }
 
