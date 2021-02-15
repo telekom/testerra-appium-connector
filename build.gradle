@@ -10,7 +10,7 @@ ext {
     doNotPublish = this.&dnp
 
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-20'
+    testerraCompileVersion = '1-SNAPSHOT'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
