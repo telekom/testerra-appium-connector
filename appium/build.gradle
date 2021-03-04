@@ -16,9 +16,6 @@ task regressionTest(type: Test) {
     }
 }
 
-apply from: rootProject.file('release-bintray.gradle')
-
-
 configurations.all {
     resolutionStrategy {
 
