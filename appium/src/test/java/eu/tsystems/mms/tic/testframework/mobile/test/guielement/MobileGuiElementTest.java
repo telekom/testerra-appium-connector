@@ -246,10 +246,10 @@ public class MobileGuiElementTest extends AbstractAppiumTest {
         final GuiElement frameBottom = new GuiElement(driver, Locate.by(By.xpath(".//frame[@name='frame-bottom']")));
         frameBottom.asserts().assertIsPresent();
 
-        final GuiElement frameTopMiddle = new GuiElement(driver, Locate.by(By.xpath("//frame[@name='frame-middle']")), frameTop);
+        final GuiElement frameTopMiddle = (GuiElement) frameTop.find(By.xpath("//frame[@name='frame-middle']"));
         frameTopMiddle.asserts().assertIsPresent();
 
-        final GuiElement topMiddleContent = new GuiElement(driver, Locate.by(By.xpath("//*[@id='content' and text()='MIDDLE']")), frameTopMiddle);
+        final GuiElement topMiddleContent = (GuiElement) frameTopMiddle.find(By.xpath("//*[@id='content' and text()='MIDDLE']"));
         topMiddleContent.asserts().assertIsPresent();
 
         final GuiElement frameTopLeft = frameTop.getSubElement(Locate.by(By.xpath(".//frame[@name='frame-left']")));

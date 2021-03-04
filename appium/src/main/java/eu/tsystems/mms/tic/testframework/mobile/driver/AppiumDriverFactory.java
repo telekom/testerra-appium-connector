@@ -23,16 +23,22 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverFactory;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
+import java.util.Arrays;
+import java.util.List;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -48,7 +54,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
+public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRequest> implements WebDriverFactory {
 
     private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
     private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
@@ -133,5 +139,15 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
     @Override
     protected void setupSession(EventFiringWebDriver eventFiringWebDriver, AppiumDriverRequest request) {
 
+    }
+
+    @Override
+    public List<String> getSupportedBrowsers() {
+        return Arrays.asList(MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
+    }
+
+    @Override
+    public GuiElementCore createCore(GuiElementData guiElementData) {
+        return new AppiumGuiElementCoreAdapter(guiElementData);
     }
 }

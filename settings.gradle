@@ -2,4 +2,4 @@ rootProject.name = 'testerra-mobile'
 
 include 'appium'
 
-//includeBuild("../testerra")
+includeBuild("../testerra")
