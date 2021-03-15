@@ -7,9 +7,8 @@
 </p>
 
 <p align="center">
-  <a href="#installation">Installation</a> •
+  <a href="#setup">Setup</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#development">Development</a> •
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
@@ -17,18 +16,20 @@
 </p>
 
 ## About this module
-Appium connector is an extension for the Testerra Framework and uses the open source standard Appium to run web tests based on
-Testerra on mobile devices.
+
+This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
+
+Appium connector uses the open source standard Appium to run web tests based on Testerra on mobile devices.
 
 It will register with Testerra Hooking system and uses the event bus to react on Testerra events.
 
-----
+## Setup
 
-## Requirements
+### Requirements
 
 * Testerra in Version `1.0-RC-30`
 
-## Usage
+### Usage
 
 Include the following dependency in your project.
 
@@ -49,7 +50,9 @@ Maven:
 </dependency>
 ````
 
-## Use appium features
+## Documentation
+
+### Use appium features
 
 The Appium connector will register `mobile_chrome` and `mobile_safari` as available browser configurations for your `{browser}`
 value. Further the connector will provide the `AppiumDriverManager` that you can use to unlock appium related features on the
@@ -74,7 +77,7 @@ public class ExampleTest extends TesterraTest {
 }
 ```
         
-## Device filtering
+### Device filtering
 
 If you have to run your tests on specific mobile devices available on your mobile device farm, you can use
 the `tt.mobile.device.query.android` and `tt.mobile.device.query.ios` to filter for your devices by different properties. To reserve
@@ -93,16 +96,16 @@ The following query attributes are available for the device query strings.
 Please keep in mind, that you have to specify the device query for each operating system with the properties mentioned above. The
 default values will provide you a device with given operating system and of `@category PHONE`.
 
-### Screenshots
+#### Screenshots
 
 Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to
 achieve this.
 
-### Videos
+#### Videos
 
 Because videos are a platform dependent feature, Appium connector does not provide any platform-related video recording features.
 
-## Properties
+### Properties
 
 |Property|default|Description|
 |---|---|---|
@@ -138,10 +141,6 @@ Some hints for using GitHub Packages as Maven repository
 * Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
 * As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
 
-## Documentation
-
-Check out our comprehensive [Testerra documentation](http://docs.testerra.io)!
-
 ## Code of Conduct
 
 This project has adopted the [Contributor Covenant](https://www.contributor-covenant.org/) in version 2.0 as our code of conduct. Please see the details in our [CODE_OF_CONDUCT.md](CODE_OF_CONDUCT.md). All contributors must abide by the code of conduct.
@@ -160,15 +159,6 @@ The following channels are available for discussions, feedback, and support requ
 | ------------------------ | ------------------------------------------------------ |
 | **Issues**   | <a href="/../../issues/new/choose" title="Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-appium-connector?style=flat"></a> |
 | **Other Requests**    | <a href="mailto:testerra@t-systems-mms.com" title="Email us"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-
-## Repositories
-
-| Repository          | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
-| [testerra] | Testerra |
-
-[testerra]: https://github.com/telekom/testerra
 
 ## How to Contribute
 
