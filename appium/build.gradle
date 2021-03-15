@@ -1,13 +1,13 @@
 dependencies {
     implementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraCompileVersion
-    compileOnly 'eu.tsystems.mms.tic.testerra:report:' + testerraCompileVersion
+//    compileOnly 'eu.tsystems.mms.tic.testerra:report:' + testerraCompileVersion
 
     implementation 'com.google.code.gson:gson:2.8.5'
-
-    implementation group: 'io.appium', name: 'java-client', version: '7.3.0'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+    implementation 'io.appium:java-client:7.3.0'
 
 //    testImplementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraTestVersion
-    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
+//    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
 }
 
 task regressionTest(type: Test) {
@@ -15,9 +15,6 @@ task regressionTest(type: Test) {
         suites 'src/test/resources/RegressionTest.xml'
     }
 }
-
-apply from: rootProject.file('release-bintray.gradle')
-
 
 configurations.all {
     resolutionStrategy {
