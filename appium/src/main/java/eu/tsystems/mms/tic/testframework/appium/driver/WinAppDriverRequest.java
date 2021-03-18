@@ -19,22 +19,21 @@
  * under the License.
  *
  */
-package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+package eu.tsystems.mms.tic.testframework.appium.driver;
 
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 
-/**
- * Extends Testerra {@link eu.tsystems.mms.tic.testframework.constants.Browsers}
- * <p>
- * Date: 08.09.2020
- * Time: 09:19
- *
- * @author Eric Kubenka
- * @deprecated Use {@link Browsers} instead
- */
-public class MobileBrowsers {
+public class WinAppDriverRequest extends AbstractWebDriverRequest {
+    public void setApplication(String applicationId) {
+        this.getDesiredCapabilities().setCapability("app", applicationId);
+    }
 
-    public static final String mobile_chrome = "mobile_chrome";
-    public static final String mobile_safari = "mobile_safari";
+    public void setWorkingDir(String workingDir) {
+        this.getDesiredCapabilities().setCapability("appWorkingDir", workingDir);
+    }
+
+    public void setApplicationArguments(String ... argv) {
+        this.getDesiredCapabilities().setCapability("appArguments", String.join(" ", argv));
+    }
 }

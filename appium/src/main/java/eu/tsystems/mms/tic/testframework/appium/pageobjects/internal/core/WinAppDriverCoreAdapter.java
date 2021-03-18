@@ -20,26 +20,19 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.mobile.guielement;
+package eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core;
 
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.DesktopGuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
-import eu.tsystems.mms.tic.testframework.pageobjects.internal.creation.GuiElementCoreFactory;
-import org.openqa.selenium.By;
-import org.openqa.selenium.WebDriver;
-
 /**
- * Implements {@link GuiElementCoreFactory} to create Appium base {@link GuiElementCore} implementations
- * Date: 24.06.2020
- * Time: 13:18
- *
- * @author Eric Kubenka
+ * Implements {@link GuiElementCore} to fulfill Testerra {@link GuiElement} functionality.
  */
-public class AppiumGuiElementCoreFactory implements GuiElementCoreFactory {
+public class WinAppDriverCoreAdapter extends DesktopGuiElementCore implements Loggable {
 
-    @Override
-    public GuiElementCore create(By by, WebDriver webDriver, GuiElementData guiElementData) {
-
-        return new AppiumGuiElementCoreAdapter(by, webDriver, guiElementData);
+    public WinAppDriverCoreAdapter(GuiElementData guiElementData) {
+        super(guiElementData);
     }
 }
