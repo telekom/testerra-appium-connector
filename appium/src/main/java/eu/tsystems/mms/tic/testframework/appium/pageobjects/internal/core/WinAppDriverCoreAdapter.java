@@ -27,6 +27,9 @@ import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.DesktopGuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
+import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+
 /**
  * Implements {@link GuiElementCore} to fulfill Testerra {@link GuiElement} functionality.
  */
@@ -34,5 +37,15 @@ public class WinAppDriverCoreAdapter extends DesktopGuiElementCore implements Lo
 
     public WinAppDriverCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
+    }
+
+    @Override
+    protected void switchToDefaultContent(WebDriver webDriver) {
+        // not implemented
+    }
+
+    @Override
+    protected void switchToFrame(WebDriver webDriver, WebElement webElement) {
+        // not implemented
     }
 }

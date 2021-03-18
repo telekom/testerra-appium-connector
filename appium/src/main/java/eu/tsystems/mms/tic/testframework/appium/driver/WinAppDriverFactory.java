@@ -25,26 +25,20 @@ package eu.tsystems.mms.tic.testframework.appium.driver;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
-import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
 import java.net.MalformedURLException;
-import java.net.URI;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 public class WinAppDriverFactory implements WebDriverFactory, Loggable {
 
@@ -80,8 +74,8 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable {
         WinAppDriverRequest winAppDriverRequest = (WinAppDriverRequest)webDriverRequest;
         DesiredCapabilities desiredCapabilities = winAppDriverRequest.getDesiredCapabilities();
         //desiredCapabilities.setCapability("deviceName", "WindowsPC");
-        WindowsDriver<WindowsElement> driver = new WindowsDriver<>(winappServerUrl, desiredCapabilities);
-        return new EventFiringWebDriver(driver);
+        WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(winappServerUrl, desiredCapabilities);
+        return windowsDriver;
     }
 
     @Override

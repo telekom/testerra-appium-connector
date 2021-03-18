@@ -23,15 +23,13 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
@@ -43,7 +41,6 @@ import java.util.List;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -55,7 +52,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRequest> implements WebDriverFactory {
+public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
     private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
@@ -63,38 +60,31 @@ public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRe
     private static final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
     private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
 
-    @Override
-    protected AppiumDriverRequest buildRequest(WebDriverRequest webDriverRequest) {
+    private AppiumDriverRequest mapRequest(WebDriverRequest webDriverRequest) {
 
         AppiumDriverRequest finalRequest;
 
         if (webDriverRequest instanceof AppiumDriverRequest) {
             finalRequest = (AppiumDriverRequest) webDriverRequest;
-        } else if (webDriverRequest instanceof UnspecificWebDriverRequest) {
+        } else {
             finalRequest = new AppiumDriverRequest();
             finalRequest.setSessionKey(webDriverRequest.getSessionKey());
             finalRequest.setBrowser(webDriverRequest.getBrowser());
             finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
-        } else {
-            throw new RuntimeException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
         }
-
         return finalRequest;
     }
 
     @Override
-    protected DesiredCapabilities buildCapabilities(DesiredCapabilities preSetCaps, AppiumDriverRequest request) {
-
-        return preSetCaps;
-    }
-
-    @Override
-    protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities, SessionContext sessionContext) {
-
+    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
         // early exit.
         if (webDriverRequest.getBrowser() == null) {
             throw new RuntimeException("DriverRequest was null.");
         }
+
+        AppiumDriverRequest appiumDriverRequest = mapRequest(webDriverRequest);
+
+        DesiredCapabilities desiredCapabilities = appiumDriverRequest.getDesiredCapabilities();
 
         // general caps
         desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
@@ -110,7 +100,7 @@ public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRe
                     final IOSDriver<IOSElement> driver = new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
                     final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
                     log().info("iOS Session created for: " + appiumDeviceQuery.toString());
-                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
+                    appiumDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
                     throw new SessionNotCreatedException("Could not create session, because URL invalid");
@@ -125,7 +115,7 @@ public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRe
                     final AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(new URL(GRID_URL), desiredCapabilities);
                     final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
                     log().info("Android Session created for: " + appiumDeviceQuery.toString());
-                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
+                    appiumDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
                     throw new SessionNotCreatedException("Could not create session, because URL invalid");
@@ -134,11 +124,6 @@ public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRe
             default:
                 throw new RuntimeException("Mobile Browser not supported.");
         }
-    }
-
-    @Override
-    protected void setupSession(EventFiringWebDriver eventFiringWebDriver, AppiumDriverRequest request) {
-
     }
 
     @Override

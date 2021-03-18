@@ -24,11 +24,23 @@ package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.driver.WinAppDriverRequest;
+import eu.tsystems.mms.tic.testframework.appium.windows.CalculatorApp;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElementFinder;
+import eu.tsystems.mms.tic.testframework.pageobjects.XPath;
+import eu.tsystems.mms.tic.testframework.testing.AssertProvider;
+import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
+import io.appium.java_client.windows.WindowsDriver;
+import io.appium.java_client.windows.WindowsElement;
+import java.util.Optional;
+import org.junit.Assert;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -38,16 +50,42 @@ import org.testng.annotations.Test;
  *
  * @author Eric Kubenka
  */
-public class WinAppDriverTest implements WebDriverManagerProvider, UiElementFinderFactoryProvider {
+public class WinAppDriverTest implements
+        WebDriverManagerProvider,
+        PageFactoryProvider,
+        UiElementFinderFactoryProvider,
+        Loggable,
+        AssertProvider
+{
 
     @Test
     public void test_calculate() {
         WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
         winAppDriverRequest.setBrowser(Browsers.windows);
         winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
 
-        UiElementFinder uiElementFinder = UI_ELEMENT_FINDER_FACTORY.create(webDriver);
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
+        CalculatorApp calculatorApp = PAGE_FACTORY.createPage(CalculatorApp.class, webDriver);
+        calculatorApp.typeSomething();
+        calculatorApp.getResults().expect().text().contains("1337");
+    }
+
+    @Test
+    public void test_calculate_works() {
+        WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
+        winAppDriverRequest.setBrowser(Browsers.windows);
+        winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
+        webDriver.findElement(By.xpath("//Button[@Name=\"Eins\"]")).click();
+        webDriver.findElement(By.xpath("//*[@AutomationId=\"num1Button\"]")).click();
+        Optional<WindowsDriver> windowsDriver1 = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, WindowsDriver.class);
+        Assert.assertTrue(windowsDriver1.isPresent());
+        WindowsDriver windowsDriver = windowsDriver1.get();
+        WebElement num2Button = windowsDriver.findElementByAccessibilityId("num2Button");
+        num2Button.click();
+
+        WebElement calculatorResults = windowsDriver.findElementByAccessibilityId("CalculatorResults");
+        ASSERT.assertContains(calculatorResults.getText(), "112");
     }
 
     @AfterMethod
