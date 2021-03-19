@@ -22,11 +22,35 @@
 
 package eu.tsystems.mms.tic.testframework.appium.driver;
 
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 public class WinAppDriverRequest extends AbstractWebDriverRequest {
+    public WinAppDriverRequest() {
+        setBrowser(Browsers.windows);
+    }
+    public void startDesktop() {
+        this.setApplication("Root");
+    }
+
+    public void setApplicationPath(String applicationPath) {
+        this.setApplicationPath(Paths.get(applicationPath));
+    }
+
+    public void setApplicationPath(Path applicationPath) {
+        if (!Files.exists(applicationPath)) {
+            throw new RuntimeException("Application not found: " + applicationPath);
+        }
+        this.setApplication(applicationPath.toString());
+        this.setWorkingDir(applicationPath.getParent().toString());
+    }
+
     public void setApplication(String applicationId) {
         this.getDesiredCapabilities().setCapability("app", applicationId);
+        this.setSessionKey(applicationId);
     }
 
     public void setWorkingDir(String workingDir) {
@@ -35,5 +59,9 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
 
     public void setApplicationArguments(String ... argv) {
         this.getDesiredCapabilities().setCapability("appArguments", String.join(" ", argv));
+    }
+
+    public void setWindowHandle(String windowHandle) {
+        this.getDesiredCapabilities().setCapability("appTopLevelWindow", windowHandle);
     }
 }

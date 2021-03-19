@@ -73,7 +73,10 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable {
         }
         WinAppDriverRequest winAppDriverRequest = (WinAppDriverRequest)webDriverRequest;
         DesiredCapabilities desiredCapabilities = winAppDriverRequest.getDesiredCapabilities();
-        //desiredCapabilities.setCapability("deviceName", "WindowsPC");
+        desiredCapabilities.setCapability("deviceName", "WindowsPC");
+        // https://github.com/microsoft/WinAppDriver/issues/1092
+//        desiredCapabilities.setCapability("ms:waitForAppLaunch", "8");
+//        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
         WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(winappServerUrl, desiredCapabilities);
         return windowsDriver;
     }

@@ -26,16 +26,11 @@ import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.driver.WinAppDriverRequest;
 import eu.tsystems.mms.tic.testframework.appium.windows.CalculatorApp;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
-import eu.tsystems.mms.tic.testframework.pageobjects.UiElementFinder;
-import eu.tsystems.mms.tic.testframework.pageobjects.XPath;
 import eu.tsystems.mms.tic.testframework.testing.AssertProvider;
 import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
-import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
 import io.appium.java_client.windows.WindowsDriver;
-import io.appium.java_client.windows.WindowsElement;
 import java.util.Optional;
 import org.junit.Assert;
 import org.openqa.selenium.By;
@@ -61,7 +56,6 @@ public class WinAppDriverTest implements
     @Test
     public void test_calculate() {
         WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
-        winAppDriverRequest.setBrowser(Browsers.windows);
         winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
 
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
@@ -73,7 +67,6 @@ public class WinAppDriverTest implements
     @Test
     public void test_calculate_works() {
         WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
-        winAppDriverRequest.setBrowser(Browsers.windows);
         winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
         webDriver.findElement(By.xpath("//Button[@Name=\"Eins\"]")).click();
