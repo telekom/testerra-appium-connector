@@ -22,7 +22,6 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.driver.WinAppDriverRequest;
 import eu.tsystems.mms.tic.testframework.appium.windows.CalculatorApp;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
