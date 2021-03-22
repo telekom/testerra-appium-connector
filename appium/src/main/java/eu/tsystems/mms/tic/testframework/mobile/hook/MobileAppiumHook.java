@@ -21,6 +21,7 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.hook;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileBrowsers;
@@ -40,6 +41,7 @@ public class MobileAppiumHook implements ModuleHook {
 
     @Override
     public void init() {
+        PropertyManager.loadProperties("grid.properties");
         WebDriverManager.registerWebDriverFactory(new AppiumDriverFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
         GuiElement.registerGuiElementCoreFactory(new AppiumGuiElementCoreFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }
