@@ -10,9 +10,9 @@ dependencies {
 //    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
 }
 
-task regressionTest(type: Test) {
+test() {
     useTestNG() {
-        suites 'src/test/resources/RegressionTest.xml'
+        suites 'src/test/resources/SmokeTest.xml'
     }
 }
 

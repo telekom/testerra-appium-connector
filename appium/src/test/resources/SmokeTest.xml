@@ -24,13 +24,7 @@
 
     <test name="AppiumDriverTests" parallel="false">
         <classes>
-            <!--            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.TesterraAppiumDriverTest"/>-->
-        </classes>
-    </test>
-
-    <test name="AppiumGuiElementTest" parallel="methods" thread-count="2">
-        <classes>
-            <class name="eu.tsystems.mms.tic.testframework.mobile.test.guielement.MobileGuiElementTest"/>
+            <class name="eu.tsystems.mms.tic.testframework.mobile.test.driver.VanillaAppiumDriverTest"/>
         </classes>
     </test>
 

@@ -23,6 +23,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
@@ -51,7 +52,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class VanillaAppiumDriverTest extends TesterraTest {
+public class VanillaAppiumDriverTest extends TesterraTest implements Loggable {
 
     private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
     //    protected IOSDriver<IOSElement> driver = null;
@@ -67,8 +68,9 @@ public class VanillaAppiumDriverTest extends TesterraTest {
         dc.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
         dc.setBrowserName(MobileBrowserType.CHROMIUM);
+        URL url = new URL(PropertyManager.getProperty("tt.mobile.grid.url"));
         //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
-        driver = new AndroidDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
+        driver = new AndroidDriver<>(url, dc);
     }
 
     @Test

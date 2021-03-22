@@ -32,6 +32,15 @@ subprojects {
 
     test {
         useTestNG()
+
+        testLogging {
+            outputs.upToDateWhen { false }
+            showStandardStreams = true
+        }
+
+        options {
+            systemProperties(System.getProperties())
+        }
     }
 }
 
