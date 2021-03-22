@@ -23,6 +23,9 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.report.Report;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
@@ -48,7 +51,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverTest {
+public class VanillaAppiumDriverTest extends TesterraTest {
 
     private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
     //    protected IOSDriver<IOSElement> driver = null;
@@ -64,8 +67,8 @@ public class AppiumDriverTest {
         dc.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
         dc.setBrowserName(MobileBrowserType.CHROMIUM);
-        //        driver = new IOSDriver<>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
-        driver = new AndroidDriver<AndroidElement>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
+        //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
+        driver = new AndroidDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
     }
 
     @Test
@@ -79,7 +82,7 @@ public class AppiumDriverTest {
         });
 
         File screenshotAs = driver.getScreenshotAs(OutputType.FILE);
-        System.out.println(screenshotAs.getAbsolutePath());
+        TesterraListener.getReport().provideScreenshot(screenshotAs, Report.FileMode.MOVE);
         WebElement searchBar = driver.findElement(By.xpath("//input[@name='q']"));
         searchBar.sendKeys("Experitest");
     }
