@@ -9,6 +9,9 @@ ext {
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
     }
+    if (System.properties.containsKey('ttVersion')) {
+        testerraTestVersion = testerraCompileVersion = System.getProperty('ttVersion')
+    }
 }
 
 subprojects {

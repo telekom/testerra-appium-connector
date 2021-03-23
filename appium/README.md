@@ -15,7 +15,7 @@ and then just run
 gradle test
 ```
 
-## Test suites
+### Test suites
 
 ```shell
 gradle test -P[suite-name]
@@ -24,3 +24,7 @@ gradle test -P[suite-name]
 * *smoke*: Smoke test suite
 * *regression*: Regression test suite
 
+### Test against another Testerra version
+```shell
+gradle test -DttVersion=1-SNAPSHOT
+```
