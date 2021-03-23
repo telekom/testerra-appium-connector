@@ -41,6 +41,8 @@ subprojects {
         options {
             systemProperties(System.getProperties())
         }
+
+        ignoreFailures = true
     }
 }
 
