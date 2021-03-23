@@ -14,3 +14,13 @@ and then just run
 ```shell
 gradle test
 ```
+
+## Test suites
+
+```shell
+gradle test -P[suite-name]
+```
+
+* *smoke*: Smoke test suite
+* *regression*: Regression test suite
+

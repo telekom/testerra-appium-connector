@@ -11,8 +11,20 @@ dependencies {
 }
 
 test() {
+    def profiles = [
+            "smoke": "src/test/resources/SmokeTest.xml",
+            "regression": "src/test/resources/RegressionTest.xml",
+    ]
+
+    def suiteFiles = []
+    profiles.each { profileName, suitePath ->
+        if (project.hasProperty("" + profileName)) {
+            suiteFiles << suitePath
+        }
+    }
+
     useTestNG() {
-        suites 'src/test/resources/SmokeTest.xml'
+        suites(suiteFiles as String[])
     }
 }
 
