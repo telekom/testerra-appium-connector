@@ -65,7 +65,7 @@ public class VanillaAppiumDriverTest extends TesterraTest implements Loggable {
         dc.setCapability("testName", "Demo Tests");
         dc.setCapability("accessKey", accessKey);
         //        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-        dc.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
+        dc.setCapability("deviceQuery", PropertyManager.getProperty("tt.mobile.device.query.android"));
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
         dc.setBrowserName(MobileBrowserType.CHROMIUM);
         URL url = new URL(PropertyManager.getProperty("tt.mobile.grid.url"));
@@ -92,7 +92,7 @@ public class VanillaAppiumDriverTest extends TesterraTest implements Loggable {
     @AfterMethod
     public void tearDown() {
 
-        System.out.println("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
+        log().info("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
         driver.quit();
     }
 }
