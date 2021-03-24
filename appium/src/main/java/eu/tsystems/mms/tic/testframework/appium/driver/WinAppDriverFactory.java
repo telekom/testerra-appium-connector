@@ -114,26 +114,13 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
                 log().info("Found already opened application window handle: " + nativeWindowHandle);
-                applicationDriverRequest.reuseApplicationByWindowHandle(Integer.toHexString(Integer.parseInt(nativeWindowHandle)));
+                applicationDriverRequest.reuseApplicationByNativeWindowHandle(nativeWindowHandle);
             });
 
             if (desktopDriverRequest != applicationDriverRequest) {
                 desktopDriver.quit();
             }
-
-            /*
-            var CortanaWindow = DesktopSession.FindElementByName("Cortana");
-var CortanaTopLevelWindowHandle = CortanaWindow.GetAttribute("NativeWindowHandle");
-CortanaTopLevelWindowHandle = (int.Parse(CortanaTopLevelWindowHandle)).ToString("x"); // Convert to Hex
-
-// Create session by attaching to Cortana top level window
-DesiredCapabilities appCapabilities = new DesiredCapabilities();
-appCapabilities.SetCapability("appTopLevelWindow", CortanaTopLevelWindowHandle);
-             */
-
-
         });
-
 
         // https://github.com/microsoft/WinAppDriver/issues/1092
 //        desiredCapabilities.setCapability("ms:waitForAppLaunch", UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong());

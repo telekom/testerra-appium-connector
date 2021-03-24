@@ -28,6 +28,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import org.openqa.selenium.WebDriver;
 
 public class WinAppDriverRequest extends AbstractWebDriverRequest {
     public static final String TOP_LEVEL_WINDOW="appTopLevelWindow";
@@ -88,12 +89,16 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
         this.getDesiredCapabilities().setCapability(APP_ARGUMENTS, String.join(" ", argv));
     }
 
-    public void reuseApplicationByWindowHandle(String windowHandle) {
+    /**
+     * Initializes the driver by a window's @NativeWindowHandle attribute, NOT {@link WebDriver#getWindowHandle()}
+     */
+    public void reuseApplicationByNativeWindowHandle(String nativeWindowHandle) {
         // We have to reset the APP_ID
         this.appId = null;
-        this.getDesiredCapabilities().setCapability(TOP_LEVEL_WINDOW, windowHandle);
+        String hexWindowHandle = Integer.toHexString(Integer.parseInt(nativeWindowHandle));
+        this.getDesiredCapabilities().setCapability(TOP_LEVEL_WINDOW, hexWindowHandle);
         if (DEFAULT_SESSION_KEY.equals(this.getSessionKey())) {
-            this.setSessionKey(windowHandle);
+            this.setSessionKey(nativeWindowHandle);
         }
     }
 }
