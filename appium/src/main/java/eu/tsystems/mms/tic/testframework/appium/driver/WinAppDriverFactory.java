@@ -26,9 +26,11 @@ import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
+import eu.tsystems.mms.tic.testframework.testing.TestControllerProvider;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
@@ -37,10 +39,11 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class WinAppDriverFactory implements WebDriverFactory, Loggable {
+public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider {
 
     public enum Properties implements IProperties {
         WINAPP_SERVER_URL("tt.winapp.server.url", "http://localhost:4723/"),
@@ -65,20 +68,24 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable {
 
     @Override
     public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
-        URL winappServerUrl = null;
-        try {
-            winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
-        } catch (MalformedURLException e) {
-            log().error("Invalid " + Properties.WINAPP_SERVER_URL.toString(), e);
-        }
+//        URL winappServerUrl = null;
+//        try {
+//            winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
+//        } catch (MalformedURLException e) {
+//            log().error("Invalid " + Properties.WINAPP_SERVER_URL.toString(), e);
+//        }
         WinAppDriverRequest winAppDriverRequest = (WinAppDriverRequest)webDriverRequest;
         DesiredCapabilities desiredCapabilities = winAppDriverRequest.getDesiredCapabilities();
         desiredCapabilities.setCapability("deviceName", "WindowsPC");
         // https://github.com/microsoft/WinAppDriver/issues/1092
-//        desiredCapabilities.setCapability("ms:waitForAppLaunch", "8");
+//        desiredCapabilities.setCapability("ms:waitForAppLaunch", UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong());
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
-        WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(winappServerUrl, desiredCapabilities);
-        return windowsDriver;
+        AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
+        CONTROL.waitFor(UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong().intValue(), () -> {
+            URL winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());;
+            atomicWebDriver.set(new WindowsDriver<>(winappServerUrl, desiredCapabilities));
+        });
+        return atomicWebDriver.get();
     }
 
     @Override

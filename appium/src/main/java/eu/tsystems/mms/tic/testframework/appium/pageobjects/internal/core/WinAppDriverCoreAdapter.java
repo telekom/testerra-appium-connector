@@ -27,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.DesktopGuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
+import java.awt.Color;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -47,5 +48,10 @@ public class WinAppDriverCoreAdapter extends DesktopGuiElementCore implements Lo
     @Override
     protected void switchToFrame(WebDriver webDriver, WebElement webElement) {
         // not implemented
+    }
+
+    @Override
+    protected void highlightWebElement(WebElement webElement, Color color) {
+        // Not implemented
     }
 }
