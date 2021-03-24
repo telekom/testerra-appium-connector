@@ -32,7 +32,7 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
     public WinAppDriverRequest() {
         setBrowser(Browsers.windows);
     }
-    public void startDesktop() {
+    public void setStartDesktop() {
         this.setApplication("Root");
     }
 

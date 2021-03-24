@@ -113,6 +113,110 @@ Because videos are a platform dependent feature, Appium connector does not provi
 
 ---
 
+## WinAppDriver support
+
+The Appium connector also supports automation of Windows application using the `WindowsDriver` in two setup scenarios.
+
+* Using an Appium-Server
+* Using a WinAppServer
+
+### Using Appium-Server (*tbd*)
+*(Documentation missing)*
+
+### Using WinAppDriver
+
+The [WinAppDriver](https://github.com/microsoft/WinAppDriver) is like a Selenium server for Windows applications. You can download it from the official project website or just install it via. [chocolatey](https://chocolatey.org/)
+
+```shell
+choco install winappdriver
+```
+
+Before you are able to use it, you should make sure:
+
+* That the Windows Operating System runs in Development Mode.
+* The WinAppDriver able to run.
+
+```text
+"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+
+Windows Application Driver listening for requests at: http://127.0.0.1:4723/
+Press ENTER to exit.
+```
+You can customize the connection using [Properties](#Properties)
+
+## Starting an application
+
+You can start applications in several ways:
+
+* Start application from internal application id (*Documentation unknown*)
+* Start applications by the executable path.
+* Start drivers from the Windows Desktop root.
+* Start drivers from known window handle (*Documentation unknown*)
+
+### Start applications from application id
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+// Starts the default calculator app
+appRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
+```
+
+### Start applications from path
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
+WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
+```
+
+### Start a Desktop driver
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setStartDesktop();
+WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
+```
+
+### Retrieving element selectors
+
+The WinAppDriver project provides a binary release of tool named [UIRecorder](https://github.com/microsoft/WinAppDriver/releases/tag/UIR-v1.1) for retrieving element selectors xPath by hovering and focusing elements.
+
+### Find UiElements
+
+Most of the applications support finding elements using `AutomationId` attribute selector.
+
+```java
+PreparedLocator automationLocator = LOCATE.prepare("//*[@AutomationId=\"%s\"]");
+UiElement num1Btn = find(automationLocator.with("num1Button"));
+```
+
+### Accessing the native WindowsDriver API
+
+All features of the `WindowsDriver` implementation are hidden by the `WebDriver` by default.
+To retrieve the raw WindowsDriver, you can unwrap it via. `WebDriverManager`.
+
+```java
+Optional<WindowsDriver> optionalWindowsDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(appDriver, WindowsDriver.class);
+
+optionalWindowsDriver.ifPresent(windowsDriver -> {
+    // Native API access here
+});
+```
+
+### Closing applications
+
+The application will automatically be closed, when `WebDriver.quit()` gets called managed by Testerra on session end. But that closes the application's window which doesn't mean that the application is forced to quit. It could still be opened as a system service available by System tray icons.
+
+There is an experimental feature to force quit an application: https://github.com/Microsoft/WinAppDriver/issues/159
+
+### Properties
+
+The WinAppDriver implementation provides the following properties.
+
+|Property|default|Description|
+|---|---|---|
+|`tt.winapp.server.url`|`http://localhost:4723/`|URL of the WinAppDriver or Appium / Selenium Gridending on "wd/hub"|
+
 ## Publication
 
 ### ... to a Maven repo
