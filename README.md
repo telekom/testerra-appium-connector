@@ -148,33 +148,43 @@ You can customize the connection using [Properties](#Properties)
 
 You can start applications in several ways:
 
-* Start application from internal application id (*Documentation unknown*)
 * Start applications by the executable path.
-* Start drivers from the Windows Desktop root.
-* Start drivers from known window handle (*Documentation unknown*)
-
-### Start applications from application id
-```java
-WinAppDriverRequest appRequest = new WinAppDriverRequest();
-// Starts the default calculator app
-appRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
-```
+* Start drivers for the Windows Desktop.
+* Start drivers from known application window title.
+* Start application from internal application id (*Documentation unknown*)
 
 ### Start applications from path
+
+The application path gets translated to the application id and also sets the working directory based on its parent.
 
 ```java
 WinAppDriverRequest appRequest = new WinAppDriverRequest();
 appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
-WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
 ```
 
 ### Start a Desktop driver
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setDesktopApplication();
+```
+
+### Start driver from known window title
+
+This will try to initialize the driver by an already opened application identified by it's window title. Otherwise, it will try to start by given application id.
 
 ```java
 WinAppDriverRequest appRequest = new WinAppDriverRequest();
-appRequest.setStartDesktop();
-WebDriver appDriver = WEB_DRIVER_MANAGER.getWebDriver(appRequest);
+appRequest.reuseApplicationByWindowTitle("My App");
+appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
+```
+
+### Start applications from application id
+
+Starting the application from application id is currently unknown. However, this application id starts the default calculator app.
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
 ```
 
 ### Retrieving element selectors

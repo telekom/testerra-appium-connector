@@ -41,9 +41,12 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider {
+
+    private final int DEFAULT_RETRY_INTERVAL = UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong().intValue();
 
     public enum Properties implements IProperties {
         WINAPP_SERVER_URL("tt.winapp.server.url", "http://localhost:4723/"),
@@ -66,26 +69,76 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         }
     }
 
+    private WindowsDriver<WindowsElement> startNewWindowsDriver(WinAppDriverRequest request) {
+        URL winappServerUrl;
+        try {
+            winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
+        } catch (MalformedURLException e) {
+            throw new RuntimeException("Could not create WebDriver", e);
+        }
+        final URL finalWinappServerUrl = winappServerUrl;
+
+        DesiredCapabilities desiredCapabilities = request.getDesiredCapabilities();
+        desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
+        request.getApplicationId().ifPresent(appId -> {
+            desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
+        });
+
+        AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
+        CONTROL.retryFor(DEFAULT_RETRY_INTERVAL, () -> {
+            atomicWebDriver.set(new WindowsDriver<>(finalWinappServerUrl, desiredCapabilities));
+        });
+        return atomicWebDriver.get();
+    }
+
     @Override
-    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
-//        URL winappServerUrl = null;
-//        try {
-//            winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
-//        } catch (MalformedURLException e) {
-//            log().error("Invalid " + Properties.WINAPP_SERVER_URL.toString(), e);
-//        }
-        WinAppDriverRequest winAppDriverRequest = (WinAppDriverRequest)webDriverRequest;
-        DesiredCapabilities desiredCapabilities = winAppDriverRequest.getDesiredCapabilities();
-        desiredCapabilities.setCapability("deviceName", "WindowsPC");
+    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext)  {
+        WinAppDriverRequest applicationDriverRequest = (WinAppDriverRequest)webDriverRequest;
+
+        /**
+         * Try to reuse an already opened application
+         * @see https://github.com/Microsoft/WinAppDriver/blob/v1.0-RC2/README.md#attaching-to-an-existing-app-window
+         */
+        applicationDriverRequest.getReusableApplicationWindowTitle().ifPresent(reuseableWindowTitle -> {
+            WinAppDriverRequest desktopDriverRequest;
+            if (applicationDriverRequest.getApplicationId().filter(WinAppDriverRequest.APP_ID_DESKTOP::equals).isPresent()) {
+                desktopDriverRequest = applicationDriverRequest;
+            } else {
+                desktopDriverRequest = new WinAppDriverRequest();
+                desktopDriverRequest.setDesktopApplication();
+            }
+
+            log().info("Try to reopen application by window title \"" + reuseableWindowTitle + "\"");
+            WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest);
+            CONTROL.waitFor(DEFAULT_RETRY_INTERVAL, () -> {
+                WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
+                String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
+                log().info("Found already opened application window handle: " + nativeWindowHandle);
+                applicationDriverRequest.reuseApplicationByWindowHandle(Integer.toHexString(Integer.parseInt(nativeWindowHandle)));
+            });
+
+            if (desktopDriverRequest != applicationDriverRequest) {
+                desktopDriver.quit();
+            }
+
+            /*
+            var CortanaWindow = DesktopSession.FindElementByName("Cortana");
+var CortanaTopLevelWindowHandle = CortanaWindow.GetAttribute("NativeWindowHandle");
+CortanaTopLevelWindowHandle = (int.Parse(CortanaTopLevelWindowHandle)).ToString("x"); // Convert to Hex
+
+// Create session by attaching to Cortana top level window
+DesiredCapabilities appCapabilities = new DesiredCapabilities();
+appCapabilities.SetCapability("appTopLevelWindow", CortanaTopLevelWindowHandle);
+             */
+
+
+        });
+
+
         // https://github.com/microsoft/WinAppDriver/issues/1092
 //        desiredCapabilities.setCapability("ms:waitForAppLaunch", UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong());
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
-        AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
-        CONTROL.waitFor(UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong().intValue(), () -> {
-            URL winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());;
-            atomicWebDriver.set(new WindowsDriver<>(winappServerUrl, desiredCapabilities));
-        });
-        return atomicWebDriver.get();
+        return startNewWindowsDriver(applicationDriverRequest);
     }
 
     @Override

@@ -27,13 +27,36 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverReque
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Optional;
 
 public class WinAppDriverRequest extends AbstractWebDriverRequest {
+    public static final String TOP_LEVEL_WINDOW="appTopLevelWindow";
+    public static final String DEVICE_NAME="deviceName";
+    public static final String APP_ID="app";
+    public static final String WORKING_DIR="appWorkingDir";
+    public static final String APP_ARGUMENTS ="appArguments";
+    public static final String APP_ID_DESKTOP="Root";
+
+    private String reuseApplicationByWindowTitle = null;
+    private String appId = null;
+
     public WinAppDriverRequest() {
         setBrowser(Browsers.windows);
     }
-    public void setStartDesktop() {
-        this.setApplication("Root");
+
+    public void setDesktopApplication() {
+        this.setApplication(APP_ID_DESKTOP);
+    }
+
+    public void reuseApplicationByWindowTitle(String applicationTitle) {
+        this.reuseApplicationByWindowTitle = applicationTitle;
+        if (DEFAULT_SESSION_KEY.equals(this.getSessionKey())) {
+            this.setSessionKey(applicationTitle);
+        }
+    }
+
+    public Optional<String> getReusableApplicationWindowTitle() {
+        return Optional.ofNullable(this.reuseApplicationByWindowTitle);
     }
 
     public void setApplicationPath(String applicationPath) {
@@ -49,19 +72,28 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
     }
 
     public void setApplication(String applicationId) {
-        this.getDesiredCapabilities().setCapability("app", applicationId);
+        this.appId = applicationId;
         this.setSessionKey(applicationId);
     }
 
+    public Optional<String> getApplicationId() {
+        return Optional.ofNullable(this.appId);
+    }
+
     public void setWorkingDir(String workingDir) {
-        this.getDesiredCapabilities().setCapability("appWorkingDir", workingDir);
+        this.getDesiredCapabilities().setCapability(WORKING_DIR, workingDir);
     }
 
     public void setApplicationArguments(String ... argv) {
-        this.getDesiredCapabilities().setCapability("appArguments", String.join(" ", argv));
+        this.getDesiredCapabilities().setCapability(APP_ARGUMENTS, String.join(" ", argv));
     }
 
-    public void setWindowHandle(String windowHandle) {
-        this.getDesiredCapabilities().setCapability("appTopLevelWindow", windowHandle);
+    public void reuseApplicationByWindowHandle(String windowHandle) {
+        // We have to reset the APP_ID
+        this.appId = null;
+        this.getDesiredCapabilities().setCapability(TOP_LEVEL_WINDOW, windowHandle);
+        if (DEFAULT_SESSION_KEY.equals(this.getSessionKey())) {
+            this.setSessionKey(windowHandle);
+        }
     }
 }
