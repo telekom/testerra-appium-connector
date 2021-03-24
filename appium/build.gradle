@@ -1,10 +1,10 @@
 dependencies {
+    compile 'eu.tsystems.mms.tic.testerra:driver-ui:' + testerraCompileVersion
     implementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraCompileVersion
-//    compileOnly 'eu.tsystems.mms.tic.testerra:report:' + testerraCompileVersion
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'io.appium:java-client:7.3.0'
+    compile 'io.appium:java-client:7.3.0'
 
 //    testImplementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraTestVersion
 //    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
