@@ -28,7 +28,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
-import org.openqa.selenium.WebDriver;
 
 public class WinAppDriverRequest extends AbstractWebDriverRequest {
     public static final String TOP_LEVEL_WINDOW="appTopLevelWindow";
@@ -42,6 +41,7 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
     private String appId = null;
 
     public WinAppDriverRequest() {
+        super();
         setBrowser(Browsers.windows);
     }
 

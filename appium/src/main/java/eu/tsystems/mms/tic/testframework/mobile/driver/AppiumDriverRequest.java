@@ -22,7 +22,12 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.SeleniumWebDriverRequest;
+import java.net.MalformedURLException;
+import java.net.URL;
+import java.util.Optional;
 
 /**
  * Extends {@link AbstractWebDriverRequest}
@@ -31,7 +36,19 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverReque
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverRequest extends AbstractWebDriverRequest {
+public class AppiumDriverRequest extends SeleniumWebDriverRequest {
+
+    @Override
+    public Optional<URL> getSeleniumServerUrl() {
+        if (!super.getSeleniumServerUrl().isPresent()) {
+            try {
+                this.setSeleniumServerUrl(PropertyManager.getProperty("tt.mobile.grid.url"));
+            } catch (MalformedURLException e) {
+                throw new RuntimeException("Unable to retrieve default Appium URL from properties", e);
+            }
+        }
+        return super.getSeleniumServerUrl();
+    }
 
     private AppiumDeviceQuery appiumDeviceQuery;
 

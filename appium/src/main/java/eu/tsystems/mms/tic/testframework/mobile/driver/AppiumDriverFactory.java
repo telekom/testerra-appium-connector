@@ -55,8 +55,6 @@ import java.net.URL;
 public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
-    private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
-
     private static final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
     private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
 
@@ -90,36 +88,31 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
+        URL appiumUrl = appiumDriverRequest.getSeleniumServerUrl().get();
+        AppiumDeviceQuery appiumDeviceQuery;
+
         switch (webDriverRequest.getBrowser()) {
             case MobileBrowsers.mobile_safari:
 
                 desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_IOS);
                 desiredCapabilities.setBrowserName(MobileBrowserType.SAFARI);
 
-                try {
-                    final IOSDriver<IOSElement> driver = new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("iOS Session created for: " + appiumDeviceQuery.toString());
-                    appiumDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
-                    return driver;
-                } catch (MalformedURLException e) {
-                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
-                }
+                final IOSDriver<IOSElement> iosDriver = new IOSDriver<>(appiumUrl, desiredCapabilities);
+                appiumDeviceQuery = new AppiumDeviceQuery(iosDriver.getCapabilities());
+                log().info("iOS Session created for: " + appiumDeviceQuery.toString());
+                appiumDriverRequest.getBaseUrl().ifPresent(url -> iosDriver.get(url.toString()));
+                return iosDriver;
 
             case MobileBrowsers.mobile_chrome:
 
                 desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_ANDROID);
                 desiredCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
 
-                try {
-                    final AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("Android Session created for: " + appiumDeviceQuery.toString());
-                    appiumDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
-                    return driver;
-                } catch (MalformedURLException e) {
-                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
-                }
+                final AndroidDriver<AndroidElement> androidDriver = new AndroidDriver<>(appiumUrl, desiredCapabilities);
+                appiumDeviceQuery = new AppiumDeviceQuery(androidDriver.getCapabilities());
+                log().info("Android Session created for: " + appiumDeviceQuery.toString());
+                appiumDriverRequest.getBaseUrl().ifPresent(url -> androidDriver.get(url.toString()));
+                return androidDriver;
 
             default:
                 throw new RuntimeException("Mobile Browser not supported.");
