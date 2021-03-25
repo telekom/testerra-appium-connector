@@ -109,14 +109,14 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
                 desktopDriverRequest.setDesktopApplication();
             }
 
-            log().info("Try to reopen application by window title \"" + reuseableWindowTitle + "\"");
+            log().info("Try to create driver on running application by window title \"" + reuseableWindowTitle + "\"");
             WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest);
             CONTROL.waitFor(DEFAULT_RETRY_INTERVAL, () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
                 int nativeWindowHandleId = Integer.parseInt(nativeWindowHandle);
                 if (nativeWindowHandleId > 0) {
-                    log().info("Found already opened application window handle: " + nativeWindowHandle);
+                    log().info("Found running application window handle: " + nativeWindowHandle);
                     desiredCapabilities.setCapability(WinAppDriverRequest.TOP_LEVEL_WINDOW, Integer.toHexString(nativeWindowHandleId));
                     appDriverRequest.unsetApplication();
                 } else {

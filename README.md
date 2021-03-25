@@ -219,6 +219,13 @@ The application will automatically be closed, when `WebDriver.quit()` gets calle
 
 There is an experimental feature to force quit an application: https://github.com/Microsoft/WinAppDriver/issues/159
 
+Anyway, if you want to prevent Testerra from closing your `WinAppDriver`, just configure it on the `WinAppDriverRequest`.
+
+```java
+appRequest.setShutdownAfterTest(false);
+appRequest.setShutdownAfterExecution(false);
+```
+
 ### Properties
 
 The WinAppDriver implementation provides the following properties.
