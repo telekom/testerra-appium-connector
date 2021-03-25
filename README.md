@@ -1,6 +1,7 @@
 # Testerra Appium Connector
 
 <p align="center">
+    <a href="https://mvnrepository.com/artifact/io.testerra/appium-connector" title="MavenCentral"><img src="https://img.shields.io/maven-central/v/io.testerra/appium-connector?label=Maven%20Central"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-appium-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-appium-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
@@ -27,7 +28,7 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-* Testerra in Version `1.0-RC-30`
+![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/1.0-RC-32?label=Testerra)
 
 ### Usage
 
@@ -36,7 +37,7 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:appium:1.0-RC-5'
+implementation 'io.testerra:appium:1.0'
 ````
 
 Maven:
@@ -44,9 +45,9 @@ Maven:
 ````xml
 
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
+    <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>1.0-RC-5</version>
+    <version>1.0</version>
 </dependency>
 ````
 
@@ -118,28 +119,24 @@ Because videos are a platform dependent feature, Appium connector does not provi
 
 ## Publication
 
-### ... to a Maven repo
+This module is deployed and published to Maven Central. All JAR files are signed via Gradle signing plugin.
 
-_Publishing to local repo_
-```shell
-gradle publishToMavenLocal
-```
+The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-_Publishing to remote repo_
-```shell
-gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
-```
+| Property                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                   | Maven repository URL                                |
+| `deployUsername`              | Maven repository username                           |
+| `deployPassword`              | Maven repository password                           |
+| `signing.keyId`               | GPG private key ID (short form)                     |
+| `signing.password`            | GPG private key password                            |
+| `signing.secretKeyRingFile`   | Path to GPG private key                             |
 
-_Set a custom version_
-```shell
-gradle publish -DmoduleVersion=<version>
-```
-### ... to GitHub Packages
-
-Some hints for using GitHub Packages as Maven repository
-
-* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
-* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
+If all properties are set, call the following to build, deploy and release this module:
+````shell
+gradle publish closeAndReleaseRepository
+````
 
 ## Code of Conduct
 
