@@ -93,16 +93,17 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
     @Override
     public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext)  {
-        WinAppDriverRequest applicationDriverRequest = (WinAppDriverRequest)webDriverRequest;
+        WinAppDriverRequest appDriverRequest = (WinAppDriverRequest)webDriverRequest;
 
         /**
          * Try to reuse an already opened application
          * @see https://github.com/Microsoft/WinAppDriver/blob/v1.0-RC2/README.md#attaching-to-an-existing-app-window
          */
-        applicationDriverRequest.getReusableApplicationWindowTitle().ifPresent(reuseableWindowTitle -> {
+        appDriverRequest.getReusableApplicationWindowTitle().ifPresent(reuseableWindowTitle -> {
+            DesiredCapabilities desiredCapabilities = appDriverRequest.getDesiredCapabilities();
             WinAppDriverRequest desktopDriverRequest;
-            if (applicationDriverRequest.getApplicationId().filter(WinAppDriverRequest.APP_ID_DESKTOP::equals).isPresent()) {
-                desktopDriverRequest = applicationDriverRequest;
+            if (WinAppDriverRequest.APP_ID_DESKTOP.equals(desiredCapabilities.getCapability(WinAppDriverRequest.APP_ID))) {
+                desktopDriverRequest = appDriverRequest;
             } else {
                 desktopDriverRequest = new WinAppDriverRequest();
                 desktopDriverRequest.setDesktopApplication();
@@ -113,11 +114,17 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             CONTROL.waitFor(DEFAULT_RETRY_INTERVAL, () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
-                log().info("Found already opened application window handle: " + nativeWindowHandle);
-                applicationDriverRequest.reuseApplicationByNativeWindowHandle(nativeWindowHandle);
+                int nativeWindowHandleId = Integer.parseInt(nativeWindowHandle);
+                if (nativeWindowHandleId > 0) {
+                    log().info("Found already opened application window handle: " + nativeWindowHandle);
+                    desiredCapabilities.setCapability(WinAppDriverRequest.TOP_LEVEL_WINDOW, Integer.toHexString(nativeWindowHandleId));
+                    appDriverRequest.unsetApplication();
+                } else {
+                    log().warn("Ignore invalid application window handle: " + nativeWindowHandle);
+                }
             });
 
-            if (desktopDriverRequest != applicationDriverRequest) {
+            if (desktopDriverRequest != appDriverRequest) {
                 desktopDriver.quit();
             }
         });
@@ -125,7 +132,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         // https://github.com/microsoft/WinAppDriver/issues/1092
 //        desiredCapabilities.setCapability("ms:waitForAppLaunch", UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong());
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
-        return startNewWindowsDriver(applicationDriverRequest);
+        return startNewWindowsDriver(appDriverRequest);
     }
 
     @Override

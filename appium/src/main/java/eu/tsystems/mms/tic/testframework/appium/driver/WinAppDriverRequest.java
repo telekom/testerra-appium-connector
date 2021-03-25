@@ -72,9 +72,21 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
         this.setWorkingDir(applicationPath.getParent().toString());
     }
 
+    /**
+     * Sets the application id and the session key.
+     */
     public void setApplication(String applicationId) {
         this.appId = applicationId;
-        this.setSessionKey(applicationId);
+        if (applicationId != null) {
+            this.setSessionKey(applicationId);
+        }
+    }
+
+    /**
+     * Removes the application id
+     */
+    public void unsetApplication() {
+        this.appId = null;
     }
 
     public Optional<String> getApplicationId() {
@@ -87,18 +99,5 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
 
     public void setApplicationArguments(String ... argv) {
         this.getDesiredCapabilities().setCapability(APP_ARGUMENTS, String.join(" ", argv));
-    }
-
-    /**
-     * Initializes the driver by a window's @NativeWindowHandle attribute, NOT {@link WebDriver#getWindowHandle()}
-     */
-    public void reuseApplicationByNativeWindowHandle(String nativeWindowHandle) {
-        // We have to reset the APP_ID
-        this.appId = null;
-        String hexWindowHandle = Integer.toHexString(Integer.parseInt(nativeWindowHandle));
-        this.getDesiredCapabilities().setCapability(TOP_LEVEL_WINDOW, hexWindowHandle);
-        if (DEFAULT_SESSION_KEY.equals(this.getSessionKey())) {
-            this.setSessionKey(nativeWindowHandle);
-        }
     }
 }
