@@ -28,7 +28,7 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-![Maven Central](https://img.shields.io/maven-central/v/io.testerra/driver-ui/1.0?label=Testerra)
+![Maven Central](https://img.shields.io/maven-central/v/io.testerra/driver-ui/1.0-RC-32?label=Testerra)
 
 ### Usage
 
