@@ -1,11 +1,12 @@
 dependencies {
-    implementation 'io.testerra:driver-ui-desktop:' + testerraCompileVersion
+    compileOnly 'io.testerra:driver-ui-desktop:' + testerraCompileVersion
+    compileOnly 'io.appium:java-client:7.3.0'
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.apache.commons:commons-lang3:3.9'
-    implementation 'io.appium:java-client:7.3.0'
 
 //    testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
+    testImplementation 'io.appium:java-client:7.3.0'
 }
 
 test() {
