@@ -38,11 +38,8 @@ import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
 import java.util.Arrays;
 import java.util.List;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-
-import java.net.MalformedURLException;
 import java.net.URL;
 
 /**
@@ -58,8 +55,8 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     private static final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
     private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
 
-    private AppiumDriverRequest mapRequest(WebDriverRequest webDriverRequest) {
-
+    @Override
+    public WebDriverRequest prepareWebDriverRequest(WebDriverRequest webDriverRequest) {
         AppiumDriverRequest finalRequest;
 
         if (webDriverRequest instanceof AppiumDriverRequest) {
@@ -80,7 +77,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             throw new RuntimeException("DriverRequest was null.");
         }
 
-        AppiumDriverRequest appiumDriverRequest = mapRequest(webDriverRequest);
+        AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest)webDriverRequest;
 
         DesiredCapabilities desiredCapabilities = appiumDriverRequest.getDesiredCapabilities();
 

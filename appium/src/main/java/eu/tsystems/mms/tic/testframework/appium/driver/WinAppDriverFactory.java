@@ -92,6 +92,14 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
     }
 
     @Override
+    public WebDriverRequest prepareWebDriverRequest(WebDriverRequest webDriverRequest) {
+        if (!(webDriverRequest instanceof WinAppDriverRequest)) {
+            throw new RuntimeException("Unsupported " + webDriverRequest.getClass().getSimpleName());
+        }
+        return webDriverRequest;
+    }
+
+    @Override
     public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext)  {
         WinAppDriverRequest appDriverRequest = (WinAppDriverRequest)webDriverRequest;
 

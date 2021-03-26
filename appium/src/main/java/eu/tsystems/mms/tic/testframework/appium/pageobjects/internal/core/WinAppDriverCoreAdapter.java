@@ -24,7 +24,7 @@ package eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core;
 
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
-import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.DesktopGuiElementCore;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import java.awt.Color;
@@ -34,7 +34,7 @@ import org.openqa.selenium.WebElement;
 /**
  * Implements {@link GuiElementCore} to fulfill Testerra {@link GuiElement} functionality.
  */
-public class WinAppDriverCoreAdapter extends DesktopGuiElementCore implements Loggable {
+public class WinAppDriverCoreAdapter extends AbstractWebDriverCore implements Loggable {
 
     public WinAppDriverCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
@@ -52,6 +52,11 @@ public class WinAppDriverCoreAdapter extends DesktopGuiElementCore implements Lo
 
     @Override
     protected void highlightWebElement(WebElement webElement, Color color) {
+        // Not implemented
+    }
+
+    @Override
+    public void swipe(int offsetX, int offSetY) {
         // Not implemented
     }
 }
