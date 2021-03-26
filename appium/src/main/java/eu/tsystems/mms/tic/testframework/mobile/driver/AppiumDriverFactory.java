@@ -122,7 +122,7 @@ public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRe
                 desiredCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
 
                 try {
-                    final AndroidDriver<AndroidElement> driver = new AndroidDriver<AndroidElement>(new URL(GRID_URL), desiredCapabilities);
+                    final AndroidDriver<AndroidElement> driver = new AndroidDriver<>(new URL(GRID_URL), desiredCapabilities);
                     final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
                     log().info("Android Session created for: " + appiumDeviceQuery.toString());
                     webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));

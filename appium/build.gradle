@@ -1,18 +1,28 @@
 dependencies {
-    implementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraCompileVersion
-//    compileOnly 'eu.tsystems.mms.tic.testerra:report:' + testerraCompileVersion
+    implementation 'io.testerra:driver-ui-desktop:' + testerraCompileVersion
 
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'org.apache.commons:commons-lang3:3.9'
     implementation 'io.appium:java-client:7.3.0'
 
-//    testImplementation 'eu.tsystems.mms.tic.testerra:driver-ui-desktop:' + testerraTestVersion
-//    testImplementation 'eu.tsystems.mms.tic.testerra:report:' + testerraTestVersion
+//    testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
 }
 
-task regressionTest(type: Test) {
+test() {
+    def profiles = [
+            "smoke": "src/test/resources/SmokeTest.xml",
+            "regression": "src/test/resources/RegressionTest.xml",
+    ]
+
+    def suiteFiles = []
+    profiles.each { profileName, suitePath ->
+        if (project.hasProperty("" + profileName)) {
+            suiteFiles << suitePath
+        }
+    }
+
     useTestNG() {
-        suites 'src/test/resources/RegressionTest.xml'
+        suites(suiteFiles as String[])
     }
 }
 

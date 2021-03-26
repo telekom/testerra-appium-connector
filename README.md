@@ -1,15 +1,15 @@
 # Testerra Appium Connector
 
 <p align="center">
+    <a href="https://mvnrepository.com/artifact/io.testerra/appium" title="MavenCentral"><img src="https://img.shields.io/maven-central/v/io.testerra/appium?label=Maven%20Central"></a>
     <a href="/../../commits/" title="Last Commit"><img src="https://img.shields.io/github/last-commit/telekom/testerra-appium-connector?style=flat"></a>
     <a href="/../../issues" title="Open Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-appium-connector?style=flat"></a>
     <a href="./LICENSE" title="License"><img src="https://img.shields.io/badge/License-Apache%202.0-green.svg?style=flat"></a>
 </p>
 
 <p align="center">
-  <a href="#installation">Installation</a> •
+  <a href="#setup">Setup</a> •
   <a href="#documentation">Documentation</a> •
-  <a href="#development">Development</a> •
   <a href="#support-and-feedback">Support</a> •
   <a href="#how-to-contribute">Contribute</a> •
   <a href="#contributors">Contributors</a> •
@@ -17,25 +17,27 @@
 </p>
 
 ## About this module
-Appium connector is an extension for the Testerra Framework and uses the open source standard Appium to run web tests based on
-Testerra on mobile devices.
+
+This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
+
+Appium connector uses the open source standard Appium to run web tests based on Testerra on mobile devices.
 
 It will register with Testerra Hooking system and uses the event bus to react on Testerra events.
 
-----
+## Setup
 
-## Requirements
+### Requirements
 
-* Testerra in Version `2.0-RC-1`
+![Maven Central](https://img.shields.io/maven-central/v/io.testerra/core/2.0?label=Testerra)
 
-## Usage
+### Usage
 
 Include the following dependency in your project.
 
 Gradle:
 
 ````groovy
-implementation 'eu.tsystems.mms.tic.testerra:appium:2-SNAPSHOT'
+implementation 'io.testerra:appium:2.0'
 ````
 
 Maven:
@@ -43,13 +45,15 @@ Maven:
 ````xml
 
 <dependency>
-    <groupId>eu.tsystems.mms.tic.testerra</groupId>
+    <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>2.0</version>
 </dependency>
 ````
 
-## Use appium features
+## Documentation
+
+### Use appium features
 
 The Appium connector will register `mobile_chrome` and `mobile_safari` as available browser configurations for your `{browser}`
 value. Further the connector will provide the `AppiumDriverManager` that you can use to unlock appium related features on the
@@ -74,7 +78,7 @@ public class ExampleTest extends TesterraTest {
 }
 ```
         
-## Device filtering
+### Device filtering
 
 If you have to run your tests on specific mobile devices available on your mobile device farm, you can use
 the `tt.mobile.device.query.android` and `tt.mobile.device.query.ios` to filter for your devices by different properties. To reserve
@@ -93,16 +97,16 @@ The following query attributes are available for the device query strings.
 Please keep in mind, that you have to specify the device query for each operating system with the properties mentioned above. The
 default values will provide you a device with given operating system and of `@category PHONE`.
 
-### Screenshots
+#### Screenshots
 
 Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to
 achieve this.
 
-### Videos
+#### Videos
 
 Because videos are a platform dependent feature, Appium connector does not provide any platform-related video recording features.
 
-## Properties
+### Properties
 
 |Property|default|Description|
 |---|---|---|
@@ -115,32 +119,24 @@ Because videos are a platform dependent feature, Appium connector does not provi
 
 ## Publication
 
-### ... to a Maven repo
+This module is deployed and published to Maven Central. All JAR files are signed via Gradle signing plugin.
 
-_Publishing to local repo_
-```shell
-gradle publishToMavenLocal
-```
+The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-_Publishing to remote repo_
-```shell
-gradle publish -DdeployUrl=<repo-url> -DdeployUsername=<repo-user> -DdeployPassword=<repo-password>
-```
+| Property                      | Description                                         |
+| ----------------------------- | --------------------------------------------------- |
+| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                   | Maven repository URL                                |
+| `deployUsername`              | Maven repository username                           |
+| `deployPassword`              | Maven repository password                           |
+| `signing.keyId`               | GPG private key ID (short form)                     |
+| `signing.password`            | GPG private key password                            |
+| `signing.secretKeyRingFile`   | Path to GPG private key                             |
 
-_Set a custom version_
-```shell
-gradle publish -DmoduleVersion=<version>
-```
-### ... to GitHub Packages
-
-Some hints for using GitHub Packages as Maven repository
-
-* Deploy URL is https://maven.pkg.github.com/OWNER/REPOSITRY
-* As password generate an access token and grant permissions to ``write:packages`` (Settings -> Developer settings -> Personal access token)
-
-## Documentation
-
-Check out our comprehensive [Testerra documentation](http://docs.testerra.io)!
+If all properties are set, call the following to build, deploy and release this module:
+````shell
+gradle publish closeAndReleaseRepository
+````
 
 ## Code of Conduct
 
@@ -160,15 +156,6 @@ The following channels are available for discussions, feedback, and support requ
 | ------------------------ | ------------------------------------------------------ |
 | **Issues**   | <a href="/../../issues/new/choose" title="Issues"><img src="https://img.shields.io/github/issues/telekom/testerra-appium-connector?style=flat"></a> |
 | **Other Requests**    | <a href="mailto:testerra@t-systems-mms.com" title="Email us"><img src="https://img.shields.io/badge/email-CWA%20team-green?logo=mail.ru&style=flat-square&logoColor=white"></a>   |
-
-
-## Repositories
-
-| Repository          | Description                                                           |
-| ------------------- | --------------------------------------------------------------------- |
-| [testerra] | Testerra |
-
-[testerra]: https://github.com/telekom/testerra
 
 ## How to Contribute
 
