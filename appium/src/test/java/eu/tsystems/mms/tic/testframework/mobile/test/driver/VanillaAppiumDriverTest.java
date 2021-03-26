@@ -23,6 +23,10 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.report.Report;
+import eu.tsystems.mms.tic.testframework.report.TesterraListener;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
@@ -48,7 +52,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverTest {
+public class VanillaAppiumDriverTest extends TesterraTest implements Loggable {
 
     private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
     //    protected IOSDriver<IOSElement> driver = null;
@@ -61,11 +65,12 @@ public class AppiumDriverTest {
         dc.setCapability("testName", "Demo Tests");
         dc.setCapability("accessKey", accessKey);
         //        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-        dc.setCapability("deviceQuery", "@os='android' and @category='PHONE'");
+        dc.setCapability("deviceQuery", PropertyManager.getProperty("tt.mobile.device.query.android"));
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
         dc.setBrowserName(MobileBrowserType.CHROMIUM);
-        //        driver = new IOSDriver<>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
-        driver = new AndroidDriver<AndroidElement>(new URL("https://mobiledevicecloud.t-systems-mms.eu/wd/hub"), dc);
+        URL url = new URL(PropertyManager.getProperty("tt.mobile.grid.url"));
+        //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
+        driver = new AndroidDriver<>(url, dc);
     }
 
     @Test
@@ -79,7 +84,7 @@ public class AppiumDriverTest {
         });
 
         File screenshotAs = driver.getScreenshotAs(OutputType.FILE);
-        System.out.println(screenshotAs.getAbsolutePath());
+        TesterraListener.getReport().provideScreenshot(screenshotAs, Report.FileMode.MOVE);
         WebElement searchBar = driver.findElement(By.xpath("//input[@name='q']"));
         searchBar.sendKeys("Experitest");
     }
@@ -87,7 +92,7 @@ public class AppiumDriverTest {
     @AfterMethod
     public void tearDown() {
 
-        System.out.println("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
+        log().info("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
         driver.quit();
     }
 }
