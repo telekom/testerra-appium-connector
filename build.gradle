@@ -1,8 +1,12 @@
-ext {
-    doNotPublish = this.&dnp
+plugins {
+    id "io.codearte.nexus-staging" version "0.30.0"
+}
 
+apply plugin: 'io.codearte.nexus-staging'
+
+ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '1.0-RC-30'
+    testerraCompileVersion = '1.0-RC-32'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
     moduleVersion = '1-SNAPSHOT'
@@ -14,14 +18,21 @@ ext {
     }
 }
 
-subprojects {
-
-    group 'eu.tsystems.mms.tic.testerra'
-    version moduleVersion
-
+allprojects {
     apply plugin: 'java'
     apply plugin: 'maven'
+
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+subprojects {
+
+    group 'io.testerra'
+    version moduleVersion
+
     apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     // important!
     repositories {
@@ -29,9 +40,6 @@ subprojects {
         mavenCentral()
         jcenter()
     }
-
-    sourceCompatibility = JavaVersion.VERSION_1_8
-    targetCompatibility = JavaVersion.VERSION_1_8
 
     test {
         useTestNG()
@@ -47,14 +55,16 @@ subprojects {
 
         ignoreFailures = true
     }
-}
 
-// Add `doNotPublish(this)` to module's build.gradle if no publishing is needed
-def dnp(prj) {
-    prj.jar.enabled = true
-    prj.publish.enabled = false
-    prj.publishToMavenLocal.enabled = false
-    println("Do not publish JAR from " + prj)
+    tasks.whenTaskAdded { t ->
+        if (t.name.startsWith("publish")) {
+            boolean e = t.project.publish.enabled
+            if (!e) {
+                println "Not running publish for " + t.project.name
+                t.enabled = false
+            }
+        }
+    }
 }
 
 // Do not move this integration because `group` and `version` is needed for publishing
