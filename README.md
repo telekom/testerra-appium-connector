@@ -37,7 +37,9 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
+// Version from this module
 implementation 'io.testerra:appium:1.0'
+// Used Testerra version
 implementation 'io.testerra:driver-ui:1.0'
 implementation 'io.appium:java-client:7.3.0'
 ````
@@ -45,11 +47,13 @@ implementation 'io.appium:java-client:7.3.0'
 Maven:
 
 ```xml
+<!-- Version from this module -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
     <version>1.0</version>
 </dependency>
+<!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
