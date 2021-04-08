@@ -41,7 +41,6 @@ public class MobileAppiumHook implements ModuleHook {
 
     @Override
     public void init() {
-        PropertyManager.loadProperties("grid.properties");
         WebDriverManager.registerWebDriverFactory(new AppiumDriverFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
         GuiElement.registerGuiElementCoreFactory(new AppiumGuiElementCoreFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
     }

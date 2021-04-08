@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
@@ -52,7 +53,7 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class VanillaAppiumDriverTest extends TesterraTest implements Loggable {
+public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Loggable {
 
     private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
     //    protected IOSDriver<IOSElement> driver = null;
