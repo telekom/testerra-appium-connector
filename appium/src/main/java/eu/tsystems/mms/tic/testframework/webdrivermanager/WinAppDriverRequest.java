@@ -20,10 +20,9 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.appium.driver;
+package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
+import eu.tsystems.mms.tic.testframework.Browsers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

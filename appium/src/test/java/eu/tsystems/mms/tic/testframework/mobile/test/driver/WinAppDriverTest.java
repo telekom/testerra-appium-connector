@@ -22,7 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
-import eu.tsystems.mms.tic.testframework.appium.driver.WinAppDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
 import eu.tsystems.mms.tic.testframework.appium.windows.CalculatorApp;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.testing.AssertProvider;
@@ -38,12 +38,6 @@ import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-/**
- * Date: 24.06.2020
- * Time: 12:26
- *
- * @author Eric Kubenka
- */
 public class WinAppDriverTest implements
         WebDriverManagerProvider,
         PageFactoryProvider,

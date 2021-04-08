@@ -19,12 +19,12 @@
  * under the License.
  *
  */
-package eu.tsystems.mms.tic.testframework.appium.ioc;
+package eu.tsystems.mms.tic.testframework.ioc;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
-import eu.tsystems.mms.tic.testframework.appium.driver.WinAppDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;

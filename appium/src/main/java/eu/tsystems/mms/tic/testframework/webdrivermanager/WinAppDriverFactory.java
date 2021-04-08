@@ -20,10 +20,10 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.appium.driver;
+package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
-import eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core.WinAppDriverCoreAdapter;
+import eu.tsystems.mms.tic.testframework.Browsers;
+import eu.tsystems.mms.tic.testframework.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
@@ -32,7 +32,6 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementDat
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.TestControllerProvider;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
 import java.net.MalformedURLException;
@@ -69,14 +68,16 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         }
     }
 
-    private WindowsDriver<WindowsElement> startNewWindowsDriver(WinAppDriverRequest request) {
+    private WindowsDriver<WindowsElement> startNewWindowsDriver(WinAppDriverRequest request, SessionContext sessionContext) {
         URL winappServerUrl;
         try {
             winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
         } catch (MalformedURLException e) {
             throw new RuntimeException("Could not create WebDriver", e);
         }
-        final URL finalWinappServerUrl = winappServerUrl;
+
+        final URL finalWinAppServerUrl = winappServerUrl;
+        sessionContext.setNodeUrl(winappServerUrl);
 
         DesiredCapabilities desiredCapabilities = request.getDesiredCapabilities();
         desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
@@ -84,9 +85,11 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
         });
 
+        WebDriverSessionsManager.logRequest(WindowsDriver.class, desiredCapabilities, sessionContext, finalWinAppServerUrl);
+
         AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
         CONTROL.retryFor(DEFAULT_RETRY_INTERVAL, () -> {
-            atomicWebDriver.set(new WindowsDriver<>(finalWinappServerUrl, desiredCapabilities));
+            atomicWebDriver.set(new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities));
         });
         return atomicWebDriver.get();
     }
@@ -118,7 +121,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             }
 
             log().info("Try to create driver on running application by window title \"" + reuseableWindowTitle + "\"");
-            WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest);
+            WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
             CONTROL.waitFor(DEFAULT_RETRY_INTERVAL, () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
@@ -140,7 +143,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         // https://github.com/microsoft/WinAppDriver/issues/1092
 //        desiredCapabilities.setCapability("ms:waitForAppLaunch", UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong());
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
-        return startNewWindowsDriver(appDriverRequest);
+        return startNewWindowsDriver(appDriverRequest, sessionContext);
     }
 
     @Override

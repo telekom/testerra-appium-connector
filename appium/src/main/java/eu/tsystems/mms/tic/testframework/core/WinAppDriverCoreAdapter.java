@@ -20,7 +20,7 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.appium.pageobjects.internal.core;
+package eu.tsystems.mms.tic.testframework.core;
 
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;

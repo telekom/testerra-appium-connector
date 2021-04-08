@@ -1,4 +1,4 @@
-package eu.tsystems.mms.tic.testframework.appium;
+package eu.tsystems.mms.tic.testframework;
 
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileBrowsers;
 

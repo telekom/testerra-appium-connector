@@ -22,7 +22,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.Browsers;
 
 /**
  * Extends Testerra {@link eu.tsystems.mms.tic.testframework.constants.Browsers}
