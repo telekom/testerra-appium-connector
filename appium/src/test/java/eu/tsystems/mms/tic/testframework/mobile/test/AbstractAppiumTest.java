@@ -22,9 +22,11 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import org.testng.annotations.BeforeSuite;
 
 /**
  * Abstract Representation for appioum based testerra test
@@ -38,4 +40,8 @@ public class AbstractAppiumTest extends TesterraTest implements Loggable {
 
     protected AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
 
+    @BeforeSuite
+    public void loadGridProperties() {
+        PropertyManager.loadProperties("grid.properties");
+    }
 }
