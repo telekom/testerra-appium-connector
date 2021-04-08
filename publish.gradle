@@ -4,7 +4,7 @@
 
 // Maven pom.xml attributes
 ext {
-    libraryName = 'Testerra Selenoid Connector'
+    libraryName = 'Testerra Appium Connector'
     packagingType = 'jar'
 
     siteUrl = 'https://testerra.io'
