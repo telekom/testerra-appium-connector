@@ -81,6 +81,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
         DesiredCapabilities desiredCapabilities = request.getDesiredCapabilities();
         desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
+        sessionContext.setActualBrowserName("WindowsPC");
         request.getApplicationId().ifPresent(appId -> {
             desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
         });

@@ -54,7 +54,7 @@ public class WinAppDriverTest implements
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
         CalculatorApp calculatorApp = PAGE_FACTORY.createPage(CalculatorApp.class, webDriver);
         calculatorApp.typeSomething();
-        calculatorApp.getResults().expect().text().contains("1337");
+        calculatorApp.getResults().expect().text().contains("1.337").is(true);
     }
 
     @Test
