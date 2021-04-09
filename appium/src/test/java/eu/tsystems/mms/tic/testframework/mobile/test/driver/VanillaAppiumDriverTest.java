@@ -27,7 +27,6 @@ import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
-import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
@@ -39,6 +38,7 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.ui.ExpectedCondition;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.WebDriverWait;
+import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -55,12 +55,13 @@ import java.net.URL;
  */
 public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Loggable {
 
-    private final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
     //    protected IOSDriver<IOSElement> driver = null;
     protected AndroidDriver<AndroidElement> driver = null;
 
     @BeforeMethod
     public void setUp() throws MalformedURLException {
+        final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
+        Assert.assertNotNull(accessKey, "No access key loaded");
 
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setCapability("testName", "Demo Tests");
