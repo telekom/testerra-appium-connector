@@ -22,7 +22,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 
-import eu.tsystems.mms.tic.testframework.Browsers;
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
 
 /**
  * Extends Testerra {@link eu.tsystems.mms.tic.testframework.constants.Browsers}
@@ -33,8 +33,5 @@ import eu.tsystems.mms.tic.testframework.Browsers;
  * @author Eric Kubenka
  * @deprecated Use {@link Browsers} instead
  */
-public class MobileBrowsers {
-
-    public static final String mobile_chrome = "mobile_chrome";
-    public static final String mobile_safari = "mobile_safari";
+public class MobileBrowsers extends Browsers {
 }

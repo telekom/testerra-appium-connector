@@ -22,7 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
-import eu.tsystems.mms.tic.testframework.Browsers;
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

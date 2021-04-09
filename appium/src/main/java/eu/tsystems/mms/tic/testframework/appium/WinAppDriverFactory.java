@@ -20,9 +20,8 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.webdrivermanager;
+package eu.tsystems.mms.tic.testframework.appium;
 
-import eu.tsystems.mms.tic.testframework.Browsers;
 import eu.tsystems.mms.tic.testframework.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
@@ -32,6 +31,8 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementDat
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.TestControllerProvider;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
 import java.net.MalformedURLException;

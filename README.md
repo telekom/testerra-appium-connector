@@ -82,13 +82,10 @@ public class ExampleTest extends TesterraTest {
     @Test
     public void testT01_My_first_test() {
 
-        final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
-
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
-
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
-        driver.get(PropertyManager.get("tt.baseurl"));
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver();
+        WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class).ifPresent(appiumDriver -> {
+            appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        });
     }
 }
 ```
@@ -114,8 +111,7 @@ default values will provide you a device with given operating system and of `@ca
 
 #### Screenshots
 
-Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to
-achieve this.
+Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to achieve this.
 
 #### Videos
 
@@ -131,6 +127,19 @@ Because videos are a platform dependent feature, Appium connector does not provi
 |tt.mobile.device.query.android|"@os='android' and @category='PHONE'"|Access key of your user  and project|
 
 ---
+
+### AppiumDriverRequest
+
+You can also create new sessiond by using the `WebDriverRequest` interface.
+
+```java
+AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
+appiumRequest.setAccessKey(String);
+appiumRequest.setDeviceQuery(String);
+appiumRequest.setServerUrl(URL);
+
+WebDriver appiumDriver = WEB_DRIVER_MANAGER.getWebDriver(appiumRequest);
+```
 
 ## WinAppDriver support
 
