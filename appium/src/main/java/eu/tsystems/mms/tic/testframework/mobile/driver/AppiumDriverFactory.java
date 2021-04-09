@@ -50,12 +50,6 @@ import java.net.URL;
  */
 public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
-    private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
-    private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
-
-    private static final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
-    private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
-
     @Override
     protected AppiumDriverRequest buildRequest(AbstractWebDriverRequest webDriverRequest) {
 
@@ -84,6 +78,11 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
     @Override
     protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities, SessionContext sessionContext) {
+
+        final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
+        final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
+        final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
+        final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
 
         // early exit.
         if (webDriverRequest.getBrowser() == null) {
