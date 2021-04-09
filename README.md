@@ -130,7 +130,7 @@ Because videos are a platform dependent feature, Appium connector does not provi
 
 ### AppiumDriverRequest
 
-You can also create new sessiond by using the `WebDriverRequest` interface.
+You can also create new sessions by using the `WebDriverRequest` interface.
 
 ```java
 AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
