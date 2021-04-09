@@ -39,15 +39,15 @@ import java.util.Optional;
 public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     @Override
-    public Optional<URL> getSeleniumServerUrl() {
-        if (!super.getSeleniumServerUrl().isPresent()) {
+    public Optional<URL> getServerUrl() {
+        if (!super.getServerUrl().isPresent()) {
             try {
-                this.setSeleniumServerUrl(PropertyManager.getProperty("tt.mobile.grid.url"));
+                this.setServerUrl(PropertyManager.getProperty("tt.mobile.grid.url"));
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Unable to retrieve default Appium URL from properties", e);
             }
         }
-        return super.getSeleniumServerUrl();
+        return super.getServerUrl();
     }
 
     private AppiumDeviceQuery appiumDeviceQuery;

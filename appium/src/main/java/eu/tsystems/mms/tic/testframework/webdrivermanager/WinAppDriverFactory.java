@@ -86,8 +86,6 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
         });
 
-        WebDriverSessionsManager.logRequest(WindowsDriver.class, desiredCapabilities, sessionContext, finalWinAppServerUrl);
-
         AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
         CONTROL.retryFor(DEFAULT_RETRY_INTERVAL, () -> {
             atomicWebDriver.set(new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities));

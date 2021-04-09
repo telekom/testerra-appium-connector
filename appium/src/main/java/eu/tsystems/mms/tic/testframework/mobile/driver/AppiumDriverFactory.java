@@ -67,8 +67,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     }
 
     @Override
-    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
-
+    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
         final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
         final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
         final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
@@ -85,7 +84,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
-        URL appiumUrl = appiumDriverRequest.getSeleniumServerUrl().get();
+        URL appiumUrl = appiumDriverRequest.getServerUrl().get();
         AppiumDeviceQuery appiumDeviceQuery;
 
         switch (webDriverRequest.getBrowser()) {
