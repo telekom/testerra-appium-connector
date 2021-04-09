@@ -23,12 +23,16 @@
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
 
-public class WinAppDriverRequest extends AbstractWebDriverRequest {
+public class WinAppDriverRequest extends AbstractWebDriverRequest implements Loggable {
     public static final String TOP_LEVEL_WINDOW="appTopLevelWindow";
     public static final String DEVICE_NAME="deviceName";
     public static final String APP_ID="app";
@@ -98,5 +102,17 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest {
 
     public void setApplicationArguments(String ... argv) {
         this.getDesiredCapabilities().setCapability(APP_ARGUMENTS, String.join(" ", argv));
+    }
+
+    @Override
+    public Optional<URL> getServerUrl() {
+        if (!super.getServerUrl().isPresent()) {
+            try {
+                setServerUrl(WinAppDriverFactory.Properties.WINAPP_SERVER_URL.asString());
+            } catch (MalformedURLException e) {
+                log().error("Invalid value for property: " + WinAppDriverFactory.Properties.WINAPP_SERVER_URL.toString());
+            }
+        }
+        return super.getServerUrl();
     }
 }

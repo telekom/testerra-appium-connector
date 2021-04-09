@@ -70,15 +70,8 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
     }
 
     private WindowsDriver<WindowsElement> startNewWindowsDriver(WinAppDriverRequest request, SessionContext sessionContext) {
-        URL winappServerUrl;
-        try {
-            winappServerUrl = new URL(Properties.WINAPP_SERVER_URL.asString());
-        } catch (MalformedURLException e) {
-            throw new RuntimeException("Could not create WebDriver", e);
-        }
-
-        final URL finalWinAppServerUrl = winappServerUrl;
-        sessionContext.setNodeUrl(winappServerUrl);
+        final URL finalWinAppServerUrl = request.getServerUrl().get();
+        sessionContext.setNodeUrl(finalWinAppServerUrl);
 
         DesiredCapabilities desiredCapabilities = request.getDesiredCapabilities();
         desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
