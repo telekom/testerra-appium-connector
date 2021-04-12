@@ -34,7 +34,6 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
 import io.appium.java_client.windows.WindowsElement;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
@@ -45,10 +44,10 @@ import org.openqa.selenium.remote.DesiredCapabilities;
 
 public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider {
 
-    private final int DEFAULT_RETRY_INTERVAL = UiElement.Properties.ELEMENT_TIMEOUT_SECONDS.asLong().intValue();
-
     public enum Properties implements IProperties {
         WINAPP_SERVER_URL("tt.winapp.server.url", "http://localhost:4723/"),
+        REUSE_TIMEOUT_SECONDS("tt.winapp.reuse.timeout.seconds", 2),
+        STARTUP_TIMEOUT_SECONDS("tt.winapp.startup.timeout.seconds", 8),
         //WINAPP_DRIVER_PATH("tt.winapp.driver","C:\\Program Files (x86)\\Windows Application Driver\\WinAppDriver.exe")
         ;
         private final String property;
@@ -80,7 +79,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         });
 
         AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
-        CONTROL.retryFor(DEFAULT_RETRY_INTERVAL, () -> {
+        CONTROL.retryFor(Properties.STARTUP_TIMEOUT_SECONDS.asLong().intValue(), () -> {
             atomicWebDriver.set(new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities));
         });
         return atomicWebDriver.get();
@@ -114,7 +113,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
             log().info("Try to create driver on running application by window title \"" + reuseableWindowTitle + "\"");
             WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
-            CONTROL.waitFor(DEFAULT_RETRY_INTERVAL, () -> {
+            CONTROL.waitFor(Properties.REUSE_TIMEOUT_SECONDS.asLong().intValue(), () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
                 int nativeWindowHandleId = Integer.parseInt(nativeWindowHandle);

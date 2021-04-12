@@ -51,6 +51,10 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
         this.setApplication(APP_ID_DESKTOP);
     }
 
+    /**
+     * Tries to reuse a driver by an given application window title.
+     * @param applicationTitle
+     */
     public void reuseApplicationByWindowTitle(String applicationTitle) {
         this.reuseApplicationByWindowTitle = applicationTitle;
         if (DEFAULT_SESSION_KEY.equals(this.getSessionKey())) {

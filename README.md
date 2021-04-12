@@ -261,6 +261,8 @@ The WinAppDriver implementation provides the following properties.
 |Property|default|Description|
 |---|---|---|
 |`tt.winapp.server.url`|`http://localhost:4723/`|URL of the WinAppDriver or Appium / Selenium Gridending on "wd/hub"|
+|`tt.winapp.reuse.timeout.seconds`|`2`|Timeout for finding reusable applications. |
+|`tt.winapp.startup.timeout.seconds`|`8`|Timeout for general driver startup. |
 
 ## Publication
 
