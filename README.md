@@ -37,7 +37,9 @@ Include the following dependency in your project.
 Gradle:
 
 ````groovy
+// Version from this module
 implementation 'io.testerra:appium:2.0'
+// Used Testerra version
 implementation 'io.testerra:driver-ui:2.0'
 implementation 'io.appium:java-client:7.3.0'
 ````
@@ -45,11 +47,13 @@ implementation 'io.appium:java-client:7.3.0'
 Maven:
 
 ```xml
+<!-- Version from this module -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
     <version>2.0</version>
 </dependency>
+<!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
@@ -78,13 +82,10 @@ public class ExampleTest extends TesterraTest {
     @Test
     public void testT01_My_first_test() {
 
-        final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
-
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
-
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
-        driver.get(PropertyManager.get("tt.baseurl"));
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver();
+        WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class).ifPresent(appiumDriver -> {
+            appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        });
     }
 }
 ```
@@ -110,8 +111,7 @@ default values will provide you a device with given operating system and of `@ca
 
 #### Screenshots
 
-Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to
-achieve this.
+Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to achieve this.
 
 #### Videos
 
@@ -127,6 +127,142 @@ Because videos are a platform dependent feature, Appium connector does not provi
 |tt.mobile.device.query.android|"@os='android' and @category='PHONE'"|Access key of your user  and project|
 
 ---
+
+### AppiumDriverRequest
+
+You can also create new sessions by using the `WebDriverRequest` interface.
+
+```java
+AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
+appiumRequest.setAccessKey(String);
+appiumRequest.setDeviceQuery(String);
+appiumRequest.setServerUrl(URL);
+
+WebDriver appiumDriver = WEB_DRIVER_MANAGER.getWebDriver(appiumRequest);
+```
+
+## WinAppDriver support
+
+The Appium connector also supports automation of Windows application using the `WindowsDriver` in two setup scenarios.
+
+* Using an Appium-Server
+* Using a WinAppServer
+
+### Using Appium-Server (*tbd*)
+*(Documentation missing)*
+
+### Using WinAppDriver
+
+The [WinAppDriver](https://github.com/microsoft/WinAppDriver) is like a Selenium server for Windows applications. You can download it from the official project website or just install it via. [chocolatey](https://chocolatey.org/)
+
+```shell
+choco install winappdriver
+```
+
+Before you are able to use it, you should make sure:
+
+* That the Windows Operating System runs in Development Mode.
+* The WinAppDriver able to run.
+
+```text
+"C:\Program Files (x86)\Windows Application Driver\WinAppDriver.exe"
+
+Windows Application Driver listening for requests at: http://127.0.0.1:4723/
+Press ENTER to exit.
+```
+You can customize the connection using [Properties](#Properties)
+
+## Starting an application
+
+You can start applications in several ways:
+
+* Start applications by the executable path.
+* Start drivers for the Windows Desktop.
+* Start drivers from known application window title.
+* Start application from internal application id (*Documentation unknown*)
+
+### Start applications from path
+
+The application path gets translated to the application id and also sets the working directory based on its parent.
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
+```
+
+### Start a Desktop driver
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setDesktopApplication();
+```
+
+### Start driver from known window title
+
+This will try to initialize the driver by an already opened application identified by it's window title. Otherwise, it will try to start by given application id.
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.reuseApplicationByWindowTitle("My App");
+appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
+```
+
+### Start applications from application id
+
+Starting the application from application id is currently unknown. However, this application id starts the default calculator app.
+
+```java
+WinAppDriverRequest appRequest = new WinAppDriverRequest();
+appRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+```
+
+### Retrieving element selectors
+
+The WinAppDriver project provides a binary release of tool named [UIRecorder](https://github.com/microsoft/WinAppDriver/releases/tag/UIR-v1.1) for retrieving element selectors xPath by hovering and focusing elements.
+
+### Find UiElements
+
+Most of the applications support finding elements using `AutomationId` attribute selector.
+
+```java
+PreparedLocator automationLocator = LOCATE.prepare("//*[@AutomationId=\"%s\"]");
+UiElement num1Btn = find(automationLocator.with("num1Button"));
+```
+
+### Accessing the native WindowsDriver API
+
+All features of the `WindowsDriver` implementation are hidden by the `WebDriver` by default.
+To retrieve the raw WindowsDriver, you can unwrap it via. `WebDriverManager`.
+
+```java
+Optional<WindowsDriver> optionalWindowsDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(appDriver, WindowsDriver.class);
+
+optionalWindowsDriver.ifPresent(windowsDriver -> {
+    // Native API access here
+});
+```
+
+### Closing applications
+
+The application will automatically be closed, when `WebDriver.quit()` gets called managed by Testerra on session end. But that closes the application's window which doesn't mean that the application is forced to quit. It could still be opened as a system service available by System tray icons.
+
+There is an experimental feature to force quit an application: https://github.com/Microsoft/WinAppDriver/issues/159
+
+Anyway, if you want to prevent Testerra from closing your `WinAppDriver`, just configure it on the `WinAppDriverRequest`.
+
+```java
+appRequest.setShutdownAfterTest(false);
+appRequest.setShutdownAfterExecution(false);
+```
+
+### Properties
+
+The WinAppDriver implementation provides the following properties.
+
+|Property|default|Description|
+|---|---|---|
+|`tt.winapp.server.url`|`http://localhost:4723/`|URL of the WinAppDriver or Appium / Selenium Gridending on "wd/hub"|
+|`tt.winapp.reuse.timeout.seconds`|`2`|Timeout for finding reusable applications. |
+|`tt.winapp.startup.timeout.seconds`|`8`|Timeout for general driver startup. |
 
 ## Publication
 

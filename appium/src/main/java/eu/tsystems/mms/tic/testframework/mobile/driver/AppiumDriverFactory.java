@@ -22,30 +22,27 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.UnspecificWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
+import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
 import java.util.Arrays;
 import java.util.List;
-import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
-
-import java.net.MalformedURLException;
 import java.net.URL;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 /**
  * Creates {@link WebDriver} sessions for {@link io.appium.java_client.AppiumDriver} based on {@link AppiumDriverRequest}
@@ -54,96 +51,79 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverFactory extends AbstractWebDriverFactory<AppiumDriverRequest> implements WebDriverFactory {
-
-    private static final String GRID_ACCESS_KEY = PropertyManager.getProperty("tt.mobile.grid.access.key");
-    private static final String GRID_URL = PropertyManager.getProperty("tt.mobile.grid.url");
-
-    private static final String APPIUM_DEVICE_QUERY_IOS = PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'");
-    private static final String APPIUM_DEVICE_QUERY_ANDROID = PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'");
+public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     @Override
-    protected AppiumDriverRequest buildRequest(AbstractWebDriverRequest webDriverRequest) {
-
+    public WebDriverRequest prepareWebDriverRequest(WebDriverRequest webDriverRequest) {
         AppiumDriverRequest finalRequest;
 
         if (webDriverRequest instanceof AppiumDriverRequest) {
             finalRequest = (AppiumDriverRequest) webDriverRequest;
-        } else if (webDriverRequest instanceof UnspecificWebDriverRequest) {
+        } else {
             finalRequest = new AppiumDriverRequest();
             finalRequest.setSessionKey(webDriverRequest.getSessionKey());
             finalRequest.setBrowser(webDriverRequest.getBrowser());
             finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
-            webDriverRequest.getBaseUrl().ifPresent(finalRequest::setBaseUrl);
-        } else {
-            throw new RuntimeException(webDriverRequest.getClass().getSimpleName() + " is not allowed here");
+        }
+
+        DesiredCapabilities requestCapabilities = finalRequest.getDesiredCapabilities();
+
+        // general caps
+        requestCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
+
+        switch (webDriverRequest.getBrowser()) {
+            case Browsers.mobile_safari: {
+                finalRequest.setDeviceQuery(PropertyManager.getProperty("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'"));
+                break;
+            }
+            case Browsers.mobile_chrome: {
+                finalRequest.setDeviceQuery(PropertyManager.getProperty("tt.mobile.device.query.android", "@os='android' and @category='PHONE'"));
+                break;
+            }
         }
 
         return finalRequest;
     }
 
     @Override
-    protected DesiredCapabilities buildCapabilities(DesiredCapabilities preSetCaps, AppiumDriverRequest request) {
+    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
+        AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest)webDriverRequest;
+        DesiredCapabilities requestCapabilities = appiumDriverRequest.getDesiredCapabilities();
+        URL appiumUrl = appiumDriverRequest.getServerUrl().get();
 
-        return preSetCaps;
-    }
+        DesiredCapabilities finalCapabilities = new DesiredCapabilities(requestCapabilities);
 
-    @Override
-    protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities, SessionContext sessionContext) {
-
-        // early exit.
-        if (webDriverRequest.getBrowser() == null) {
-            throw new RuntimeException("DriverRequest was null.");
-        }
-
-        // general caps
-        desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
-        desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
-
+        AppiumDriver appiumDriver = null;
         switch (webDriverRequest.getBrowser()) {
-            case MobileBrowsers.mobile_safari:
-
-                desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_IOS);
-                desiredCapabilities.setBrowserName(MobileBrowserType.SAFARI);
-
-                try {
-                    final IOSDriver<IOSElement> driver = new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("iOS Session created for: " + appiumDeviceQuery.toString());
-                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
-                    return driver;
-                } catch (MalformedURLException e) {
-                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
-                }
-
-            case MobileBrowsers.mobile_chrome:
-
-                desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_ANDROID);
-                desiredCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
-
-                try {
-                    final AndroidDriver<AndroidElement> driver = new AndroidDriver<>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("Android Session created for: " + appiumDeviceQuery.toString());
-                    webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
-                    return driver;
-                } catch (MalformedURLException e) {
-                    throw new SessionNotCreatedException("Could not create session, because URL invalid");
-                }
-
-            default:
-                throw new RuntimeException("Mobile Browser not supported.");
+            case Browsers.mobile_safari: {
+                finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+                appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
+                break;
+            }
+            case Browsers.mobile_chrome: {
+                finalCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
+                appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
+                break;
+            }
         }
+        if (appiumDriver != null) {
+            AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(appiumDriver.getCapabilities());
+            sessionContext.setActualBrowserName(appiumDeviceQuery.toString());
+        } else {
+            throw new RuntimeException("Mobile Browser not supported: " + webDriverRequest.getBrowser());
+        }
+        return appiumDriver;
     }
 
     @Override
-    protected void setupSession(EventFiringWebDriver eventFiringWebDriver, AppiumDriverRequest request) {
-
+    public void setupNewWebDriverSession(EventFiringWebDriver webDriver, SessionContext sessionContext) {
+        AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest)sessionContext.getWebDriverRequest();
+        appiumDriverRequest.getBaseUrl().ifPresent(url -> webDriver.get(url.toString()));
     }
 
     @Override
     public List<String> getSupportedBrowsers() {
-        return Arrays.asList(MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
+        return Arrays.asList(Browsers.mobile_chrome, Browsers.mobile_safari);
     }
 
     @Override

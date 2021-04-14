@@ -25,11 +25,13 @@ package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 import eu.tsystems.mms.tic.testframework.internal.Viewport;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import java.util.Optional;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -41,15 +43,15 @@ import org.testng.annotations.Test;
  *
  * @author Eric Kubenka
  */
-public class TesterraAppiumDriverTest extends AbstractAppiumTest {
+public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebDriverManagerProvider {
 
     @Test
     public void testT01_startDefaultSession() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
-
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).ifPresent(appiumDriver -> {
+            appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        });
         driver.get("https://the-internet.herokuapp.com/dropdown");
     }
 

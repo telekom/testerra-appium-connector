@@ -19,11 +19,12 @@
  * under the License.
  *
  */
-package eu.tsystems.mms.tic.testframework.mobile.hook;
+package eu.tsystems.mms.tic.testframework.ioc;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
+import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
@@ -36,11 +37,12 @@ import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
  *
  * @author Eric Kubenka
  */
-public class MobileAppiumHook extends AbstractModule {
+public class DriverUi_Appium extends AbstractModule {
 
     @Override
     protected void configure() {
         Multibinder<WebDriverFactory> webDriverFactoryBinder = Multibinder.newSetBinder(binder(), WebDriverFactory.class);
         webDriverFactoryBinder.addBinding().to(AppiumDriverFactory.class).in(Scopes.SINGLETON);
+        webDriverFactoryBinder.addBinding().to(WinAppDriverFactory.class).in(Scopes.SINGLETON);
     }
 }

@@ -25,7 +25,7 @@ package eu.tsystems.mms.tic.testframework.mobile.guielement;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
-import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.DesktopGuiElementCore;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import io.appium.java_client.AppiumDriver;
@@ -37,8 +37,9 @@ import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.time.Duration;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebElement;
+import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -47,7 +48,7 @@ import org.openqa.selenium.WebDriver;
  *
  * @author Eric Kubenka
  */
-public class AppiumGuiElementCoreAdapter extends DesktopGuiElementCore implements Loggable {
+public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implements Loggable {
 
     private final AppiumDriver appiumDriver;
 
@@ -56,6 +57,16 @@ public class AppiumGuiElementCoreAdapter extends DesktopGuiElementCore implement
     public AppiumGuiElementCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
         this.appiumDriver = appiumDriverManager.fromWebDriver(this.guiElementData.getWebDriver());
+    }
+
+    @Override
+    protected void switchToDefaultContent(WebDriver webDriver) {
+
+    }
+
+    @Override
+    protected void switchToFrame(WebDriver webDriver, WebElement webElement) {
+
     }
 
     @Override
