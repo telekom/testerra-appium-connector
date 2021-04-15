@@ -62,7 +62,7 @@ Maven:
 <dependency>
     <groupId>io.appium</groupId>
     <artifactId>java-client</artifactId>
-    <version>7.3.0/version>
+    <version>7.3.0</version>
 </dependency>
 ```
 
