@@ -24,7 +24,6 @@ package eu.tsystems.mms.tic.testframework.appium;
 import eu.tsystems.mms.tic.testframework.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
@@ -113,8 +112,9 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
                 desktopDriverRequest.setDesktopApplication();
             }
 
-            log().info(String.format("Try to create driver on running application by window title \"%s\" for %d seconds", reuseableWindowTitle, appDriverRequest.getReuseTimeoutSeconds()));
             WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
+
+            log().info(String.format("Try to create driver on running application by window title \"%s\" with %d seconds timeout", reuseableWindowTitle, appDriverRequest.getReuseTimeoutSeconds()));
             CONTROL.waitFor(appDriverRequest.getReuseTimeoutSeconds(), () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");

@@ -77,9 +77,9 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
     }
 
     public void setApplicationPath(Path applicationPath) {
-        if (!Files.exists(applicationPath)) {
-            throw new RuntimeException("Application not found: " + applicationPath);
-        }
+//        if (!Files.exists(applicationPath)) {
+//            throw new RuntimeException("Application not found: " + applicationPath);
+//        }
         this.setApplication(applicationPath.toString());
         this.setWorkingDir(applicationPath.getParent().toString());
     }

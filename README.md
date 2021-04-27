@@ -200,7 +200,7 @@ appRequest.setDesktopApplication();
 
 ### Start driver from known window title
 
-This will try to initialize the driver by an already opened application identified by it's window title. Otherwise, it will try to start by given application id.
+This will try to initialize the driver by an already opened application identified by its window title. Otherwise, it will try to start by given application id.
 
 ```java
 WinAppDriverRequest appRequest = new WinAppDriverRequest();
