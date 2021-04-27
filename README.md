@@ -38,7 +38,7 @@ Gradle:
 
 ````groovy
 // Version from this module
-implementation 'io.testerra:appium:2.0-RC-1'
+implementation 'io.testerra:appium:2.0-RC-2'
 // Used Testerra version
 implementation 'io.testerra:driver-ui:2.0-RC-4'
 implementation 'io.appium:java-client:7.3.0'
@@ -51,13 +51,13 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>:2.0-RC-1</version>
+    <version>:2.0-RC-2</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.0-RC-4/version>
+    <version>2.0-RC-4</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
@@ -137,6 +137,8 @@ AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
 appiumRequest.setAccessKey(String);
 appiumRequest.setDeviceQuery(String);
 appiumRequest.setServerUrl(URL);
+appiumRequest.setStartupTimeoutSeconds(int);
+appiumRequest.setReuseTimeoutSeconds(int);
 
 WebDriver appiumDriver = WEB_DRIVER_MANAGER.getWebDriver(appiumRequest);
 ```

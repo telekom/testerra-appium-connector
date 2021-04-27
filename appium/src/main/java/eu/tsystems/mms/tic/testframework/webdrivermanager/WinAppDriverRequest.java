@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testframework.webdrivermanager;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.nio.file.Files;
@@ -38,13 +39,18 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
     public static final String WORKING_DIR="appWorkingDir";
     public static final String APP_ARGUMENTS ="appArguments";
     public static final String APP_ID_DESKTOP="Root";
+    public static final String WAIT_FOR_APP_LAUNCH="ms:waitForAppLaunch";
 
     private String reuseApplicationByWindowTitle = null;
     private String appId = null;
+    private int startupTimeoutSeconds = 0;
+    private int reuseTimeoutSeconds = 0;
 
     public WinAppDriverRequest() {
         super();
         setBrowser(Browsers.windows);
+        setStartupTimeoutSeconds(WinAppDriverFactory.Properties.STARTUP_TIMEOUT_SECONDS.asLong().intValue());
+        setReuseTimeoutSeconds(WinAppDriverFactory.Properties.REUSE_TIMEOUT_SECONDS.asLong().intValue());
     }
 
     public void setDesktopApplication() {
@@ -117,5 +123,24 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
             }
         }
         return super.getServerUrl();
+    }
+
+    public int getStartupTimeoutSeconds() {
+        return this.startupTimeoutSeconds;
+    }
+
+    public void setStartupTimeoutSeconds(int startupTimeoutSeconds) {
+        this.startupTimeoutSeconds = startupTimeoutSeconds;
+        // Setting the app launch timeout is useless, because it waits
+        // even when the application is already started
+        // this.getDesiredCapabilities().setCapability(WAIT_FOR_APP_LAUNCH, startupTimeoutSeconds);
+    }
+
+    public int getReuseTimeoutSeconds() {
+        return reuseTimeoutSeconds;
+    }
+
+    public void setReuseTimeoutSeconds(int reuseTimeoutSeconds) {
+        this.reuseTimeoutSeconds = reuseTimeoutSeconds;
     }
 }
