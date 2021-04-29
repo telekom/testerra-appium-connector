@@ -73,6 +73,9 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
     }
 
     public void setApplicationPath(String applicationPath) {
+        log().info("application path string: " + applicationPath);
+        log().info("application path: " + Paths.get(applicationPath));
+        log().info("application path parent: " + Paths.get(applicationPath).getParent());
         this.setApplicationPath(Paths.get(applicationPath));
     }
 
