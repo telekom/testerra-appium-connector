@@ -59,7 +59,6 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
 
     /**
      * Tries to reuse a driver by an given application window title.
-     * @param applicationTitle
      */
     public void reuseApplicationByWindowTitle(String applicationTitle) {
         this.reuseApplicationByWindowTitle = applicationTitle;
@@ -73,9 +72,6 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
     }
 
     public void setApplicationPath(String applicationPath) {
-        log().info("application path string: " + applicationPath);
-        log().info("application path: " + Paths.get(applicationPath));
-        log().info("application path parent: " + Paths.get(applicationPath).getParent());
         this.setApplicationPath(Paths.get(applicationPath));
     }
 
@@ -84,7 +80,11 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
 //            throw new RuntimeException("Application not found: " + applicationPath);
 //        }
         this.setApplication(applicationPath.toString());
-        this.setWorkingDir(applicationPath.getParent().toString());
+
+        Path parent = applicationPath.getParent();
+        if (parent != null) {
+            this.setWorkingDir(parent);
+        }
     }
 
     /**
@@ -108,6 +108,10 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
         return Optional.ofNullable(this.appId);
     }
 
+    public void setWorkingDir(Path workingDir) {
+        this.setWorkingDir(workingDir.toString());
+    }
+
     public void setWorkingDir(String workingDir) {
         this.getDesiredCapabilities().setCapability(WORKING_DIR, workingDir);
     }
@@ -122,7 +126,7 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
             try {
                 setServerUrl(WinAppDriverFactory.Properties.WINAPP_SERVER_URL.asString());
             } catch (MalformedURLException e) {
-                log().error("Invalid value for property: " + WinAppDriverFactory.Properties.WINAPP_SERVER_URL.toString());
+                log().error("Invalid value for property: " + WinAppDriverFactory.Properties.WINAPP_SERVER_URL);
             }
         }
         return super.getServerUrl();
