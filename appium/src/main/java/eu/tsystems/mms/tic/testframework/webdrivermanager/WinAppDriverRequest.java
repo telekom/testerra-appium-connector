@@ -31,6 +31,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class WinAppDriverRequest extends AbstractWebDriverRequest implements Loggable {
     public static final String TOP_LEVEL_WINDOW="appTopLevelWindow";
@@ -79,11 +81,25 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
 //        if (!Files.exists(applicationPath)) {
 //            throw new RuntimeException("Application not found: " + applicationPath);
 //        }
-        this.setApplication(applicationPath.toString());
+
+        String applicationPathString = applicationPath.toString();
+        this.setApplication(applicationPathString);
 
         Path parent = applicationPath.getParent();
         if (parent != null) {
             this.setWorkingDir(parent);
+        } else {
+            /**
+             * When there is no parent, try to find the base path,
+             * by regular expression.
+             * This is a workaround for a Java bug (maybe Java 8)
+             */
+            Pattern basePathRegex = Pattern.compile("(.*)[\\\\\\/][^\\\\\\/]+$");
+            Matcher matcher = basePathRegex.matcher(applicationPathString);
+            if (matcher.matches()) {
+                String group = matcher.group(1);
+                setWorkingDir(group);
+            }
         }
     }
 

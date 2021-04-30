@@ -28,12 +28,7 @@ import eu.tsystems.mms.tic.testframework.testing.AssertProvider;
 import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
-import io.appium.java_client.windows.WindowsDriver;
-import java.util.Optional;
-import org.junit.Assert;
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
@@ -54,23 +49,6 @@ public class WinAppDriverTest implements
         CalculatorApp calculatorApp = PAGE_FACTORY.createPage(CalculatorApp.class, webDriver);
         calculatorApp.typeSomething();
         calculatorApp.getResults().expect().text().contains("1.337").is(true);
-    }
-
-    @Test
-    public void test_calculate_works() {
-        WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
-        winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
-        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
-        webDriver.findElement(By.xpath("//Button[@Name=\"Eins\"]")).click();
-        webDriver.findElement(By.xpath("//*[@AutomationId=\"num1Button\"]")).click();
-        Optional<WindowsDriver> windowsDriver1 = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, WindowsDriver.class);
-        Assert.assertTrue(windowsDriver1.isPresent());
-        WindowsDriver windowsDriver = windowsDriver1.get();
-        WebElement num2Button = windowsDriver.findElementByAccessibilityId("num2Button");
-        num2Button.click();
-
-        WebElement calculatorResults = windowsDriver.findElementByAccessibilityId("CalculatorResults");
-        ASSERT.assertContains(calculatorResults.getText(), "112");
     }
 
     @AfterMethod

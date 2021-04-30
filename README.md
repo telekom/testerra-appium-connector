@@ -192,6 +192,10 @@ WinAppDriverRequest appRequest = new WinAppDriverRequest();
 appRequest.setApplicationPath("C:\\Program Files (x86)\\Application\\Application.exe");
 ```
 
+**NOTE**: Some applications require their working directory set to the parent of the application binary to run properly.
+
+For example: `C:\\Program Files (x86)\\Application\\Application.exe` needs to run in `C:\\Program Files (x86)\\Application`. When setting the application path, the `WinAppDriverRequests` tries to detect the parent directory by using Java `Path.getParent()`, but this seems to be buggy when using Windows paths in Posix environments. Therefore, we've implemented a workaround to detect the base directory by using basic regular expressions with `/` and `\\` delimiters.
+
 ### Start a Desktop driver
 ```java
 WinAppDriverRequest appRequest = new WinAppDriverRequest();
@@ -265,6 +269,11 @@ The WinAppDriver implementation provides the following properties.
 |`tt.winapp.server.url`|`http://localhost:4723/`|URL of the WinAppDriver or Appium / Selenium Gridending on "wd/hub"|
 |`tt.winapp.reuse.timeout.seconds`|`2`|Timeout for finding reusable applications. |
 |`tt.winapp.startup.timeout.seconds`|`8`|Timeout for general driver startup. |
+
+### Troubleshotting
+
+**Symptom: Application forget settings after restart**
+- Solution: Try to set the working directory manually.
 
 ## Publication
 
