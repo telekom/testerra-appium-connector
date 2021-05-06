@@ -28,6 +28,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCor
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.TestControllerProvider;
+import eu.tsystems.mms.tic.testframework.utils.Sleepy;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
@@ -36,12 +37,13 @@ import io.appium.java_client.windows.WindowsElement;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicReference;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
 
-public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider {
+public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider, Sleepy {
 
     public enum Properties implements IProperties {
         WINAPP_SERVER_URL("tt.winapp.server.url", "http://localhost:4723/"),
@@ -78,11 +80,10 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
         });
 
-        AtomicReference<WindowsDriver<WindowsElement>> atomicWebDriver = new AtomicReference<>();
-        CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), () -> {
-            atomicWebDriver.set(new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities));
-        });
-        return atomicWebDriver.get();
+        WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities);
+        CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), windowsDriver::getTitle, this::sleep);
+        //windowsDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
+        return windowsDriver;
     }
 
     @Override
@@ -110,6 +111,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             } else {
                 desktopDriverRequest = new WinAppDriverRequest();
                 desktopDriverRequest.setDesktopApplication();
+                appDriverRequest.getServerUrl().ifPresent(desktopDriverRequest::setServerUrl);
             }
 
             WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
