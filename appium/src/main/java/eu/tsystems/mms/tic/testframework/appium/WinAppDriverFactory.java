@@ -74,6 +74,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
         DesiredCapabilities desiredCapabilities = appDriverRequest.getDesiredCapabilities();
         desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
+        //desiredCapabilities.setCapability(WinAppDriverRequest.WAIT_FOR_APP_LAUNCH, 1);
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
         sessionContext.setActualBrowserName("WindowsPC");
         appDriverRequest.getApplicationId().ifPresent(appId -> {
@@ -82,7 +83,6 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
         WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities);
         CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), windowsDriver::getTitle, this::sleep);
-        //windowsDriver.manage().timeouts().implicitlyWait(1, TimeUnit.MILLISECONDS);
         return windowsDriver;
     }
 
@@ -116,7 +116,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
             WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
 
-            log().info(String.format("Try to create driver on running application by window title \"%s\" with %d seconds timeout", reuseableWindowTitle, appDriverRequest.getReuseTimeoutSeconds()));
+            log().info(String.format("Try to create driver on running application by window title \"%s\"", reuseableWindowTitle));
             CONTROL.waitFor(appDriverRequest.getReuseTimeoutSeconds(), () -> {
                 WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
