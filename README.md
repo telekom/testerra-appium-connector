@@ -51,7 +51,7 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>:2.0-RC-4</version>
+    <version>2.0-RC-4</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
