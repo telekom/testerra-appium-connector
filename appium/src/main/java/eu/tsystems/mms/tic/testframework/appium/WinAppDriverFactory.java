@@ -74,7 +74,6 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
 
         DesiredCapabilities desiredCapabilities = appDriverRequest.getDesiredCapabilities();
         desiredCapabilities.setCapability(WinAppDriverRequest.DEVICE_NAME, "WindowsPC");
-        //desiredCapabilities.setCapability(WinAppDriverRequest.WAIT_FOR_APP_LAUNCH, 1);
 //        desiredCapabilities.setCapability("ms:experimental-webdriver", true);
         sessionContext.setActualBrowserName("WindowsPC");
         appDriverRequest.getApplicationId().ifPresent(appId -> {
@@ -82,7 +81,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         });
 
         WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities);
-        CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), windowsDriver::getTitle, this::sleep);
+        //CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), windowsDriver::getTitle, this::sleep);
         return windowsDriver;
     }
 

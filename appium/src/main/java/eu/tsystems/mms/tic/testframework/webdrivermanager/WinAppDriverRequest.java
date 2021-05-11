@@ -154,9 +154,7 @@ public class WinAppDriverRequest extends AbstractWebDriverRequest implements Log
 
     public void setStartupTimeoutSeconds(int startupTimeoutSeconds) {
         this.startupTimeoutSeconds = startupTimeoutSeconds;
-        // Setting the app launch timeout is useless, because it waits
-        // even when the application is already started
-        // this.getDesiredCapabilities().setCapability(WAIT_FOR_APP_LAUNCH, startupTimeoutSeconds);
+        this.getDesiredCapabilities().setCapability(WAIT_FOR_APP_LAUNCH, startupTimeoutSeconds);
     }
 
     public int getReuseTimeoutSeconds() {

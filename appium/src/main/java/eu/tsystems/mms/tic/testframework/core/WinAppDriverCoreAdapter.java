@@ -41,21 +41,26 @@ public class WinAppDriverCoreAdapter extends AbstractWebDriverCore implements Lo
 
     @Override
     protected void switchToDefaultContent(WebDriver webDriver) {
-        // not implemented
+        // not supported
     }
 
     @Override
     protected void switchToFrame(WebDriver webDriver, WebElement webElement) {
-        // not implemented
+        // not supported
+    }
+
+    @Override
+    public void highlight(Color color) {
+        // Not supported
     }
 
     @Override
     protected void highlightWebElement(WebElement webElement, Color color) {
-        // Not implemented
+        // Not supported
     }
 
     @Override
     public void swipe(int offsetX, int offSetY) {
-        // Not implemented
+        // Not supported
     }
 }
