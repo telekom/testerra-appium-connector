@@ -63,6 +63,13 @@ Maven:
     <groupId>io.appium</groupId>
     <artifactId>java-client</artifactId>
     <version>7.3.0</version>
+    <!-- Needed for correct Testerra logging -->
+    <exclusions>
+        <exclusion>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </exclusion>
+    </exclusions>
 </dependency>
 ```
 
