@@ -270,7 +270,7 @@ The WinAppDriver implementation provides the following properties.
 |`tt.winapp.reuse.timeout.seconds`|`2`|Timeout for finding reusable applications. |
 |`tt.winapp.startup.timeout.seconds`|`8`|Timeout for general driver startup. |
 
-### Troubleshotting
+### Troubleshooting
 
 **Symptom: Application forget settings after restart**
 - Solution: Try to set the working directory manually.
@@ -278,6 +278,10 @@ The WinAppDriver implementation provides the following properties.
 **Symptom: Elements are not interactable on remote WinAppDriver**
 - Reason: When closing RDP connections, the Desktop gets non-interactable as default behaviour.
 - Solution: You can use VNC instead or configure your RDP to keep sessions active. More information can be found here: https://github.com/microsoft/WinAppDriver/issues/1510
+
+**Symptom: Non-interactable elements on non-focused windows**
+- Reason: Some applications get minimized when they loose focus.
+- Solution: Try to bring the window to the front by calling `webDriver.manage().window().setPosition(new Point(0,0));`
 
 ## Publication
 
