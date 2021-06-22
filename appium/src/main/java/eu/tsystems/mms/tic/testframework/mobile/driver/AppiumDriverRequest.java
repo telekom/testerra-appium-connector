@@ -23,6 +23,8 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
+import java.net.URL;
+import java.util.Optional;
 
 /**
  * Extends {@link AbstractWebDriverRequest}
@@ -43,5 +45,10 @@ public class AppiumDriverRequest extends AbstractWebDriverRequest {
     public void setAppiumDeviceQuery(AppiumDeviceQuery appiumDeviceQuery) {
 
         this.appiumDeviceQuery = appiumDeviceQuery;
+    }
+
+    @Override
+    public Optional<URL> getServerUrl() {
+        return Optional.empty();
     }
 }
