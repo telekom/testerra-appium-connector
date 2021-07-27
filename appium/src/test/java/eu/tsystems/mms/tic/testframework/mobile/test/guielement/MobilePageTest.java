@@ -25,6 +25,7 @@ package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 import eu.tsystems.mms.tic.testframework.exceptions.PageNotFoundException;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.IFramePage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.LoginPage;
+import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.OtherIFramePage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.StartPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.TablePage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.component.FooterComponent;
@@ -111,5 +112,15 @@ public class MobilePageTest extends AbstractAppiumTest {
 
         IFramePage iframePage = PageFactory.create(IFramePage.class, webDriver);
         iframePage.textArea.isDisplayed();
+    }
+
+    @Test
+    public void test_iFrame_body_element() {
+        WebDriver webDriver = WebDriverManager.getWebDriver();
+        webDriver.get("https://www.on-design.de/tutor/html5_css3/html5/iframe/iframes01.html");
+
+        OtherIFramePage iframePage = PageFactory.create(OtherIFramePage.class, webDriver);
+        iframePage.iframe.scrollIntoView();
+        iframePage.iframeElem.isDisplayed();
     }
 }

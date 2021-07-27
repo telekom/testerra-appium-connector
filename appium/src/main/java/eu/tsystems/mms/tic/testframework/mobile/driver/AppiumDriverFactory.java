@@ -101,8 +101,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
                 try {
                     final IOSDriver<IOSElement> driver = new IOSDriver<>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("iOS Session created for: " + appiumDeviceQuery.toString());
+                    log().info("iOS Session created for: " + driver.getCapabilities());
                     webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
@@ -116,8 +115,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
                 try {
                     final AndroidDriver<AndroidElement> driver = new AndroidDriver<>(new URL(GRID_URL), desiredCapabilities);
-                    final AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(driver.getCapabilities());
-                    log().info("Android Session created for: " + appiumDeviceQuery.toString());
+                    log().info("Android Session created for: " + driver.getCapabilities());
                     webDriverRequest.getBaseUrl().ifPresent(url -> driver.get(url.toString()));
                     return driver;
                 } catch (MalformedURLException e) {
