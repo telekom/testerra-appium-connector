@@ -31,6 +31,7 @@
     <test name="AppiumGuiElementTest" parallel="methods" thread-count="2">
         <classes>
             <class name="eu.tsystems.mms.tic.testframework.mobile.test.guielement.MobileGuiElementTest"/>
+            <class name="eu.tsystems.mms.tic.testframework.mobile.test.guielement.MobilePageTest"/>
         </classes>
     </test>
 

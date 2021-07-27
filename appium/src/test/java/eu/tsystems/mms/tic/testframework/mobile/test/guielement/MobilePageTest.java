@@ -23,6 +23,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 
 import eu.tsystems.mms.tic.testframework.exceptions.PageNotFoundException;
+import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.IFramePage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.LoginPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.StartPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.TablePage;
@@ -103,5 +104,12 @@ public class MobilePageTest extends AbstractAppiumTest {
         Assert.assertTrue(tablePage.isUserShown("Smith", "John"));
     }
 
+    @Test
+    public void test_iFrame_element() {
+        WebDriver webDriver = WebDriverManager.getWebDriver();
+        webDriver.get("https://the-internet.herokuapp.com/iframe");
 
+        IFramePage iframePage = PageFactory.create(IFramePage.class, webDriver);
+        iframePage.textArea.isDisplayed();
+    }
 }
