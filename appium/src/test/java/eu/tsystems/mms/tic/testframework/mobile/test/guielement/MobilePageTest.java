@@ -115,12 +115,33 @@ public class MobilePageTest extends AbstractAppiumTest {
     }
 
     @Test
+    public void test_iFrame_body_element_text() {
+        final String textExpected = "Your content goes here.";
+
+        WebDriver webDriver = WebDriverManager.getWebDriver();
+        webDriver.get("https://the-internet.herokuapp.com/iframe");
+
+        IFramePage iframePage = PageFactory.create(IFramePage.class, webDriver);
+        iframePage.iframeBodyElement.isDisplayed();
+        final String textActual = iframePage.iframeBodyElement.getText();
+
+        Assert.assertEquals(textActual, textExpected, "Text equals.");
+    }
+
+    @Test
     public void test_iFrame_body_element() {
+        final String textExpected = "ROT";
+
         WebDriver webDriver = WebDriverManager.getWebDriver();
         webDriver.get("https://www.on-design.de/tutor/html5_css3/html5/iframe/iframes01.html");
 
         OtherIFramePage iframePage = PageFactory.create(OtherIFramePage.class, webDriver);
         iframePage.iframe.scrollIntoView();
         iframePage.iframeElem.isDisplayed();
+
+        final String textActual = iframePage.iframeElem.getText();
+
+        Assert.assertEquals(textActual, textExpected, "Text equals.");
+
     }
 }

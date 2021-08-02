@@ -12,6 +12,9 @@ public class IFramePage extends AbstractInternetPage {
 
     public final GuiElement textArea = new GuiElement(getWebDriver(), By.id("mce_0"), iframe);
 
+    @Check
+    public final GuiElement iframeBodyElement = new GuiElement(getWebDriver(), By.xpath("//*[@id='tinymce']//p"), iframe);
+
     public IFramePage(WebDriver driver) {
         super(driver);
     }
