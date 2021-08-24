@@ -115,12 +115,24 @@ public class MobilePageTest extends AbstractAppiumTest {
     }
 
     @Test
+    public void test_iFrame_body_element_text() {
+        WebDriver webDriver = WebDriverManager.getWebDriver();
+        webDriver.get("https://the-internet.herokuapp.com/iframe");
+
+        IFramePage iframePage = PageFactory.create(IFramePage.class, webDriver);
+        iframePage.iframeBodyElement.isDisplayed();
+
+        iframePage.iframeBodyElement.asserts().assertText("Your content goes here.");
+    }
+
+    @Test
     public void test_iFrame_body_element() {
         WebDriver webDriver = WebDriverManager.getWebDriver();
         webDriver.get("https://www.on-design.de/tutor/html5_css3/html5/iframe/iframes01.html");
 
         OtherIFramePage iframePage = PageFactory.create(OtherIFramePage.class, webDriver);
         iframePage.iframe.scrollIntoView();
-        iframePage.iframeElem.isDisplayed();
+
+        iframePage.iframeElem.asserts().assertText("ROT");
     }
 }

@@ -9,8 +9,10 @@ import org.openqa.selenium.WebDriver;
 
 public class OtherIFramePage extends Page {
 
+    @Check
     public final GuiElement iframe = new GuiElement(getWebDriver(), By.xpath("//iframe[@src='rot.html']"));
 
+    @Check
     public final GuiElement iframeElem = new GuiElement(getWebDriver(), By.xpath("//body"), iframe);
 
 
