@@ -132,7 +132,6 @@ public class MobilePageTest extends AbstractAppiumTest {
 
         OtherIFramePage iframePage = PageFactory.create(OtherIFramePage.class, webDriver);
         iframePage.iframe.scrollIntoView();
-        iframePage.iframeElem.isDisplayed();
 
         iframePage.iframeElem.asserts().assertText("ROT");
     }
