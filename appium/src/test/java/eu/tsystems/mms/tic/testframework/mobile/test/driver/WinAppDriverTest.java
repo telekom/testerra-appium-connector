@@ -21,6 +21,12 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
+import eu.tsystems.mms.tic.testframework.common.Testerra;
+import eu.tsystems.mms.tic.testframework.report.model.context.MethodContext;
+import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
+import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
 import eu.tsystems.mms.tic.testframework.appium.windows.CalculatorApp;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
@@ -32,7 +38,7 @@ import org.openqa.selenium.WebDriver;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.Test;
 
-public class WinAppDriverTest implements
+public class WinAppDriverTest extends TesterraTest implements
         WebDriverManagerProvider,
         PageFactoryProvider,
         UiElementFinderFactoryProvider,
@@ -49,6 +55,27 @@ public class WinAppDriverTest implements
         CalculatorApp calculatorApp = PAGE_FACTORY.createPage(CalculatorApp.class, webDriver);
         calculatorApp.typeSomething();
         calculatorApp.getResults().expect().text().contains("1.337").is(true);
+
+        UITestUtils.takeScreenshot(webDriver, true);
+    }
+
+    @Test
+    public void test_takeScreenshot() {
+        WinAppDriverRequest winAppDriverRequest = new WinAppDriverRequest();
+        winAppDriverRequest.setApplication("Microsoft.WindowsCalculator_8wekyb3d8bbwe!App");
+
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(winAppDriverRequest);
+
+        UITestUtils.takeScreenshot(webDriver, true);
+
+        IExecutionContextController executionContextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
+        MethodContext methodContext = executionContextController.getCurrentMethodContext().get();
+
+        long numScreenshots = methodContext.readTestSteps()
+                .flatMap(testStep -> testStep.getCurrentTestStepAction().readEntries(Screenshot.class))
+                .count();
+
+        ASSERT.assertEquals(1, numScreenshots);
     }
 
     @AfterMethod
