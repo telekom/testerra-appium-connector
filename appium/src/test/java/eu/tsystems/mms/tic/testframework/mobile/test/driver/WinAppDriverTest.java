@@ -55,8 +55,6 @@ public class WinAppDriverTest extends TesterraTest implements
         CalculatorApp calculatorApp = PAGE_FACTORY.createPage(CalculatorApp.class, webDriver);
         calculatorApp.typeSomething();
         calculatorApp.getResults().expect().text().contains("1.337").is(true);
-
-        UITestUtils.takeScreenshot(webDriver, true);
     }
 
     @Test
