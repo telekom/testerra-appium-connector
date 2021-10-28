@@ -35,6 +35,8 @@ import java.util.Optional;
  */
 public class AppiumDriverRequest extends AbstractWebDriverRequest {
 
+    public static final String CAPABILITY_NAME_TEST_NAME = "testName";
+
     private AppiumDeviceQuery appiumDeviceQuery;
 
     public AppiumDeviceQuery getAppiumDeviceQuery() {
