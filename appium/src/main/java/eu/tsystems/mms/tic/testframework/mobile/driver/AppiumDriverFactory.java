@@ -33,6 +33,8 @@ import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
+import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.SessionNotCreatedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -49,6 +51,8 @@ import java.net.URL;
  * @author Eric Kubenka
  */
 public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
+
+    private static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     @Override
     protected AppiumDriverRequest buildRequest(AbstractWebDriverRequest webDriverRequest) {
@@ -76,6 +80,22 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
         return preSetCaps;
     }
 
+    /**
+     * Sets an capability value if the existing value doesn't match the same type,
+     * is an empty string or doesn't exists.
+     * @todo Move this to Testerra core
+     * @param capabilities
+     * @param capabilityName
+     * @param capability
+     * @param <T>
+     */
+    private <T> void setCapabilityIfAbsent(DesiredCapabilities capabilities, String capabilityName, T capability) {
+        Object existingCapability = capabilities.getCapability(capabilityName);
+        if (!capability.getClass().isInstance(existingCapability) || (existingCapability instanceof String && StringUtils.isBlank((String)existingCapability))) {
+            capabilities.setCapability(capabilityName, capability);
+        }
+    }
+
     @Override
     protected WebDriver getRawWebDriver(AppiumDriverRequest webDriverRequest, DesiredCapabilities desiredCapabilities, SessionContext sessionContext) {
 
@@ -90,7 +110,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
         }
 
         // general caps
-        desiredCapabilities.setCapability("testName", ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
+        setCapabilityIfAbsent(desiredCapabilities, CAPABILITY_NAME_TEST_NAME, ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
         switch (webDriverRequest.getBrowser()) {
