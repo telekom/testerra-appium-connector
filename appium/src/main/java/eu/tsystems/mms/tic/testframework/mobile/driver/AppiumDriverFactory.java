@@ -52,7 +52,6 @@ import java.net.URL;
  */
 public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
-    private static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     @Override
     protected AppiumDriverRequest buildRequest(AbstractWebDriverRequest webDriverRequest) {
@@ -76,8 +75,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
 
     @Override
     protected DesiredCapabilities buildCapabilities(DesiredCapabilities preSetCaps, AppiumDriverRequest request) {
-
-        return preSetCaps;
+        return request.getDesiredCapabilities().merge(preSetCaps);
     }
 
     /**
@@ -110,7 +108,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
         }
 
         // general caps
-        setCapabilityIfAbsent(desiredCapabilities, CAPABILITY_NAME_TEST_NAME, ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
+        setCapabilityIfAbsent(desiredCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, ExecutionContextController.getCurrentExecutionContext().runConfig.getReportName());
         desiredCapabilities.setCapability("accessKey", GRID_ACCESS_KEY);
 
         switch (webDriverRequest.getBrowser()) {
