@@ -23,13 +23,17 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.internal.Viewport;
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverRequest;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
+import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverSessionsManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
+import java.util.Map;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -46,11 +50,18 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
     @Test
     public void testT01_startDefaultSession() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+        String expectedTestName = "testT01_startDefaultSession";
+
+        AppiumDriverRequest appiumDriverRequest = new AppiumDriverRequest();
+        appiumDriverRequest.getDesiredCapabilities().setCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, expectedTestName);
+
+        WebDriver webDriver = WebDriverManager.getWebDriver(appiumDriverRequest);
+        AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(webDriver);
 
         appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
-        driver.get("https://the-internet.herokuapp.com/dropdown");
+        webDriver.get("https://the-internet.herokuapp.com/dropdown");
+
+        Assert.assertEquals(appiumDriver.getCapabilities().getCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME), expectedTestName);
     }
 
     @Test
