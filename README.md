@@ -32,6 +32,7 @@ It will register with Testerra Hooking system and uses the event bus to react on
 | -------------------- | --------------|
 | `1.0..1.3`           | `1.0..1.8`      |
 | `1.4`                | `1.9`      |
+| `2.0-RC-6`                | `2.0-RC-19`      |
 
 ### Usage
 
