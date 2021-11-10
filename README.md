@@ -28,7 +28,10 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-![Maven Central](https://img.shields.io/maven-central/v/io.testerra/driver-ui/2.0-RC-4?label=Testerra)
+| Appium connector   | Testerra      |
+| -------------------- | --------------|
+| `1.0..1.3`           | `1.0..1.8`      |
+| `1.4`                | `1.9`      |
 
 ### Usage
 
