@@ -28,7 +28,10 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-![Maven Central](https://img.shields.io/maven-central/v/io.testerra/driver-ui/1.3?label=Testerra)
+| Appium connector   | Testerra      |
+| -------------------- | --------------|
+| `1.0..1.3`           | `1.0..1.8`      |
+| `1.4`                | `1.9`      |
 
 ### Usage
 
@@ -38,9 +41,9 @@ Gradle:
 
 ````groovy
 // Version from this module
-implementation 'io.testerra:appium:1.0'
+implementation 'io.testerra:appium:1.4'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:1.3'
+implementation 'io.testerra:driver-ui:1.9'
 implementation 'io.appium:java-client:7.3.0'
 ````
 
@@ -51,13 +54,13 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>1.0</version>
+    <version>1.4</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>1.3</version>
+    <version>1.9</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
