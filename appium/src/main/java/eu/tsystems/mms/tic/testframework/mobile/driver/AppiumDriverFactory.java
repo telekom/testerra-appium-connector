@@ -24,12 +24,15 @@ package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.ExecutionContextController;
+import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
+import eu.tsystems.mms.tic.testframework.utils.DefaultCapabilityUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
@@ -90,8 +93,11 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest)webDriverRequest;
         DesiredCapabilities requestCapabilities = appiumDriverRequest.getDesiredCapabilities();
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
-
         DesiredCapabilities finalCapabilities = new DesiredCapabilities(requestCapabilities);
+
+        IExecutionContextController executionContextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
+        DefaultCapabilityUtils utils = new DefaultCapabilityUtils();
+        utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME,  executionContextController.getExecutionContext().runConfig.getReportName());
 
         AppiumDriver appiumDriver = null;
         switch (webDriverRequest.getBrowser()) {

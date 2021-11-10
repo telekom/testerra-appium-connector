@@ -22,8 +22,6 @@
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
 import eu.tsystems.mms.tic.testframework.common.PropertyManager;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.SeleniumWebDriverRequest;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
@@ -32,6 +30,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     private final String DEVICE_QUERY = "deviceQuery";
     private final String ACCESS_KEY = "accessKey";
+    public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {
         super();
