@@ -23,15 +23,19 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.internal.Viewport;
+import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverRequest;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverSessionsManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import java.util.Optional;
+import java.util.Map;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;

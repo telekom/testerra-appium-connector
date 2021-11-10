@@ -6,9 +6,9 @@ apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '2.0-RC-4'
+    testerraCompileVersion = '2-SNAPSHOT'
     // Unit tests use the latest Testerra version
-    testerraTestVersion = '[2.3,3-SNAPSHOT)'
+    testerraTestVersion = '[2,3-SNAPSHOT)'
     moduleVersion = '2-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
@@ -19,8 +19,7 @@ ext {
 }
 
 allprojects {
-    apply plugin: 'java'
-    apply plugin: 'maven'
+    apply plugin: 'java-library'
 
     sourceCompatibility = JavaVersion.VERSION_1_8
     targetCompatibility = JavaVersion.VERSION_1_8
