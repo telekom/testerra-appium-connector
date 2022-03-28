@@ -107,7 +107,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                 break;
             }
             case Browsers.mobile_chrome: {
-                finalCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
+                finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
                 appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
                 break;
             }
