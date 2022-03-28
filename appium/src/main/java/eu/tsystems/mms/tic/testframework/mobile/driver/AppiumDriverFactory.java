@@ -130,7 +130,7 @@ public class AppiumDriverFactory extends WebDriverFactory<AppiumDriverRequest> {
             case MobileBrowsers.mobile_chrome:
 
                 desiredCapabilities.setCapability("deviceQuery", APPIUM_DEVICE_QUERY_ANDROID);
-                desiredCapabilities.setBrowserName(MobileBrowserType.CHROMIUM);
+                desiredCapabilities.setBrowserName(MobileBrowserType.CHROME);
 
                 try {
                     final AndroidDriver<AndroidElement> driver = new AndroidDriver<>(new URL(GRID_URL), desiredCapabilities);
