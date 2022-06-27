@@ -41,9 +41,9 @@ Gradle:
 
 ````groovy
 // Version from this module
-implementation 'io.testerra:appium:2-SNAPSHOT'
+implementation 'io.testerra:appium:2.0'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2-SNAPSHOT'
+implementation 'io.testerra:driver-ui:2.0'
 implementation 'io.appium:java-client:7.3.0'
 ````
 
@@ -54,13 +54,13 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>2.0</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2-SNAPSHOT</version>
+    <version>2.0</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>

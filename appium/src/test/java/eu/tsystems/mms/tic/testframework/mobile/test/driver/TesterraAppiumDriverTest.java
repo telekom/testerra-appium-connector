@@ -28,7 +28,6 @@ import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
 import org.openqa.selenium.Rectangle;
@@ -58,13 +57,13 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
     @Test
     public void testT02_startMultipleSessions() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
 
         appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
         driver.get("https://the-internet.herokuapp.com/dropdown");
 
-        final WebDriver driver2 = WebDriverManager.getWebDriver("second");
+        final WebDriver driver2 = WEB_DRIVER_MANAGER.getWebDriver("second");
         final AppiumDriver<MobileElement> appiumDriver2 = appiumDriverManager.fromWebDriver(driver2);
 
         appiumDriver2.rotate(ScreenOrientation.PORTRAIT);
@@ -76,17 +75,17 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
     @Test
     public void testT03_startSessionTwice() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
 
         driver.get("https://the-internet.herokuapp.com/dropdown");
-        Assert.assertEquals(WebDriverManager.getWebDriver(), driver, "Driver equals");
+        Assert.assertEquals(WEB_DRIVER_MANAGER.getWebDriver(), driver, "Driver equals");
     }
 
     @Test
     public void testT04_takeScreenshot() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
         driver.get("https://the-internet.herokuapp.com/");
 
@@ -102,7 +101,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
     @Test
     public void testT05_executeJavaScript() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/");
 
         final Object returnValue = JSUtils.executeScript(driver, "var test ='test'; return test;");
@@ -113,7 +112,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
     @Test
     public void testT06_getViewport() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/");
 
         Rectangle viewport = WebDriverUtils.getViewport(driver);

@@ -6,7 +6,7 @@ apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Minimum required Testerra version
-    testerraCompileVersion = '2.0-RC-19'
+    testerraCompileVersion = '2.0'
     // Unit tests use the latest Testerra version
     testerraTestVersion = '[2,3-SNAPSHOT)'
     moduleVersion = '2-SNAPSHOT'
@@ -33,11 +33,9 @@ subprojects {
     apply plugin: 'maven-publish'
     apply plugin: 'signing'
 
-    // important!
     repositories {
         mavenLocal()
         mavenCentral()
-        jcenter()
     }
 
     test {
