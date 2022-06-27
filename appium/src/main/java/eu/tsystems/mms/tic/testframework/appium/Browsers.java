@@ -1,7 +1,7 @@
 /*
  * Testerra
  *
- * (C) 2020, Eric Kubenka, T-Systems Multimedia Solutions GmbH, Deutsche Telekom AG
+ * (C) 2021, Mike Reiche, T-Systems MMS GmbH, Deutsche Telekom AG
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -17,21 +17,15 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
- *
  */
-package eu.tsystems.mms.tic.testframework.mobile.driver;
 
-
-import eu.tsystems.mms.tic.testframework.appium.Browsers;
+package eu.tsystems.mms.tic.testframework.appium;
 
 /**
- * Extends Testerra {@link eu.tsystems.mms.tic.testframework.constants.Browsers}
- * <p>
- * Date: 08.09.2020
- * Time: 09:19
- *
- * @author Eric Kubenka
- * @deprecated Use {@link Browsers} instead
+ * A list ob supported browsers
  */
-public class MobileBrowsers extends Browsers {
+public class Browsers {
+    public static final String windows ="windows";
+    public static final String mobile_chrome = "mobile_chrome";
+    public static final String mobile_safari = "mobile_safari";
 }

@@ -19,15 +19,15 @@
  * under the License.
  *
  */
-package eu.tsystems.mms.tic.testframework.mobile.hook;
+package eu.tsystems.mms.tic.testframework.ioc;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
+import com.google.inject.multibindings.Multibinder;
+import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
-import eu.tsystems.mms.tic.testframework.mobile.driver.MobileBrowsers;
-import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreFactory;
-import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 
 /**
  * Implementes Testerra {@link ModuleHook}
@@ -37,16 +37,12 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
  *
  * @author Eric Kubenka
  */
-public class MobileAppiumHook implements ModuleHook {
+public class DriverUi_Appium extends AbstractModule {
 
     @Override
-    public void init() {
-        WebDriverManager.registerWebDriverFactory(new AppiumDriverFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
-        GuiElement.registerGuiElementCoreFactory(new AppiumGuiElementCoreFactory(), MobileBrowsers.mobile_chrome, MobileBrowsers.mobile_safari);
-    }
-
-    @Override
-    public void terminate() {
-
+    protected void configure() {
+        Multibinder<WebDriverFactory> webDriverFactoryBinder = Multibinder.newSetBinder(binder(), WebDriverFactory.class);
+        webDriverFactoryBinder.addBinding().to(AppiumDriverFactory.class).in(Scopes.SINGLETON);
+        webDriverFactoryBinder.addBinding().to(WinAppDriverFactory.class).in(Scopes.SINGLETON);
     }
 }

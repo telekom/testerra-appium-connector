@@ -22,7 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 
-import eu.tsystems.mms.tic.testframework.exceptions.PageNotFoundException;
+import eu.tsystems.mms.tic.testframework.exceptions.PageFactoryException;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.LoginPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.StartPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.TablePage;
@@ -52,7 +52,7 @@ public class MobilePageTest extends AbstractAppiumTest {
         FooterComponent footerComponent = PageFactory.create(FooterComponent.class, driver);
     }
 
-    @Test(expectedExceptions = PageNotFoundException.class)
+    @Test(expectedExceptions = PageFactoryException.class)
     public void testT02_instantiatePageFailed() {
 
         final WebDriver driver = WebDriverManager.getWebDriver();

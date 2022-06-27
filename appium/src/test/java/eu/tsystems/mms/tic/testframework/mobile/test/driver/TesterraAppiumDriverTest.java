@@ -22,18 +22,15 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
-import eu.tsystems.mms.tic.testframework.internal.Viewport;
-import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverRequest;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
-import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverSessionsManager;
+import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
-import java.util.Map;
+import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -45,37 +42,29 @@ import org.testng.annotations.Test;
  *
  * @author Eric Kubenka
  */
-public class TesterraAppiumDriverTest extends AbstractAppiumTest {
+public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebDriverManagerProvider {
 
     @Test
     public void testT01_startDefaultSession() {
 
-        String expectedTestName = "testT01_startDefaultSession";
-
-        AppiumDriverRequest appiumDriverRequest = new AppiumDriverRequest();
-        appiumDriverRequest.getDesiredCapabilities().setCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, expectedTestName);
-
-        WebDriver webDriver = WebDriverManager.getWebDriver(appiumDriverRequest);
-        AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(webDriver);
-
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
-        webDriver.get("https://the-internet.herokuapp.com/dropdown");
-
-        Assert.assertEquals(appiumDriver.getCapabilities().getCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME), expectedTestName);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).ifPresent(appiumDriver -> {
+            appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        });
+        driver.get("https://the-internet.herokuapp.com/dropdown");
     }
 
     @Test
     public void testT02_startMultipleSessions() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        AppiumDriver appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).get();
 
         appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
         driver.get("https://the-internet.herokuapp.com/dropdown");
 
-
-        final WebDriver driver2 = WebDriverManager.getWebDriver("second");
-        final AppiumDriver<MobileElement> appiumDriver2 = appiumDriverManager.fromWebDriver(driver2);
+        final WebDriver driver2 = WEB_DRIVER_MANAGER.getWebDriver("second");
+        AppiumDriver appiumDriver2 = WEB_DRIVER_MANAGER.unwrapWebDriver(driver2, AppiumDriver.class).get();
 
         appiumDriver2.rotate(ScreenOrientation.PORTRAIT);
         driver2.get("https://the-internet.herokuapp.com/checkboxes");
@@ -85,19 +74,18 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
 
     @Test
     public void testT03_startSessionTwice() {
-
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
 
         driver.get("https://the-internet.herokuapp.com/dropdown");
-        Assert.assertEquals(WebDriverManager.getWebDriver(), driver, "Driver equals");
+        Assert.assertEquals(WEB_DRIVER_MANAGER.getWebDriver(), driver, "Driver equals");
     }
 
     @Test
     public void testT04_takeScreenshot() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        final AppiumDriver<MobileElement> appiumDriver = appiumDriverManager.fromWebDriver(driver);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        AppiumDriver appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).get();
+
         driver.get("https://the-internet.herokuapp.com/");
 
         appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
@@ -112,7 +100,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
     @Test
     public void testT05_executeJavaScript() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/");
 
         final Object returnValue = JSUtils.executeScript(driver, "var test ='test'; return test;");
@@ -123,10 +111,10 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest {
     @Test
     public void testT06_getViewport() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/");
 
-        final Viewport viewport = JSUtils.getViewport(driver);
+        Rectangle viewport = WebDriverUtils.getViewport(driver);
         Assert.assertNotNull(viewport, "JSUtils Viewport received.");
 
         Object x = JSUtils.executeScript(driver, "return window.pageXOffset.toString();");
