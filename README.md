@@ -45,6 +45,7 @@ Gradle:
 implementation 'io.testerra:appium:2.0'
 // Used Testerra version
 implementation 'io.testerra:driver-ui:2.0'
+implementation 'io.testerra:report-ng:2.0'
 implementation 'io.appium:java-client:7.3.0'
 ````
 
@@ -61,6 +62,11 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
+    <version>2.0</version>
+</dependency>
+<dependency>
+    <groupId>io.testerra</groupId>
+    <artifactId>report-ng</artifactId>
     <version>2.0</version>
 </dependency>
 <dependency>
