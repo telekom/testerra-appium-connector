@@ -6,6 +6,7 @@ dependencies {
     implementation 'org.apache.commons:commons-lang3:3.9'
 
     testImplementation 'io.testerra:driver-ui:' + testerraTestVersion
+    testImplementation 'io.testerra:report-ng:' + testerraTestVersion
     testImplementation 'io.appium:java-client:7.3.0'
 }
 

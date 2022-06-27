@@ -32,6 +32,7 @@ It will register with Testerra Hooking system and uses the event bus to react on
 |------------------|---------------|
 | `>=1.1`          | `>=1.3`       |
 | `>=2.0-RC-5`     | `>=2.0-RC-18` |
+| `>=2.0`          | `>=2.0`       |
 
 ### Usage
 
@@ -129,12 +130,12 @@ Because videos are a platform dependent feature, Appium connector does not provi
 
 ### Properties
 
-|Property|default|Description|
-|---|---|---|
-|tt.mobile.grid.url|NONE|Grid URL of Appium / Selenium Grid ending on "wd/hub"|
-|tt.mobile.grid.access.key|NONE|Access key of your user and project|
-|tt.mobile.device.query.ios|"@os='ios' and @category='PHONE'"|Access key of your user  and project|
-|tt.mobile.device.query.android|"@os='android' and @category='PHONE'"|Access key of your user  and project|
+| Property                       | default                               | Description                                           |
+|--------------------------------|---------------------------------------|-------------------------------------------------------|
+| tt.mobile.grid.url             | NONE                                  | Grid URL of Appium / Selenium Grid ending on "wd/hub" |
+| tt.mobile.grid.access.key      | NONE                                  | Access key of your user and project                   |
+| tt.mobile.device.query.ios     | "@os='ios' and @category='PHONE'"     | Access key of your user  and project                  |
+| tt.mobile.device.query.android | "@os='android' and @category='PHONE'" | Access key of your user  and project                  |
 
 ---
 
