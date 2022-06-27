@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverProxy;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.MobileElement;
@@ -36,6 +37,7 @@ import java.lang.reflect.Proxy;
  * Time: 11:43
  *
  * @author Eric Kubenka
+ * @deprecated Use {@link IWebDriverManager#unwrapWebDriver(WebDriver, Class)} instead
  */
 public class AppiumDriverManager {
 
