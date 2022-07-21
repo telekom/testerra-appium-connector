@@ -30,8 +30,8 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 
 /**
- * Implementes Testerra {@link ModuleHook}
- * <p>
+ * Add AppiumDriverFactory and WinAppDriverFactory
+ *
  * Date: 24.06.2020
  * Time: 10:29
  *
