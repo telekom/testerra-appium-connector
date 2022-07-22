@@ -10,3 +10,4 @@ out
 build
 gradlew
 gradlew.bat
+/appium-seetest/src/test/resources/test.properties
