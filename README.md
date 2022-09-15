@@ -132,17 +132,53 @@ Screenshots on test case failure works out of the box, because Appium is impleme
 
 #### Videos
 
-Because videos are a platform dependent feature, Appium connector does not provide any platform-related video recording features.
+Because videos are a platform dependent feature. The basic Appium connector does not provide any platform-related video recording features.
+
+If you are using SeeTest as Appium platform, the module ``appium-seetest`` can help:
+
+Gradle:
+
+````groovy
+// Version from this module
+implementation 'io.testerra:appium-seetest:2.0'
+````
+
+Maven:
+
+```xml
+<!-- Version from this module -->
+<dependency>
+    <groupId>io.testerra</groupId>
+    <artifactId>appium-seetest</artifactId>
+    <version>2.0</version>
+</dependency>
+```
+
+Add the following properties:
+````properties
+# Comes from Testerra
+tt.screencaster.active=true
+# Optional for get a video for every test
+tt.appium.seetest.video.onsuccess=true
+````
 
 ### Properties
 
-| Property                       | default                               | Description                                           |
-|--------------------------------|---------------------------------------|-------------------------------------------------------|
-| tt.mobile.grid.url             | NONE                                  | Grid URL of Appium / Selenium Grid ending on "wd/hub" |
-| tt.mobile.grid.access.key      | NONE                                  | Access key of your user and project                   |
-| tt.mobile.device.query.ios     | "@os='ios' and @category='PHONE'"     | Access key of your user  and project                  |
-| tt.mobile.device.query.android | "@os='android' and @category='PHONE'" | Access key of your user  and project                  |
+**Basis Appium Connector**
 
+| Property                       | default                               | Description                                                      |
+|--------------------------------|---------------------------------------|------------------------------------------------------------------|
+| tt.mobile.grid.url             | NONE                                  | Grid URL of Appium / Selenium Grid ending on "wd/hub"            |
+| tt.mobile.grid.access.key      | NONE                                  | Access key of your user and project at Appium server, if needed. |
+| tt.mobile.device.query.ios     | "@os='ios' and @category='PHONE'"     | Define the requested iOS device.                                 |
+| tt.mobile.device.query.android | "@os='android' and @category='PHONE'" | Define the requested Android device.                             |
+
+**SeeTest Appium Connector**
+
+| Property                          | default | Description                   |
+|-----------------------------------|---------|-------------------------------|
+| tt.appium.seetest.video.onsuccess | false   | Get a video for passed tests. |
+| tt.appium.seetest.video.onfailed  | true    | Get a video for failed tests. |  
 ---
 
 ### AppiumDriverRequest
