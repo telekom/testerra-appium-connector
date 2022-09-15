@@ -173,7 +173,6 @@ tt.appium.seetest.video.onsuccess=true
 |-----------------------------------|---------|-------------------------------|
 | tt.appium.seetest.video.onsuccess | false   | Get a video for passed tests. |
 | tt.appium.seetest.video.onfailed  | true    | Get a video for failed tests. |  
----
 
 ### AppiumDriverRequest
 
