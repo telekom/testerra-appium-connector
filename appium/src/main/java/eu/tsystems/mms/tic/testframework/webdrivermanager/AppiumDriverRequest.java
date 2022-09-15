@@ -36,7 +36,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     public AppiumDriverRequest() {
         super();
-//        setAccessKey(PropertyManager.getProperty("tt.mobile.grid.access.key"));
         setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
     }
 
@@ -44,7 +43,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public Optional<URL> getServerUrl() {
         if (!super.getServerUrl().isPresent()) {
             try {
-//                this.setServerUrl(PropertyManager.getProperty("tt.mobile.grid.url"));
                 this.setServerUrl(AppiumProperties.MOBILE_GRID_URL.asString());
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Unable to retrieve default Appium URL from properties", e);
