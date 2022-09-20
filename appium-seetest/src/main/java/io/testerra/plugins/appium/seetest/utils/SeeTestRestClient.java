@@ -47,12 +47,6 @@ public class SeeTestRestClient implements Loggable {
         }
     }
 
-//    public Optional<Object> downloadVideoStream(String id) {
-//        Response response = this.getBuilder("/tests/" + id + "/video", SeeTestApis.REPORTER, MediaType.WILDCARD).get();
-////mobiledevicecloud.t-systems-mms.eu/reporter/api/tests/1783/video
-//        return Optional.empty();
-//    }
-
     private Invocation.Builder getBuilder(String path, SeeTestApis api) {
         return getBuilder(path, api, MediaType.APPLICATION_JSON);
     }
