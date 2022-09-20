@@ -37,7 +37,7 @@ import java.time.Duration;
 import java.util.Optional;
 
 /**
- * Will load Video via Selenoid API
+ * Will load Video via API
  * Date: 16.04.2020
  * Time: 10:38
  *
@@ -45,11 +45,10 @@ import java.util.Optional;
  */
 public class VideoLoader implements Loggable {
 
-    //    private static final SBoxHelper seleniumBoxHelper = SBoxHelper.get();
     private final Report report = Testerra.getInjector().getInstance(Report.class);
 
     /**
-     * When Selenoid is uses, then video will be requested, downloaded and linked to report.
+     * When SeeTest is used, the video will be requested, downloaded and linked to report.
      *
      * @param videoRequest {@link VideoRequest}
      * @return Video
@@ -57,7 +56,6 @@ public class VideoLoader implements Loggable {
     public Video download(VideoRequest videoRequest) {
 
         Video video = null;
-//        final String tempVideoFilePath = seleniumBoxHelper.getRemoteVideoFile(videoRequest);
         Optional<File> videoFile = this.downloadVideo(videoRequest);
 
         if (videoFile.isPresent()) {
@@ -95,10 +93,6 @@ public class VideoLoader implements Loggable {
                 } else {
                     setPassState(true);
                 }
-
-//                InputStream is = client.sendAsync(request, HttpResponse.BodyHandlers.ofInputStream())
-//                        .thenApply(HttpResponse::body).join();
-//                FileUtils.copyInputStreamToFile(is, videoFile);
 
                 setReturningObject(videoFile);
             }

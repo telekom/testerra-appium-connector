@@ -38,7 +38,6 @@ public class SeeTestClientHelper implements Loggable {
 
         SeeTestRestClient restClient = new SeeTestRestClient(seeTestUrl.get());
         Optional<JsonArray> about = restClient.getAbout();
-        // TODO: Check for something?
         return about.isPresent();
     }
 
