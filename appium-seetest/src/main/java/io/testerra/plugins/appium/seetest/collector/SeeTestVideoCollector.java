@@ -5,7 +5,7 @@ import eu.tsystems.mms.tic.testframework.report.Status;
 import eu.tsystems.mms.tic.testframework.report.model.context.ExecutionContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
-import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverSessionsManager;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import io.testerra.plugins.appium.seetest.request.VideoRequest;
 import io.testerra.plugins.appium.seetest.request.VideoRequestStorage;
 import io.testerra.plugins.appium.seetest.utils.SeeTestProperties;
@@ -23,6 +23,7 @@ import java.util.function.Consumer;
  */
 public class SeeTestVideoCollector implements
         Consumer<WebDriver>,
+        WebDriverManagerProvider,
         Loggable {
 
     private final VideoRequestStorage videoRequestStorage = VideoRequestStorage.get();
@@ -33,12 +34,10 @@ public class SeeTestVideoCollector implements
     /**
      * This method will be called for each WebDriver that is still active after a Test method
      * Will store the associated {@link VideoRequest} for downloading videos later.
-     *
-     * @param webDriver @{@link WebDriver}
      */
     @Override
     public void accept(WebDriver webDriver) {
-        WebDriverSessionsManager.getSessionContext(webDriver).ifPresent(sessionContext -> {
+        WEB_DRIVER_MANAGER.getSessionContext(webDriver).ifPresent(sessionContext -> {
             // Exklusive session
             if (sessionContext.getParentContext() instanceof ExecutionContext) {
                 collectVideoForSessionContext(sessionContext);
@@ -47,16 +46,9 @@ public class SeeTestVideoCollector implements
                 if (sessionContext.readMethodContexts().anyMatch(methodContext -> {
                     if (methodContext.getTestNgResult().isPresent()) {
                         ITestResult testResult = methodContext.getTestNgResult().get();
-                        if (!testResult.isSuccess() && VIDEO_ACTIVE_ON_FAILED) {
-                            return true;
-                        } else if (VIDEO_ACTIVE_ON_SUCCESS) {
-                            return true;
-
-                        } else if (testResult.getStatus() == ITestResult.SKIP) {
-                            if (methodContext.getStatus() == Status.RETRIED) {
-                                return true;
-                            }
-                        }
+                        return !testResult.isSuccess() && VIDEO_ACTIVE_ON_FAILED
+                                || VIDEO_ACTIVE_ON_SUCCESS
+                                || testResult.getStatus() == ITestResult.SKIP && methodContext.getStatus() == Status.RETRIED;
                     }
                     return false;
                 })) {
@@ -71,8 +63,7 @@ public class SeeTestVideoCollector implements
         // Check if there exists a video request for this session
         videoRequestStorage.list().stream()
                 .filter(videoRequest -> videoRequest.sessionContext == sessionContext)
-                .findFirst()
-                .ifPresent(videoRequest -> {
+                .forEach(videoRequest -> {
                     this.downloadAndLinkVideo(videoRequest);
                     videoRequestStorage.remove(videoRequest);
                 });

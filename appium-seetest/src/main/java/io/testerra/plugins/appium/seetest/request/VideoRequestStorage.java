@@ -50,8 +50,6 @@ public class VideoRequestStorage implements Loggable {
 
     /**
      * Returns thread-local list of current valid {@link VideoRequest}
-     *
-     * @return
      */
     public Queue<VideoRequest> list() {
         return GLOBAL_VIDEO_WEBDRIVER_REQUESTS;
@@ -59,19 +57,13 @@ public class VideoRequestStorage implements Loggable {
 
     /**
      * Stores a {@link VideoRequest} in thread local and global list.
-     *
-     * @param request {@link VideoRequest}
      */
     public void store(VideoRequest request) {
-
-        // adding
         GLOBAL_VIDEO_WEBDRIVER_REQUESTS.add(request);
     }
 
     /**
      * Removes {@link VideoRequest} from storage. Called when video grabbing is done.
-     *
-     * @param request {@link VideoRequest}
      */
     public void remove(VideoRequest request) {
         GLOBAL_VIDEO_WEBDRIVER_REQUESTS.remove(request);
