@@ -352,9 +352,9 @@ The following properties have to be set via command line or ``~/.gradle/gradle.p
 | `signing.secretKeyRingFile`   | Path to GPG private key                             |
 
 If all properties are set, call the following to build, deploy and release this module:
-````shell
+```shell
 gradle publish closeAndReleaseRepository
-````
+```
 
 ## Code of Conduct
 
