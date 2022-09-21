@@ -26,6 +26,7 @@ import eu.tsystems.mms.tic.testframework.transfer.ThrowablePackedResponse;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.Timer;
 import io.testerra.plugins.appium.seetest.request.VideoRequest;
+import org.apache.http.HttpStatus;
 
 import java.io.File;
 import java.net.URI;
@@ -49,19 +50,10 @@ public class VideoLoader implements Loggable {
 
     /**
      * When SeeTest is used, the video will be requested, downloaded and linked to report.
-     *
-     * @param videoRequest {@link VideoRequest}
-     * @return Video
      */
     public Video download(VideoRequest videoRequest) {
-
-        Video video = null;
         Optional<File> videoFile = this.downloadVideo(videoRequest);
-
-        if (videoFile.isPresent()) {
-            video = report.provideVideo(videoFile.get(), Report.FileMode.MOVE);
-        }
-        return video;
+        return videoFile.map(file -> report.provideVideo(videoFile.get(), Report.FileMode.MOVE)).orElse(null);
     }
 
     private Optional<File> downloadVideo(VideoRequest videoRequest) {
@@ -75,7 +67,7 @@ public class VideoLoader implements Loggable {
                 File videoFile = new File(System.getProperty("java.io.tmpdir") + videoRequest.videoName);
 
                 HttpClient client = HttpClient.newBuilder().build();
-                SeeTestClientHelper helper = SeeTestClientHelper.get();
+                SeeTestClientHelper helper = new SeeTestClientHelper();
                 String videoDownloadUrl = helper.getVideoDownloadUrl(videoRequest.reportTestId);
                 log().info(videoDownloadUrl);
                 URI uri = URI.create(videoDownloadUrl);
@@ -86,7 +78,7 @@ public class VideoLoader implements Loggable {
                         .build();
 
                 HttpResponse<Path> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofFile(videoFile.toPath()));
-                if (httpResponse.statusCode() != 200) {
+                if (httpResponse.statusCode() != HttpStatus.SC_OK) {
                     log().info("Download status code: {}", httpResponse.statusCode());
                     setPassState(false);
                     log().info("Wait for video is ready for download...");

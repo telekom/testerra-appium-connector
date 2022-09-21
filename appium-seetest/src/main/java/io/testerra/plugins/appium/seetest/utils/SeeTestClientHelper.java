@@ -4,6 +4,7 @@ import com.google.gson.JsonArray;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -16,46 +17,36 @@ import java.util.Optional;
  */
 public class SeeTestClientHelper implements Loggable {
 
-    private static final SeeTestClientHelper INSTANCE = new SeeTestClientHelper();
-
-    private SeeTestClientHelper() {
-    }
-
-    public static SeeTestClientHelper get() {
-        return INSTANCE;
-    }
-
     /**
-     * Detemines if SeeTest is used by checking the applications method of REST API
+     * Determines if SeeTest is used by checking the applications method of REST API
      *
      * @return true, if Seetest was found
      */
     public boolean isSeeTestUsed(SessionContext sessionContext) {
-        Optional<String> seeTestUrl = this.getSeeTestUrl(sessionContext.getWebDriverRequest().getServerUrl());
-        if (seeTestUrl.isEmpty()) {
+        String serverUrl = sessionContext.getWebDriverRequest().getServerUrl()
+                .map(url -> String.format("%s://%s/", url.getProtocol(), url.getHost()))
+                .orElse(null);
+        if (StringUtils.isBlank(serverUrl)) {
             return false;
         }
 
-        SeeTestRestClient restClient = new SeeTestRestClient(seeTestUrl.get());
+        SeeTestRestClient restClient = new SeeTestRestClient(serverUrl);
         Optional<JsonArray> about = restClient.getAbout();
         return about.isPresent();
     }
 
-    public String getVideoDownloadUrl(String testId) {
+    /**
+     * Returns the full qualified download URL based of the 'reportTestId' of a SeeTest Appium session.
+     */
+    public String getVideoDownloadUrl(String reportTestId) {
         final String url = AppiumProperties.MOBILE_GRID_URL.asString();
-
         try {
-            Optional<String> seeTestUrl = this.getSeeTestUrl(Optional.of(new URL(url)));
-            return seeTestUrl.map(s -> s + "/reporter/api/tests/" + testId + "/video").orElse("");
+            URL seeTestUrl = new URL(url);
+            return String.format("%s://%s/reporter/api/tests/%s/video", seeTestUrl.getProtocol(), seeTestUrl.getHost(), reportTestId);
         } catch (MalformedURLException e) {
             log().error("Invalid SeeTest URL: {}", url);
-
         }
         return "";
-    }
-
-    private Optional<String> getSeeTestUrl(Optional<URL> seeTestUrl) {
-        return seeTestUrl.map(url -> String.format("%s://%s/", url.getProtocol(), url.getHost()));
     }
 
 }

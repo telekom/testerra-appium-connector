@@ -42,7 +42,7 @@ public class SeeTestVideoDesktopWebDriverFactory implements
         Consumer<WebDriver>,
         WebDriverManagerProvider {
 
-    private final SeeTestClientHelper seleniumBoxHelper = SeeTestClientHelper.get();
+    private final SeeTestClientHelper seeTestClientHelper = new SeeTestClientHelper();
     private final VideoRequestStorage videoRequestStorage = VideoRequestStorage.get();
 
     // After startup
@@ -53,7 +53,7 @@ public class SeeTestVideoDesktopWebDriverFactory implements
 
             sessionContext.getRemoteSessionId().ifPresent(remoteSessionId -> {
                 webDriverRequest.getServerUrl().ifPresent(url -> {
-                    if (this.seleniumBoxHelper.isSeeTestUsed(sessionContext)) {
+                    if (this.seeTestClientHelper.isSeeTestUsed(sessionContext)) {
                         // remoteSessionId could look like CLOUD-SID:2022-07-22_12-45-34-7e28799b-6afb-40d0-a898-9e74f93b3a6c
                         String fileName = remoteSessionId.toLowerCase()
                                 .replace(":", "_")

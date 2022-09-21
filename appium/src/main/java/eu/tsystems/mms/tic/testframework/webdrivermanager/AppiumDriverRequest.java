@@ -21,7 +21,6 @@
 
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 
 import java.net.MalformedURLException;
@@ -35,7 +34,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {
-        super();
         setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
     }
 
@@ -54,10 +52,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public void setDeviceQuery(String deviceQuery) {
         this.getDesiredCapabilities().setCapability(DEVICE_QUERY, deviceQuery);
     }
-
-//    public Optional<String> getDeviceQuery() {
-//        return Optional.ofNullable(this.getDesiredCapabilities().getCapability(DEVICE_QUERY).toString());
-//    }
 
     public void setAccessKey(String accessKey) {
         this.getDesiredCapabilities().setCapability(ACCESS_KEY, accessKey);
