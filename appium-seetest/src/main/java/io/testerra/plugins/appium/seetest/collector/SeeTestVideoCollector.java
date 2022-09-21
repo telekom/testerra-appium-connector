@@ -25,7 +25,6 @@ public class SeeTestVideoCollector implements
         Consumer<WebDriver>,
         Loggable {
 
-    //    private final SeleniumBoxHelper seleniumBoxHelper = SeleniumBoxHelper.get();
     private final VideoRequestStorage videoRequestStorage = VideoRequestStorage.get();
 
     private final boolean VIDEO_ACTIVE_ON_SUCCESS = SeeTestProperties.VIDEO_ON_SUCCESS.asBool();
@@ -88,7 +87,7 @@ public class SeeTestVideoCollector implements
         if (video != null) {
             videoRequest.sessionContext.setVideo(video);
         } else {
-            log().warn("Unable to download video");
+            log().warn("Unable to download video {}", videoRequest.videoName);
         }
 
         return Optional.ofNullable(video);

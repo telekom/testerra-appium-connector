@@ -39,15 +39,13 @@ public class AppiumSeeTestHook extends AbstractModule implements
         Loggable,
         WebDriverManagerProvider {
 
-    private static final boolean VIDEO_ACTIVE = Testerra.Properties.SCREENCASTER_ACTIVE.asBool();
-
-    // VNC active?
+    private final boolean VIDEO_ACTIVE = Testerra.Properties.SCREENCASTER_ACTIVE.asBool();
 
     @Override
     public void init() {
-        // VIDEO and VNC disabled by properties. Not doing anything here.
+        // VIDEO disabled by properties. Not doing anything here.
         if (!VIDEO_ACTIVE) {
-            log().warn(String.format("SeeTest video download disabled. %s is set to true.", Testerra.Properties.SCREENCASTER_ACTIVE));
+            log().warn("SeeTest video download disabled. {} is set to true.", Testerra.Properties.SCREENCASTER_ACTIVE);
             return;
         }
 
@@ -63,6 +61,6 @@ public class AppiumSeeTestHook extends AbstractModule implements
 
     @Override
     public void terminate() {
-
+        // Do nothing
     }
 }

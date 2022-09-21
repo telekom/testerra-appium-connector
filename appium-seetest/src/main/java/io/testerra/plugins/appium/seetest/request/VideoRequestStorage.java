@@ -36,7 +36,7 @@ import java.util.concurrent.ConcurrentLinkedQueue;
  */
 public class VideoRequestStorage implements Loggable {
 
-    private final static VideoRequestStorage INSTANCE = new VideoRequestStorage();
+    private static final VideoRequestStorage INSTANCE = new VideoRequestStorage();
 
     private static final Queue<VideoRequest> GLOBAL_VIDEO_WEBDRIVER_REQUESTS = new ConcurrentLinkedQueue<>();
 
@@ -51,7 +51,7 @@ public class VideoRequestStorage implements Loggable {
     /**
      * Returns thread-local list of current valid {@link VideoRequest}
      *
-     * @return List
+     * @return
      */
     public Queue<VideoRequest> list() {
         return GLOBAL_VIDEO_WEBDRIVER_REQUESTS;

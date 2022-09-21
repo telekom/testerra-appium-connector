@@ -21,10 +21,9 @@
  */
 package io.testerra.plugins.appium.seetest.request;
 
-import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 
-public class VideoRequest implements Loggable {
+public class VideoRequest {
     public final SessionContext sessionContext;
     public final String videoName;
 
