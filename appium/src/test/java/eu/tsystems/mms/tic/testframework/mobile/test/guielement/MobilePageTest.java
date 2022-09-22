@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.exceptions.PageFactoryException;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.LoginPage;
 import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.StartPage;
@@ -30,6 +31,8 @@ import eu.tsystems.mms.tic.testframework.mobile.systemundertest.page.component.F
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
+import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverManager;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
@@ -46,28 +49,28 @@ public class MobilePageTest extends AbstractAppiumTest {
     @Test
     public void testT01_instantiatePage() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
 
-        StartPage startPage = PageFactory.create(StartPage.class, driver);
-        FooterComponent footerComponent = PageFactory.create(FooterComponent.class, driver);
+        StartPage startPage = PAGE_FACTORY.createPage(StartPage.class, driver);
+        FooterComponent footerComponent = PAGE_FACTORY.createPage(FooterComponent.class, driver);
     }
 
     @Test(expectedExceptions = PageFactoryException.class)
     public void testT02_instantiatePageFailed() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/login");
 
-        StartPage startPage = PageFactory.create(StartPage.class, driver);
+        StartPage startPage = PAGE_FACTORY.createPage(StartPage.class, driver);
     }
 
     @Test
     public void testT03_sendForms() {
 
-        final WebDriver driver = WebDriverManager.getWebDriver();
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/");
 
-        StartPage startPage = PageFactory.create(StartPage.class, driver);
+        StartPage startPage = PAGE_FACTORY.createPage(StartPage.class, driver);
         LoginPage loginPage = startPage.goToLoginPage();
 
         loginPage = loginPage.doFillForm("user", "pass");
@@ -79,8 +82,8 @@ public class MobilePageTest extends AbstractAppiumTest {
     public void testT04_entryNotPresentOnTable() {
 
         TestStep.begin("1. Init driver");
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        StartPage startPage = PageFactory.create(StartPage.class, driver);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        StartPage startPage = PAGE_FACTORY.createPage(StartPage.class, driver);
 
         TestStep.begin("2. Navigate to tables");
         TablePage tablePage = startPage.goToTablePage();
@@ -93,8 +96,8 @@ public class MobilePageTest extends AbstractAppiumTest {
     public void testT05_entryPresentOnTable() {
 
         TestStep.begin("1. Init driver");
-        final WebDriver driver = WebDriverManager.getWebDriver();
-        StartPage startPage = PageFactory.create(StartPage.class, driver);
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
+        StartPage startPage = PAGE_FACTORY.createPage(StartPage.class, driver);
 
         TestStep.begin("2. Navigate to tables");
         TablePage tablePage = startPage.goToTablePage();
