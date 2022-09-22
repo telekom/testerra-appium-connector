@@ -40,13 +40,13 @@ Include the following dependency in your project. Please replace `2-SNAPSHOT` wi
 
 Gradle:
 
-````groovy
+```groovy
 // Version from this module
 implementation 'io.testerra:appium:2.0'
 // Used Testerra version
 implementation 'io.testerra:driver-ui:2.0'
 implementation 'io.appium:java-client:7.3.0'
-````
+```
 
 Maven:
 
@@ -132,10 +132,10 @@ If you are using SeeTest as Appium platform, the module ``appium-seetest`` can h
 
 Gradle:
 
-````groovy
+```groovy
 // Version from this module
 implementation 'io.testerra:appium-seetest:2.0'
-````
+```
 
 Maven:
 
@@ -149,12 +149,12 @@ Maven:
 ```
 
 Add the following properties:
-````properties
+```properties
 # Comes from Testerra
 tt.screencaster.active=true
 # Optional for get a video for every test
 tt.appium.seetest.video.onsuccess=true
-````
+```
 
 ### Properties
 
