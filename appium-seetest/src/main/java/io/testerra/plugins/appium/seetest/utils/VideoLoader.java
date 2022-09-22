@@ -22,13 +22,13 @@ import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.model.context.Video;
-import eu.tsystems.mms.tic.testframework.transfer.ThrowablePackedResponse;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
-import eu.tsystems.mms.tic.testframework.utils.Timer;
+import eu.tsystems.mms.tic.testframework.utils.Sequence;
 import io.testerra.plugins.appium.seetest.request.VideoRequest;
 import org.apache.http.HttpStatus;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URI;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
@@ -36,6 +36,8 @@ import java.net.http.HttpResponse;
 import java.nio.file.Path;
 import java.time.Duration;
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Will load Video via API
@@ -48,6 +50,10 @@ public class VideoLoader implements Loggable {
 
     private final Report report = Testerra.getInjector().getInstance(Report.class);
 
+    private final long DOWNLOAD_WAITS_AFTER_RUN_MILLI = 5_000;
+    private final long DOWNLOAD_WAITS_TIMEOUT_MILLI = 20_000;
+    private final long DOWNLOAD_REQUEST_TIMEOUT_MILLI = 10_000;
+
     /**
      * When SeeTest is used, the video will be requested, downloaded and linked to report.
      */
@@ -57,12 +63,14 @@ public class VideoLoader implements Loggable {
     }
 
     private Optional<File> downloadVideo(VideoRequest videoRequest) {
-        final Timer timer = new Timer(5000, 20_000);
-        final ThrowablePackedResponse<File> response = timer.executeSequence(new Timer.Sequence<File>() {
-            @Override
-            public void run() throws Throwable {
-                setSkipThrowingException(true);
-                setAddThrowableToMethodContext(false);
+        AtomicBoolean atomicPassed = new AtomicBoolean(false);
+        AtomicReference<File> atomicFile = new AtomicReference<>();
+        Sequence sequence = new Sequence()
+                .setWaitMsAfterRun(DOWNLOAD_WAITS_AFTER_RUN_MILLI)
+                .setTimeoutMs(DOWNLOAD_WAITS_TIMEOUT_MILLI);
+
+        sequence.run(() -> {
+            try {
 
                 File videoFile = new File(System.getProperty("java.io.tmpdir") + videoRequest.videoName);
 
@@ -73,25 +81,27 @@ public class VideoLoader implements Loggable {
                 URI uri = URI.create(videoDownloadUrl);
                 HttpRequest request = HttpRequest.newBuilder()
                         .uri(uri)
-                        .timeout(Duration.ofSeconds(30))
+                        .timeout(Duration.ofMillis(DOWNLOAD_REQUEST_TIMEOUT_MILLI))
                         .header("Authorization", "Bearer " + AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString())
                         .build();
 
                 HttpResponse<Path> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofFile(videoFile.toPath()));
                 if (httpResponse.statusCode() != HttpStatus.SC_OK) {
                     log().info("Download status code: {}", httpResponse.statusCode());
-                    setPassState(false);
                     log().info("Wait for video is ready for download...");
                 } else {
-                    setPassState(true);
+                    atomicFile.set(videoFile);
+                    atomicPassed.set(true);
                 }
-
-                setReturningObject(videoFile);
+            } catch (IOException | InterruptedException e) {
+                log().error("Error at download video file.", e);
             }
+            return atomicPassed.get();
         });
-        if (response.isSuccessful()) {
-            log().info("Downloaded video file {}", response.getResponse().getName());
-            return Optional.of(response.getResponse());
+
+        if (atomicPassed.get()) {
+            log().info("Downloaded video file {}", atomicFile.get().getName());
+            return Optional.of(atomicFile.get());
         } else {
             return Optional.empty();
         }
