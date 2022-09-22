@@ -22,6 +22,7 @@
 package io.testerra.plugins.appium.seetest.webdriver;
 
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
@@ -30,6 +31,8 @@ import io.testerra.plugins.appium.seetest.request.VideoRequestStorage;
 import io.testerra.plugins.appium.seetest.utils.SeeTestClientHelper;
 import org.openqa.selenium.WebDriver;
 
+import java.net.URL;
+import java.util.Optional;
 import java.util.function.Consumer;
 
 /**
@@ -48,31 +51,28 @@ public class SeeTestVideoDesktopWebDriverFactory implements
     // After startup
     @Override
     public void accept(WebDriver webDriver) {
-        WEB_DRIVER_MANAGER.getSessionContext(webDriver).ifPresent(sessionContext -> {
-            WebDriverRequest webDriverRequest = sessionContext.getWebDriverRequest();
+        Optional<SessionContext> sessionContext = WEB_DRIVER_MANAGER.getSessionContext(webDriver);
+        Optional<String> remoteSessionId = sessionContext.flatMap(SessionContext::getRemoteSessionId);
+        Optional<URL> serverUrl = sessionContext.map(SessionContext::getWebDriverRequest).flatMap(WebDriverRequest::getServerUrl);
 
-            sessionContext.getRemoteSessionId().ifPresent(remoteSessionId -> {
-                webDriverRequest.getServerUrl().ifPresent(url -> {
-                    if (this.seeTestClientHelper.isSeeTestUsed(sessionContext)) {
-                        // remoteSessionId could look like CLOUD-SID:2022-07-22_12-45-34-7e28799b-6afb-40d0-a898-9e74f93b3a6c
-                        String fileName = remoteSessionId.toLowerCase()
-                                .replace(":", "_")
-                                .replace(".", "_")
-                                + ".mp4";
+        if (serverUrl.isPresent() && remoteSessionId.isPresent()) {
 
-                        String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
-                                .map(driver -> driver.getCapabilities().getCapability("reportTestId").toString())
-                                .orElse("na");
+            if (this.seeTestClientHelper.isSeeTestUsed(sessionContext.get())) {
+                // remoteSessionId could look like CLOUD-SID:2022-07-22_12-45-34-7e28799b-6afb-40d0-a898-9e74f93b3a6c
+                String fileName = remoteSessionId.get().toLowerCase()
+                        .replace(":", "_")
+                        .replace(".", "_")
+                        + ".mp4";
 
-                        final VideoRequest videoRequest = new VideoRequest(sessionContext, fileName, reportTestId);
+                String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
+                        .map(driver -> driver.getCapabilities().getCapability("reportTestId").toString())
+                        .orElse("na");
 
-                        // store it.
-                        videoRequestStorage.store(videoRequest);
-                    } else {
-                        log().info("It seems you're not using SeeTest as Appium host.");
-                    }
-                });
-            });
-        });
+                final VideoRequest videoRequest = new VideoRequest(sessionContext.get(), fileName, reportTestId);
+                videoRequestStorage.store(videoRequest);
+            } else {
+                log().info("It seems you're not using SeeTest as Appium host.");
+            }
+        }
     }
 }
