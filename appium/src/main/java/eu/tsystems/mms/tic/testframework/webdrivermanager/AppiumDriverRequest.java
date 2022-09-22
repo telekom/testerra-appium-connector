@@ -21,7 +21,8 @@
 
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
@@ -33,15 +34,14 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {
-        super();
-        setAccessKey(PropertyManager.getProperty("tt.mobile.grid.access.key"));
+        setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
     }
 
     @Override
     public Optional<URL> getServerUrl() {
         if (!super.getServerUrl().isPresent()) {
             try {
-                this.setServerUrl(PropertyManager.getProperty("tt.mobile.grid.url"));
+                this.setServerUrl(AppiumProperties.MOBILE_GRID_URL.asString());
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Unable to retrieve default Appium URL from properties", e);
             }
@@ -52,10 +52,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public void setDeviceQuery(String deviceQuery) {
         this.getDesiredCapabilities().setCapability(DEVICE_QUERY, deviceQuery);
     }
-
-//    public Optional<String> getDeviceQuery() {
-//        return Optional.ofNullable(this.getDesiredCapabilities().getCapability(DEVICE_QUERY).toString());
-//    }
 
     public void setAccessKey(String accessKey) {
         this.getDesiredCapabilities().setCapability(ACCESS_KEY, accessKey);
