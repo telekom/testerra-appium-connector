@@ -22,11 +22,12 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
-import eu.tsystems.mms.tic.testframework.common.PropertyManager;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
+import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
@@ -53,24 +54,24 @@ import java.net.URL;
  *
  * @author Eric Kubenka
  */
-public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Loggable {
+public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Loggable, PropertyManagerProvider {
 
     //    protected IOSDriver<IOSElement> driver = null;
     protected AndroidDriver<AndroidElement> driver = null;
 
     @BeforeMethod
     public void setUp() throws MalformedURLException {
-        final String accessKey = PropertyManager.getProperty("tt.mobile.grid.access.key");
+        final String accessKey = AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString();
         Assert.assertNotNull(accessKey, "No access key loaded");
 
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setCapability("testName", "Demo Tests");
         dc.setCapability("accessKey", accessKey);
         //        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-        dc.setCapability("deviceQuery", PropertyManager.getProperty("tt.mobile.device.query.android"));
+        dc.setCapability("deviceQuery", AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID);
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
         dc.setBrowserName(MobileBrowserType.CHROMIUM);
-        URL url = new URL(PropertyManager.getProperty("tt.mobile.grid.url"));
+        URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
         //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
         driver = new AndroidDriver<>(url, dc);
     }

@@ -29,8 +29,8 @@ import java.util.Optional;
 
 public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
-    private final String DEVICE_QUERY = "deviceQuery";
-    private final String ACCESS_KEY = "accessKey";
+    public static final String DEVICE_QUERY = "deviceQuery";
+    public static final String ACCESS_KEY = "accessKey";
     public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {

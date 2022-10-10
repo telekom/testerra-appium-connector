@@ -23,11 +23,11 @@
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
-import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverManager;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.LongPressOptions;
@@ -35,11 +35,11 @@ import io.appium.java_client.touch.TapOptions;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
-import java.util.concurrent.atomic.AtomicBoolean;
-import java.time.Duration;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+
+import java.time.Duration;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -48,15 +48,19 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
  *
  * @author Eric Kubenka
  */
-public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implements Loggable {
+public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implements Loggable, WebDriverManagerProvider {
 
-    private final AppiumDriver appiumDriver;
-
-    private static final AppiumDriverManager appiumDriverManager = new AppiumDriverManager();
+    private AppiumDriver appiumDriver;
 
     public AppiumGuiElementCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
-        this.appiumDriver = appiumDriverManager.fromWebDriver(this.guiElementData.getWebDriver());
+
+        WEB_DRIVER_MANAGER.unwrapWebDriver(this.guiElementData.getWebDriver(), AppiumDriver.class)
+                .ifPresentOrElse(
+                        driver -> this.appiumDriver = driver,
+                        () -> {
+                            throw new RuntimeException("Cannot wrap Driver to AppiumDriver");
+                        });
     }
 
     @Override
