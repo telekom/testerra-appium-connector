@@ -76,7 +76,8 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
         requestCapabilities.setCapability("testName", executionContext.getExecutionContext().getRunConfig().getReportName());
 
-        if (StringUtils.isBlank(requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY).toString())) {
+        if (requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY) == null
+                || StringUtils.isBlank(requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY).toString())) {
             switch (webDriverRequest.getBrowser()) {
                 case Browsers.mobile_safari: {
                     finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_IOS.asString());
