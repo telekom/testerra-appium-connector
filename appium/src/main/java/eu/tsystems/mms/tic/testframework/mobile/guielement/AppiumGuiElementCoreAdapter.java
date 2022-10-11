@@ -54,13 +54,7 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 
     public AppiumGuiElementCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
-
-        WEB_DRIVER_MANAGER.unwrapWebDriver(this.guiElementData.getWebDriver(), AppiumDriver.class)
-                .ifPresentOrElse(
-                        driver -> this.appiumDriver = driver,
-                        () -> {
-                            throw new RuntimeException("Cannot wrap Driver to AppiumDriver");
-                        });
+        appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(this.guiElementData.getWebDriver(), AppiumDriver.class).orElseThrow();
     }
 
     @Override
