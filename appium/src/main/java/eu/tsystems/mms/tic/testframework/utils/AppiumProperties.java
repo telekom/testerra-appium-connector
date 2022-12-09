@@ -11,6 +11,9 @@ public enum AppiumProperties implements IProperties {
 
     MOBILE_GRID_URL("tt.mobile.grid.url", ""),
     MOBILE_GRID_ACCESS_KEY("tt.mobile.grid.access.key", ""),
+//    MOBILE_APPIUM_DEVICE_QUERY("tt.mobile.device.query", ""),
+    MOBILE_APPIUM_DEVICE_QUERY_IOS("tt.mobile.device.query.ios", "@os='ios' and @category='PHONE'"),
+    MOBILE_APPIUM_DEVICE_QUERY_ANDROID("tt.mobile.device.query.android", "@os='android' and @category='PHONE'"),
     ;
 
     private final String property;
