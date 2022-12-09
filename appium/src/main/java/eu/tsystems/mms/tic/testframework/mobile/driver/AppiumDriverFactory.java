@@ -84,7 +84,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                     break;
                 }
                 case Browsers.mobile_chrome: {
-                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.toString());
+                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString());
                     break;
                 }
             }
