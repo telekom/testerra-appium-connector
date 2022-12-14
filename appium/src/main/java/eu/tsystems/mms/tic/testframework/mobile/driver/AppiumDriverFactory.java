@@ -32,6 +32,7 @@ import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.DefaultCapabilityUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
@@ -95,6 +96,18 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     @Override
     public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
+        try {
+            return startNewAppiumSession(webDriverRequest, sessionContext);
+        } catch (Exception e) {
+            // In case of an exception there is a second retry
+            int ms = Testerra.Properties.WEBDRIVER_TIMEOUT_SECONDS_RETRY.asLong().intValue() * 1000;
+            log().error("Error starting WebDriver. Trying again in {} seconds", (ms / 1000), e);
+            TimerUtils.sleep(ms);
+            return startNewAppiumSession(webDriverRequest, sessionContext);
+        }
+    }
+
+    private WebDriver startNewAppiumSession(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) webDriverRequest;
         DesiredCapabilities requestCapabilities = appiumDriverRequest.getDesiredCapabilities();
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
