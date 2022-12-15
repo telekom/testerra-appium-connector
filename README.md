@@ -31,7 +31,6 @@ It will register with Testerra Hooking system and uses the event bus to react on
 | Appium connector | Testerra      |
 |------------------|---------------|
 | `>=1.1`          | `>=1.3`       |
-| `>=2.0-RC-5`     | `>=2.0-RC-18` |
 | `>=2.0`          | `>=2.0`       |
 
 ### Usage
