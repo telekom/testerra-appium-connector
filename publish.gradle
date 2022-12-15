@@ -1,0 +1,116 @@
+/**
+ * Maven publishing configuration
+ * */
+
+// Maven pom.xml attributes
+ext {
+    libraryName = 'Testerra Appium Connector'
+    packagingType = 'jar'
+
+    siteUrl = 'https://testerra.io'
+    gitUrl = 'scm:git:git://github.com/telekom/testerra-appium-connector.git'
+    gitHttpsUrl = 'https://github.com/telekom/testerra-appium-connector'
+
+    developerId = 'MMS'
+    developerName = 'Testerra Team T-Systems MMS'
+    developerEmail = 'testerra@t-systems-mms.com'
+    developerOrganization = 'T-Systems MMS'
+    developerOrganizationUrl = 'https://www.t-systems-mms.com/'
+
+    licenseName = 'The Apache Software License, Version 2.0'
+    licenseUrl = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+    allLicenses = ["Apache-2.0"]
+}
+
+nexusStaging {
+    serverUrl = "https://s01.oss.sonatype.org/service/local/"
+    packageGroup = "io.testerra"
+    username = System.getProperty("deployUsername")
+    password = System.getProperty("deployPassword")
+}
+
+subprojects {
+
+    def libraryDescription = "Testerra test automation framework - ${project.getName()} module"
+
+    javadoc {
+        // Support JDK 8 annotations
+        options.tags = [
+                "implNote:a:Implementation Note:",
+                "apiNote:a:API Note:",
+                "implSpec:a:Implementation Requirements:"
+        ]
+        // Prevent errors during generation
+        options.addStringOption('Xdoclint:none', '-quiet')
+    }
+
+    task sourcesJar(type: Jar, dependsOn: classes) {
+        archiveClassifier.set('sources')
+        from sourceSets.main.allSource
+    }
+
+    task javadocJar(type: Jar) {
+        archiveClassifier.set('javadoc')
+        from javadoc
+    }
+
+    artifacts {
+        archives sourcesJar
+        archives javadocJar
+    }
+
+    publishing {
+        publications {
+            mavenJava(MavenPublication) {
+                from components.java
+                artifact sourcesJar
+                artifact javadocJar
+
+                // Custom pom
+                pom {
+
+                    name = libraryName
+                    description = libraryDescription
+                    url = siteUrl
+
+                    licenses {
+                        license {
+                            name = licenseName
+                            url = licenseUrl
+                        }
+                    }
+
+                    developers {
+                        developer {
+                            id = developerId
+                            name = developerName
+                            email = developerEmail
+                            organization = developerOrganization
+                            organizationUrl = developerOrganizationUrl
+                        }
+                    }
+
+                    scm {
+                        connection = gitUrl
+                        developerConnection = gitUrl
+                        url = gitHttpsUrl
+                    }
+                }
+            }
+        }
+
+        repositories {
+            maven {
+                url System.getProperty("deployUrl", "none")
+                credentials {
+                    username System.getProperty("deployUsername", "none")
+                    password System.getProperty("deployPassword", "none")
+                }
+            }
+        }
+    }
+
+    signing {
+        sign publishing.publications.mavenJava
+    }
+}

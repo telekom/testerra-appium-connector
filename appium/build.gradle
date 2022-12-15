@@ -1,0 +1,44 @@
+dependencies {
+    compileOnly 'io.testerra:driver-ui:' + testerraCompileVersion
+    compileOnly 'io.appium:java-client:7.3.0'
+
+    implementation 'com.google.code.gson:gson:2.8.5'
+    implementation 'org.apache.commons:commons-lang3:3.9'
+
+    testImplementation 'io.testerra:driver-ui:' + testerraTestVersion
+    testImplementation 'io.appium:java-client:7.3.0'
+}
+
+test() {
+    def profiles = [
+            "smoke": "src/test/resources/SmokeTest.xml",
+            "regression": "src/test/resources/RegressionTest.xml",
+    ]
+
+    def suiteFiles = []
+    profiles.each { profileName, suitePath ->
+        if (project.hasProperty("" + profileName)) {
+            suiteFiles << suitePath
+        }
+    }
+
+    useTestNG() {
+        suites(suiteFiles as String[])
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+
+        // fail eagerly on version conflict (includes transitive dependencies)
+        // e.g. multiple different versions of the same dependency (group and name are equal)
+//        failOnVersionConflict()
+
+        // prefer modules that are part of this build (multi-project or composite build) over external modules
+//        preferProjectModules()
+
+        // force certain versions of dependencies (including transitive)
+        //  *append new forced modules:
+//        force 'com.google.guava:guava:25.1-jre'
+    }
+}

@@ -1,0 +1,35 @@
+ThirdPartyNotices
+-----------------
+Testerra uses third-party software or other resources that may be distributed 
+under licenses different from Testerra.
+
+In the event that we overlooked to list a required notice, please bring this
+to our attention by contacting us via an GitHub issue.
+
+
+Components:
+-----------
+
+Component: 	eu.tsystems.mms.tic.testerra.driver-ui-desktop
+Version:	1.0-RC-29
+Website:   	https://testerra.io
+Repository:	https://github.com/telekom/testerra
+License:   	Apache-2.0
+
+Component: 	com.google.code.gson.gson
+Version:	2.8.5
+Website:   	https://github.com/google/gson
+Repository:	https://github.com/google/gson
+License:   	Apache-2.0
+
+Component: 	io.appium.java-client
+Version:	7.3.0
+Website:   	http://appium.io
+Repository:	https://github.com/appium/appium
+License:   	Apache-2.0
+
+Component: 	org.apache.commons.commons-lang3
+Version:	3.9
+Website:   	http://commons.apache.org/proper/commons-lang/
+Repository:	https://gitbox.apache.org/repos/asf?p=commons-lang.git
+License:   	Apache-2.0

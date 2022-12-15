@@ -1,0 +1,5 @@
+rootProject.name = 'testerra-appium-connector'
+
+include 'appium'
+
+//includeBuild("../testerra")

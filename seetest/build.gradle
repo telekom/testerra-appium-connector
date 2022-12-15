@@ -1,0 +1,55 @@
+apply plugin: 'java'
+apply plugin: 'maven'
+apply plugin: 'maven-publish'
+
+//apply from: rootProject.file('release-bintray.gradle')
+
+//ext {
+//    testerraCompileVersion// Minimum required Testerra version
+//    testerraCompileVersion = '1.0-RC-10'
+//    // Unit tests use the latest Testerra version
+//    testerraTestVersion = '[1.0-RC,2-SNAPSHOT)'
+//    moduleVersion = '1-SNAPSHOT'
+//    if (System.properties.containsKey('moduleVersion')) {
+//        moduleVersion = System.getProperty('moduleVersion')
+//    }
+//
+//    group 'eu.tsystems.mms.tic.testerra'
+//    version moduleVersion
+//}
+
+repositories {
+    mavenCentral()
+
+    maven {
+        url "https://cloud.experitest.com/repo/"
+    }
+}
+
+dependencies {
+    implementation project(':appium')
+    implementation group: 'com.experitest', name: 'appium-seetest-extension', version: '+'
+}
+
+task regressionTest(type: Test) {
+    useTestNG() {
+        suites 'src/test/resources/Smoketest.xml'
+        configFailurePolicy "continue"
+    }
+}
+
+configurations.all {
+    resolutionStrategy {
+
+        // fail eagerly on version conflict (includes transitive dependencies)
+        // e.g. multiple different versions of the same dependency (group and name are equal)
+//        failOnVersionConflict()
+
+        // prefer modules that are part of this build (multi-project or composite build) over external modules
+//        preferProjectModules()
+
+        // force certain versions of dependencies (including transitive)
+        //  *append new forced modules:
+//        force 'com.google.guava:guava:25.1-jre'
+    }
+}

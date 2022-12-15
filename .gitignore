@@ -1,0 +1,12 @@
+test-report
+.gradle
+gradle
+*.iml
+.idea
+target
+licenses
+*.zip
+out
+build
+gradlew
+gradlew.bat
