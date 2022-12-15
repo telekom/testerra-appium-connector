@@ -169,10 +169,11 @@ tt.appium.seetest.video.onsuccess=true
 
 **SeeTest Appium Connector**
 
-| Property                          | default | Description                   |
-|-----------------------------------|---------|-------------------------------|
-| tt.appium.seetest.video.onsuccess | false   | Get a video for passed tests. |
-| tt.appium.seetest.video.onfailed  | true    | Get a video for failed tests. |  
+| Property                                 | default | Description                         |
+|------------------------------------------|---------|-------------------------------------|
+| tt.appium.seetest.video.onsuccess        | false   | Get a video for passed tests.       |
+| tt.appium.seetest.video.onfailed         | true    | Get a video for failed tests.       |
+| tt.appium.seetest.video.download.timeout | 20 sec  | Set the timeout for video download. |
 
 ### AppiumDriverRequest
 
