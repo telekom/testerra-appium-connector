@@ -35,6 +35,7 @@ import eu.tsystems.mms.tic.testframework.utils.DefaultCapabilityUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -48,6 +49,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Creates {@link WebDriver} sessions for {@link io.appium.java_client.AppiumDriver} based on {@link AppiumDriverRequest}
@@ -142,7 +144,15 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     @Override
     public void setupNewWebDriverSession(EventFiringWebDriver webDriver, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) sessionContext.getWebDriverRequest();
-        appiumDriverRequest.getBaseUrl().ifPresent(url -> webDriver.get(url.toString()));
+        AtomicReference<String> driverString = new AtomicReference<>("AppiumDriver");
+        Testerra.getInjector().getInstance(IWebDriverManager.class)
+                .unwrapWebDriver(webDriver, AppiumDriver.class)
+                .ifPresent(driver -> driverString.set(driver.getClass().toString()));
+
+        appiumDriverRequest.getBaseUrl().ifPresent(url -> {
+            log().info("Open {} on {}", url, driverString.get());
+            webDriver.get(url.toString());
+        });
     }
 
     @Override
