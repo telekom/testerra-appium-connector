@@ -33,36 +33,23 @@ import org.openqa.selenium.Capabilities;
  * @author Eric Kubenka
  */
 public class AppiumDeviceQuery {
-
-    private String category;
     private String os;
     private String version;
     private String manufacture;
     private String model;
-    private String name;
+    private String browserName;
 
+    // TODO: Extend this with app name, if app is tested
     public AppiumDeviceQuery() {
 
     }
 
     public AppiumDeviceQuery(Capabilities capabilities) {
-
-        this.setCategory((String) capabilities.getCapability("device.category"));
-        this.setOs((String) capabilities.getCapability("device.os"));
-        this.setVersion((String) capabilities.getCapability("device.version"));
-        this.setManufacture((String) capabilities.getCapability("device.manufacture"));
-        this.setModel((String) capabilities.getCapability("device.model"));
-        this.setName((String) capabilities.getCapability("device.name"));
-    }
-
-    public String getCategory() {
-
-        return category;
-    }
-
-    public void setCategory(String category) {
-
-        this.category = category;
+        this.setOs((String) capabilities.getCapability("platformName"));
+        this.setVersion((String) capabilities.getCapability("platformVersion"));
+        this.setManufacture((String) capabilities.getCapability("deviceManufacture"));
+        this.setModel((String) capabilities.getCapability("deviceModel"));
+        this.setBrowserName(capabilities.getBrowserName());
     }
 
     public String getOs() {
@@ -105,26 +92,23 @@ public class AppiumDeviceQuery {
         this.model = model;
     }
 
-    public String getName() {
-
-        return name;
+    public String getBrowserName() {
+        return browserName;
     }
 
-    public void setName(String name) {
-
-        this.name = name;
+    public void setBrowserName(String browserName) {
+        this.browserName = browserName;
     }
 
     @Override
     public String toString() {
 
-        return "AppiumDeviceQuery{" +
-                "category='" + category + '\'' +
-                ", os='" + os + '\'' +
+        return "AppiumDevice {" +
+                "os='" + os + '\'' +
                 ", version='" + version + '\'' +
                 ", manufacture='" + manufacture + '\'' +
                 ", model='" + model + '\'' +
-                ", name='" + name + '\'' +
+                ", browser='" + browserName + '\'' +
                 '}';
     }
 }
