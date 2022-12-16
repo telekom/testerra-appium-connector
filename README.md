@@ -124,11 +124,37 @@ default values will provide you a device with given operating system and of `@ca
 
 Screenshots on test case failure works out of the box, because Appium is implementing the necessary interfaces of Selenium to achieve this.
 
-#### Videos
+### Properties
 
-Because videos are a platform dependent feature. The basic Appium connector does not provide any platform-related video recording features.
+| Property                       | default                               | Description                                                      |
+|--------------------------------|---------------------------------------|------------------------------------------------------------------|
+| tt.mobile.grid.url             | NONE                                  | Grid URL of Appium / Selenium Grid ending on "wd/hub"            |
+| tt.mobile.grid.access.key      | NONE                                  | Access key of your user and project at Appium server, if needed. |
+| tt.mobile.device.query.ios     | "@os='ios' and @category='PHONE'"     | Define the requested iOS device.                                 |
+| tt.mobile.device.query.android | "@os='android' and @category='PHONE'" | Define the requested Android device.                             |
 
-If you are using SeeTest as Appium platform, the module ``appium-seetest`` can help:
+
+### AppiumDriverRequest
+
+You can also create new sessions by using the `WebDriverRequest` interface.
+
+```java
+AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
+appiumRequest.setAccessKey(String);
+appiumRequest.setDeviceQuery(String);
+appiumRequest.setServerUrl(URL);
+appiumRequest.setStartupTimeoutSeconds(int);
+appiumRequest.setReuseTimeoutSeconds(int);
+
+WebDriver appiumDriver = WEB_DRIVER_MANAGER.getWebDriver(appiumRequest);
+```
+
+### Using Experitest SeeTest as Appium server
+
+For Experitest SeeTest as Appium platform we provide the additional module ``appium-seetest`` with the following features:
+
+* Video support
+* Define Appium version
 
 Gradle:
 
@@ -148,7 +174,10 @@ Maven:
 </dependency>
 ```
 
+#### Video support
+
 Add the following properties:
+
 ```properties
 # Comes from Testerra
 tt.screencaster.active=true
@@ -156,39 +185,22 @@ tt.screencaster.active=true
 tt.appium.seetest.video.onsuccess=true
 ```
 
-### Properties
+#### Appium version
 
-**Basis Appium Connector**
+Add the following property:
 
-| Property                       | default                               | Description                                                      |
-|--------------------------------|---------------------------------------|------------------------------------------------------------------|
-| tt.mobile.grid.url             | NONE                                  | Grid URL of Appium / Selenium Grid ending on "wd/hub"            |
-| tt.mobile.grid.access.key      | NONE                                  | Access key of your user and project at Appium server, if needed. |
-| tt.mobile.device.query.ios     | "@os='ios' and @category='PHONE'"     | Define the requested iOS device.                                 |
-| tt.mobile.device.query.android | "@os='android' and @category='PHONE'" | Define the requested Android device.                             |
-
-**SeeTest Appium Connector**
-
-| Property                                 | default | Description                         |
-|------------------------------------------|---------|-------------------------------------|
-| tt.appium.seetest.video.onsuccess        | false   | Get a video for passed tests.       |
-| tt.appium.seetest.video.onfailed         | true    | Get a video for failed tests.       |
-| tt.appium.seetest.video.download.timeout | 20 sec  | Set the timeout for video download. |
-
-### AppiumDriverRequest
-
-You can also create new sessions by using the `WebDriverRequest` interface.
-
-```java
-AppiumDriverRequest appiumRequest = new AppiumDriverRequest();
-appiumRequest.setAccessKey(String);
-appiumRequest.setDeviceQuery(String);
-appiumRequest.setServerUrl(URL);
-appiumRequest.setStartupTimeoutSeconds(int);
-appiumRequest.setReuseTimeoutSeconds(int);
-
-WebDriver appiumDriver = WEB_DRIVER_MANAGER.getWebDriver(appiumRequest);
+```properties
+tt.appium.seetest.appium.version=1.22.3
 ```
+
+#### Properties
+
+| Property                                 | default | Description                                 |
+|------------------------------------------|---------|---------------------------------------------|
+| tt.appium.seetest.video.onsuccess        | false   | Get a video for passed tests.               |
+| tt.appium.seetest.video.onfailed         | true    | Get a video for failed tests.               |
+| tt.appium.seetest.video.download.timeout | 20 sec  | Set the timeout for video download.         |
+| tt.appium.seetest.appium.version         | na.     | Set the Appium version of SeeTest platform. |
 
 ## WinAppDriver support
 
