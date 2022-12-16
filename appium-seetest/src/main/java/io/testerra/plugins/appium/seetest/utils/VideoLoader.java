@@ -80,8 +80,6 @@ public class VideoLoader implements Loggable {
                         .timeout(Duration.ofMillis(DOWNLOAD_WAITS_AFTER_RUN_MILLI))
                         .header("Authorization", "Bearer " + AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString())
                         .build();
-                log().info(request.toString());
-                log().info(request.headers().toString());
                 HttpResponse<Path> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofFile(videoFile.toPath()));
                 if (httpResponse.statusCode() != HttpStatus.SC_OK) {
                     log().info("Download status code: {}", httpResponse.statusCode());
