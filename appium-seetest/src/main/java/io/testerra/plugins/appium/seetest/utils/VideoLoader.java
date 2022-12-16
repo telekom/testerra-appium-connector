@@ -68,7 +68,7 @@ public class VideoLoader implements Loggable {
         sequence.run(() -> {
             try {
 
-                File videoFile = new File(System.getProperty("java.io.tmpdir") + videoRequest.videoName);
+                File videoFile = new File(System.getProperty("java.io.tmpdir") + File.separator + videoRequest.videoName);
 
                 HttpClient client = HttpClient.newBuilder().build();
                 SeeTestClientHelper helper = new SeeTestClientHelper();
