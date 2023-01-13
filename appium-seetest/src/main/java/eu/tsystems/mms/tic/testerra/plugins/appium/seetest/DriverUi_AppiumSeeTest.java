@@ -22,24 +22,34 @@
 package eu.tsystems.mms.tic.testerra.plugins.appium.seetest;
 
 import com.google.inject.AbstractModule;
+import com.google.inject.Scopes;
+import com.google.inject.multibindings.Multibinder;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import io.testerra.plugins.appium.seetest.collector.SeeTestVideoCollector;
-import io.testerra.plugins.appium.seetest.webdriver.SeeTestVideoDesktopWebDriverFactory;
+import io.testerra.plugins.appium.seetest.webdriver.SeeTestAppiumDriverFactory;
+import io.testerra.plugins.appium.seetest.webdriver.SeeTestVideoFactory;
 
 /**
  * Created on 14.06.2022
  *
  * @author mgn
  */
-public class AppiumSeeTestHook extends AbstractModule implements
+public class DriverUi_AppiumSeeTest extends AbstractModule implements
         ModuleHook,
         Loggable,
         WebDriverManagerProvider {
 
     private final boolean VIDEO_ACTIVE = Testerra.Properties.SCREENCASTER_ACTIVE.asBool();
+
+    @Override
+    protected void configure() {
+        Multibinder<WebDriverFactory> webDriverFactoryBinder = Multibinder.newSetBinder(binder(), WebDriverFactory.class);
+        webDriverFactoryBinder.addBinding().to(SeeTestAppiumDriverFactory.class).in(Scopes.SINGLETON);
+    }
 
     @Override
     public void init() {
@@ -49,7 +59,7 @@ public class AppiumSeeTestHook extends AbstractModule implements
             return;
         }
 
-        WEB_DRIVER_MANAGER.registerWebDriverAfterStartupHandler(new SeeTestVideoDesktopWebDriverFactory());
+        WEB_DRIVER_MANAGER.registerWebDriverAfterStartupHandler(new SeeTestVideoFactory());
 
         // Adding Video Handlers
         if (VIDEO_ACTIVE) {

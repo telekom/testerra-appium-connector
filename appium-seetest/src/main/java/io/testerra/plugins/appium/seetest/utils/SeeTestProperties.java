@@ -9,8 +9,10 @@ import eu.tsystems.mms.tic.testframework.common.IProperties;
  */
 public enum SeeTestProperties implements IProperties {
 
+    SEETEST_APPIUM_VERSION("tt.appium.seetest.appium.version", null),
     VIDEO_ON_SUCCESS("tt.appium.seetest.video.onsuccess", false),
-    VIDEO_ON_FAILED("tt.appium.seetest.video.onfailed", true);
+    VIDEO_ON_FAILED("tt.appium.seetest.video.onfailed", true),
+    VIDEO_DOWNLOAD_TIMEOUT("tt.appium.seetest.video.download.timeout", 20);
 
     private final String property;
     private final Object defaultValue;

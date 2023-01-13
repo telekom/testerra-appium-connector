@@ -47,7 +47,6 @@ public class VideoLoader implements Loggable {
     private final Report report = Testerra.getInjector().getInstance(Report.class);
 
     private final long DOWNLOAD_WAITS_AFTER_RUN_MILLI = 5_000;
-    private final long DOWNLOAD_WAITS_TIMEOUT_MILLI = 20_000;
 
     /**
      * When SeeTest is used, the video will be requested, downloaded and linked to report.
@@ -58,16 +57,18 @@ public class VideoLoader implements Loggable {
     }
 
     private Optional<File> downloadVideo(VideoRequest videoRequest) {
+        long downloadTimeout = SeeTestProperties.VIDEO_DOWNLOAD_TIMEOUT.asLong();
+
         AtomicBoolean atomicPassed = new AtomicBoolean(false);
         AtomicReference<File> atomicFile = new AtomicReference<>();
         Sequence sequence = new Sequence()
                 .setWaitMsAfterRun(DOWNLOAD_WAITS_AFTER_RUN_MILLI)
-                .setTimeoutMs(DOWNLOAD_WAITS_TIMEOUT_MILLI);
+                .setTimeoutMs(downloadTimeout * 1000);
 
         sequence.run(() -> {
             try {
 
-                File videoFile = new File(System.getProperty("java.io.tmpdir") + videoRequest.videoName);
+                File videoFile = new File(System.getProperty("java.io.tmpdir") + File.separator + videoRequest.videoName);
 
                 HttpClient client = HttpClient.newBuilder().build();
                 SeeTestClientHelper helper = new SeeTestClientHelper();
@@ -79,7 +80,6 @@ public class VideoLoader implements Loggable {
                         .timeout(Duration.ofMillis(DOWNLOAD_WAITS_AFTER_RUN_MILLI))
                         .header("Authorization", "Bearer " + AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString())
                         .build();
-
                 HttpResponse<Path> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofFile(videoFile.toPath()));
                 if (httpResponse.statusCode() != HttpStatus.SC_OK) {
                     log().info("Download status code: {}", httpResponse.statusCode());

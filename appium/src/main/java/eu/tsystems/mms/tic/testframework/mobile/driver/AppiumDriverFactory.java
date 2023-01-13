@@ -32,8 +32,10 @@ import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.DefaultCapabilityUtils;
+import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
@@ -47,6 +49,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Creates {@link WebDriver} sessions for {@link io.appium.java_client.AppiumDriver} based on {@link AppiumDriverRequest}
@@ -84,7 +87,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                     break;
                 }
                 case Browsers.mobile_chrome: {
-                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.toString());
+                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString());
                     break;
                 }
             }
@@ -95,6 +98,18 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     @Override
     public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
+        try {
+            return startNewAppiumSession(webDriverRequest, sessionContext);
+        } catch (Exception e) {
+            // In case of an exception there is a second retry
+            int ms = Testerra.Properties.WEBDRIVER_TIMEOUT_SECONDS_RETRY.asLong().intValue() * 1000;
+            log().error("Error starting WebDriver. Trying again in {} seconds", (ms / 1000), e);
+            TimerUtils.sleep(ms);
+            return startNewAppiumSession(webDriverRequest, sessionContext);
+        }
+    }
+
+    private WebDriver startNewAppiumSession(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) webDriverRequest;
         DesiredCapabilities requestCapabilities = appiumDriverRequest.getDesiredCapabilities();
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
@@ -129,7 +144,15 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     @Override
     public void setupNewWebDriverSession(EventFiringWebDriver webDriver, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) sessionContext.getWebDriverRequest();
-        appiumDriverRequest.getBaseUrl().ifPresent(url -> webDriver.get(url.toString()));
+        AtomicReference<String> driverString = new AtomicReference<>("AppiumDriver");
+        Testerra.getInjector().getInstance(IWebDriverManager.class)
+                .unwrapWebDriver(webDriver, AppiumDriver.class)
+                .ifPresent(driver -> driverString.set(driver.getClass().toString()));
+
+        appiumDriverRequest.getBaseUrl().ifPresent(url -> {
+            log().info("Open {} on {}", url, driverString.get());
+            webDriver.get(url.toString());
+        });
     }
 
     @Override

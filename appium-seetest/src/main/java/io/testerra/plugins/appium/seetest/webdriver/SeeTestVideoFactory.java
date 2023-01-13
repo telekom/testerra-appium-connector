@@ -40,7 +40,7 @@ import java.util.function.Consumer;
  *
  * @author mgn
  */
-public class SeeTestVideoDesktopWebDriverFactory implements
+public class SeeTestVideoFactory implements
         Loggable,
         Consumer<WebDriver>,
         WebDriverManagerProvider {
