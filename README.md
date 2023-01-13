@@ -35,15 +35,15 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Usage
 
-Include the following dependency in your project. Please replace `2-SNAPSHOT` with the latest version.
+Include the following dependency in your project.
 
 Gradle:
 
 ```groovy
 // Version from this module
-implementation 'io.testerra:appium:2.0'
+implementation 'io.testerra:appium:2.1'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2.0'
+implementation 'io.testerra:driver-ui:2.1'
 implementation 'io.appium:java-client:7.3.0'
 ```
 
@@ -54,13 +54,13 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.0</version>
+    <version>2.1</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
