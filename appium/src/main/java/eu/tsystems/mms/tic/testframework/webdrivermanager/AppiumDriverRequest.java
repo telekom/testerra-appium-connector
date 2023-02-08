@@ -21,6 +21,7 @@
 
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 
 import java.net.MalformedURLException;
@@ -35,6 +36,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     public AppiumDriverRequest() {
         setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
+        this.setBrowser(Browsers.mobile);
     }
 
     @Override

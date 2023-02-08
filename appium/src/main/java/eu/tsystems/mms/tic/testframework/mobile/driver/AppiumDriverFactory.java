@@ -23,6 +23,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.appium.MobileOs;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
@@ -40,6 +41,8 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.remote.AndroidMobileCapabilityType;
+import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileBrowserType;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -49,6 +52,7 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -120,23 +124,47 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
-        switch (webDriverRequest.getBrowser()) {
-            case Browsers.mobile_safari: {
-                finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+        MobileOs mobileOs = getOS(webDriverRequest);
+
+        switch (mobileOs) {
+            case IOS:
+                if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)) {
+                    finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+                }
+//                else {
+//                    appiumDriverRequest.setBrowser(Browsers.ios);
+//                }
                 appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
                 break;
-            }
-            case Browsers.mobile_chrome: {
-                finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
+            case ANDROID:
+                if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)) {
+                    finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
+                }
+//                else {
+//                    appiumDriverRequest.setBrowser(Browsers.android);
+//                }
                 appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
                 break;
-            }
         }
+
+//        switch (webDriverRequest.getBrowser()) {
+//            case Browsers.mobile_safari: {
+//                finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+//                appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
+//                break;
+//            }
+//            case Browsers.mobile_chrome: {
+//                finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
+//                appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
+//                break;
+//            }
+//        }
         if (appiumDriver != null) {
             AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(appiumDriver.getCapabilities());
             sessionContext.setActualBrowserName(appiumDeviceQuery.toString());
         } else {
-            throw new RuntimeException("Mobile Browser not supported: " + webDriverRequest.getBrowser());
+            throw new RuntimeException("Cannot create new Appium session - ambiguous capabilities found:\n " + finalCapabilities.toString());
+//            throw new RuntimeException("Mobile Browser not supported: " + webDriverRequest.getBrowser());
         }
         return appiumDriver;
     }
@@ -149,19 +177,40 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                 .unwrapWebDriver(webDriver, AppiumDriver.class)
                 .ifPresent(driver -> driverString.set(driver.getClass().toString()));
 
-        appiumDriverRequest.getBaseUrl().ifPresent(url -> {
-            log().info("Open {} on {}", url, driverString.get());
-            webDriver.get(url.toString());
-        });
+        // In case of app automation it es not possible to call a URL
+        if (StringUtils.isNotBlank(appiumDriverRequest.getDesiredCapabilities().getBrowserName())) {
+            appiumDriverRequest.getBaseUrl().ifPresent(url -> {
+                log().info("Open {} on {}", url, driverString.get());
+                webDriver.get(url.toString());
+            });
+        }
     }
 
     @Override
     public List<String> getSupportedBrowsers() {
-        return Arrays.asList(Browsers.mobile_chrome, Browsers.mobile_safari);
+        return Arrays.asList(Browsers.mobile_chrome, Browsers.mobile_safari, Browsers.mobile);
     }
 
     @Override
     public GuiElementCore createCore(GuiElementData guiElementData) {
         return new AppiumGuiElementCoreAdapter(guiElementData);
     }
+
+    private MobileOs getOS(WebDriverRequest webDriverRequest) {
+        Map<String, Object> capabilities = webDriverRequest.getCapabilities();
+        if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)
+                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
+                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
+        ) {
+            return MobileOs.ANDROID;
+        }
+        if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)
+                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
+        ) {
+            return MobileOs.IOS;
+        }
+
+        return MobileOs.OTHER;
+    }
+
 }
