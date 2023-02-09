@@ -16,5 +16,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface AndroidLocator {
 
+    // TODO: Add id
     public String xpath() default "";
 }
