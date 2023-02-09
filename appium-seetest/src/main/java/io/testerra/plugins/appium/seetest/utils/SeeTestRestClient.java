@@ -52,20 +52,26 @@ public class SeeTestRestClient implements Loggable {
     }
 
     public Optional<JsonArray> getAbout() {
-        Response response = this.getBuilder("/applications", SeeTestApis.PM).get();
-        if (response.getStatus() != Response.Status.OK.getStatusCode()) {
-            log().debug("No SeeTest host found. (Response status {})", response.getStatus());
+        try {
+            Response response = this.getBuilder("/applications", SeeTestApis.PM).get();
+            if (response.getStatus() != Response.Status.OK.getStatusCode()) {
+                log().debug("No SeeTest host found. (Response status {})", response.getStatus());
+                return Optional.empty();
+            }
+
+            Gson gson = new Gson();
+            JsonArray jsonArray = gson.fromJson(response.readEntity(String.class), JsonArray.class);
+            if (jsonArray.isJsonArray()) {
+                return Optional.of(jsonArray);
+            } else {
+                log().debug("Cannot read about response: {}", response.readEntity(String.class));
+                return Optional.empty();
+            }
+        } catch (Exception e) {
+            log().warn("Cannot get information from SeeTest server");
             return Optional.empty();
         }
 
-        Gson gson = new Gson();
-        JsonArray jsonArray = gson.fromJson(response.readEntity(String.class), JsonArray.class);
-        if (jsonArray.isJsonArray()) {
-            return Optional.of(jsonArray);
-        } else {
-            log().debug("Cannot read about response: {}", response.readEntity(String.class));
-            return Optional.empty();
-        }
     }
 
     private Invocation.Builder getBuilder(String path, SeeTestApis api) {
