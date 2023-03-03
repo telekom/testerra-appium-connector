@@ -5,6 +5,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.Page;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.AbstractPage;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.AbstractFieldAction;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.SetNameFieldAction;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Field;
@@ -29,4 +30,5 @@ public class AppiumPage extends Page {
         SetNameFieldAction nameFieldAction = new SetNameFieldAction(field, declaringPage);
         return Optional.of(List.of(action, nameFieldAction));
     }
+
 }

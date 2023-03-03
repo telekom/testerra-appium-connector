@@ -124,7 +124,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
-        MobileOs mobileOs = getOS(webDriverRequest);
+        MobileOs mobileOs = new MobileOsChecker().getOS(webDriverRequest);
 
         switch (mobileOs) {
             case IOS:
@@ -194,23 +194,6 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     @Override
     public GuiElementCore createCore(GuiElementData guiElementData) {
         return new AppiumGuiElementCoreAdapter(guiElementData);
-    }
-
-    private MobileOs getOS(WebDriverRequest webDriverRequest) {
-        Map<String, Object> capabilities = webDriverRequest.getCapabilities();
-        if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
-        ) {
-            return MobileOs.ANDROID;
-        }
-        if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)
-                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
-        ) {
-            return MobileOs.IOS;
-        }
-
-        return MobileOs.OTHER;
     }
 
 }
