@@ -31,6 +31,7 @@ import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.MobileBrowserType;
+import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ScreenOrientation;
@@ -67,12 +68,16 @@ public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Logga
         DesiredCapabilities dc = new DesiredCapabilities();
         dc.setCapability("testName", "Demo Tests");
         dc.setCapability("accessKey", accessKey);
-        //        dc.setCapability("deviceQuery", "@os='ios' and @category='PHONE'");
-        dc.setCapability("deviceQuery", AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID);
+        dc.setCapability("appiumVersion", "1.22.3");
+//        dc.setCapability("deviceQuery", "contains(@name, 'Samsung Galaxy S20')");
+        dc.setCapability("deviceQuery", "contains(@name, 'Google Pixel 6')");
+//        dc.setCapability("deviceQuery", AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID);
         //        dc.setBrowserName(MobileBrowserType.SAFARI);
-        dc.setBrowserName(MobileBrowserType.CHROMIUM);
+        dc.setBrowserName(MobileBrowserType.CHROME);
         URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
         //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
+        log().info(dc.toString());
+
         driver = new AndroidDriver<>(url, dc);
     }
 
