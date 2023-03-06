@@ -82,26 +82,6 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Cannot create new " + mobilePlatform + " element", e);
         }
-
-//        AndroidLocator androidLocator = field.getAnnotation(AndroidLocator.class);
-//        if (androidLocator != null) {
-//            try {
-////                log().info(androidLocator.xpath());
-////                log().info(field.getName());
-////                Class<? extends Field> aClass = field.getClass();
-////                log().info(aClass.toString());
-//
-//                UiElementFinder uiElementFinder = UI_ELEMENT_FINDER_FACTORY.create(this.declaringPage.getWebDriver());
-//                UiElement uiElement = uiElementFinder.find(By.xpath(androidLocator.xpath()));
-//                if (uiElement instanceof NameableChild) {
-//                    ((NameableChild) uiElement).setParent(this.declaringPage);
-//                }
-//
-//                field.set(this.declaringPage, uiElement);
-//            } catch (IllegalAccessException e) {
-//                throw new RuntimeException("Cannot create new Android element", e);
-//            }
-//        }
     }
 
     @Override
