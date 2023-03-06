@@ -160,4 +160,39 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 
         throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
     }
+
+    @Override
+    public void type(String text) {
+        if (text == null) {
+            log().warn("Text to type is null. Typing nothing.");
+            return;
+        }
+        if (text.isEmpty()) {
+            log().warn("Text to type is empty!");
+        }
+
+        findWebElement(webElement -> {
+            webElement.clear();
+            webElement.sendKeys(text);
+
+//            String valueProperty = webElement.getAttribute("value");
+            String valueProperty = webElement.getText();
+            if (valueProperty != null) {
+                if (!valueProperty.equals(text)) {
+                    log().warn("Writing text to input field didn't work. Trying again.");
+
+                    webElement.clear();
+                    webElement.sendKeys(text);
+
+//                    if (!webElement.getAttribute("value").equals(text)) {
+                    if (!webElement.getText().equals(text)) {
+                        log().error("Writing text to input field didn't work on second try!");
+                    }
+                }
+            } else {
+                log().warn("Cannot perform value check after type() because " + this.toString() +
+                        " doesn't have a value property. Consider using sendKeys() instead.");
+            }
+        });
+    }
 }
