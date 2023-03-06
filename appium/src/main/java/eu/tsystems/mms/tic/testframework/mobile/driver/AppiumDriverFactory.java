@@ -41,8 +41,6 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileBrowserType;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.WebDriver;
@@ -52,7 +50,6 @@ import org.openqa.selenium.support.events.EventFiringWebDriver;
 import java.net.URL;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Map;
 import java.util.concurrent.atomic.AtomicReference;
 
 /**
@@ -97,6 +94,17 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             }
         }
 
+        switch (webDriverRequest.getBrowser()) {
+            case Browsers.mobile_chrome:
+                requestCapabilities.setBrowserName(MobileBrowserType.CHROME);
+                break;
+            case Browsers.mobile_safari:
+                requestCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+                break;
+            default:
+                log().info("No mobile browser requested.");
+        }
+
         return finalRequest;
     }
 
@@ -121,6 +129,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
         IExecutionContextController executionContextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
         DefaultCapabilityUtils utils = new DefaultCapabilityUtils();
+        // TODO: Move to prepareWebDriverRequest
         utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
@@ -128,21 +137,9 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
         switch (mobileOs) {
             case IOS:
-                if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)) {
-                    finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
-                }
-//                else {
-//                    appiumDriverRequest.setBrowser(Browsers.ios);
-//                }
                 appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
                 break;
             case ANDROID:
-                if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)) {
-                    finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
-                }
-//                else {
-//                    appiumDriverRequest.setBrowser(Browsers.android);
-//                }
                 appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
                 break;
         }
