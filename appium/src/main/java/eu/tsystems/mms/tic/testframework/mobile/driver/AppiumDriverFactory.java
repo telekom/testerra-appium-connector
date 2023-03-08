@@ -23,7 +23,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
-import eu.tsystems.mms.tic.testframework.appium.MobileOs;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
@@ -43,6 +42,7 @@ import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileBrowserType;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.DesiredCapabilities;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
@@ -133,9 +133,8 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
-        MobileOs mobileOs = new MobileOsChecker().getOS(webDriverRequest);
-
-        switch (mobileOs) {
+        Platform mobilePlatform = new MobileOsChecker().getPlatform(webDriverRequest);
+        switch (mobilePlatform) {
             case IOS:
                 appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
                 break;

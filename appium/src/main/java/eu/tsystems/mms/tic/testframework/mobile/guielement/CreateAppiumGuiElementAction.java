@@ -1,6 +1,6 @@
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
-import eu.tsystems.mms.tic.testframework.appium.MobileOs;
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.internal.NameableChild;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
@@ -8,12 +8,19 @@ import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElementFinder;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.AbstractPage;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.action.AbstractFieldAction;
+import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.pagefactory.DefaultElementByBuilder;
+import io.appium.java_client.remote.MobileCapabilityType;
+import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.WebDriver;
 
 import java.lang.reflect.Field;
+import java.util.Optional;
 
 /**
  * Created on 2023-02-09
@@ -42,27 +49,8 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
             return;
         }
 
-        MobileOs mobileOs = new MobileOsChecker().getOS(this.declaringPage.getWebDriver());
-
-        Platform mobilePlatform = null;
-        String automationName = null;
-
-        switch (mobileOs) {
-            case ANDROID: {
-                mobilePlatform = Platform.ANDROID;
-                // TODO: Read from caps or default value
-                automationName = "UiAutomator2";
-            }
-            break;
-            case IOS: {
-                mobilePlatform = Platform.IOS;
-                // TODO: Read from caps or default value
-                automationName = "XCUITest";
-                break;
-            }
-            case OTHER:
-                throw new RuntimeException("Cannot find UiElement locator for unknown mobile platform");
-        }
+        Platform mobilePlatform = new MobileOsChecker().getPlatform(this.declaringPage.getWebDriver());
+        String automationName = getAutomationEngine(this.declaringPage.getWebDriver(), mobilePlatform);
 
         // TODO: Check if no Appium annotations are available --> should be logged because of default by
         DefaultElementByBuilder byBuilder = new DefaultElementByBuilder(mobilePlatform.toString(), automationName);
@@ -86,5 +74,27 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
 
     @Override
     protected void after() {
+    }
+
+    private String getAutomationEngine(WebDriver driver, Platform platform) {
+        IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
+        Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
+        if (optional.isPresent()) {
+            String automationEngine = optional.get().getCapabilities().get(MobileCapabilityType.AUTOMATION_NAME).toString();
+            if (StringUtils.isNotBlank(automationEngine)) {
+                return automationEngine;
+            } else {
+                // Use default values for automation engine
+                switch (platform) {
+                    case ANDROID:
+                        return "UiAutomator2";
+                    case IOS:
+                        return "XCUITest";
+                    default:
+                        throw new RuntimeException("Cannot get automation engine: Invalid platform " + platform);
+                }
+            }
+        }
+        throw new RuntimeException("Cannot get automation engine: Cannot get request from WebDriver session.");
     }
 }
