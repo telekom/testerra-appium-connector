@@ -25,7 +25,6 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
-import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 

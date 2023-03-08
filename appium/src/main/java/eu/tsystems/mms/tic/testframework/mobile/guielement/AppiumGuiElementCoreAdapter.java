@@ -149,13 +149,20 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.findWebElement(webElement -> {
             final String selected = webElement.getAttribute("selected");
-            final String value = webElement.getAttribute("value");
+//            final String text = webElement.getText();
+            String value = "";
             String checked = "";
+            try {
+                // Does only work in mobile browser not in Android apps
+                value = webElement.getAttribute("value");
+            } catch (WebDriverException e) {
+                log().warn("Get attribute 'value' from WebElement is not supported on this platform.");
+            }
             try {
                 // Does only work in mobile browser not in apps
                 checked = webElement.getAttribute("checked");
             } catch (WebDriverException e) {
-                log().warn(e.getMessage());
+                log().warn("Get attribute 'checked' from WebElement is not supported on this platform.");
             }
             atomicBoolean.set(
                     "true".equalsIgnoreCase(checked)

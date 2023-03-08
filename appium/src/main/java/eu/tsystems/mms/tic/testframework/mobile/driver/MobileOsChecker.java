@@ -24,18 +24,18 @@ public class MobileOsChecker {
     public Platform getPlatform(WebDriverRequest webDriverRequest) {
         Map<String, Object> capabilities = webDriverRequest.getCapabilities();
         if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
                 || "Espresso".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
                 || "UiAutomator2".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
                 || "UiAutomator".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
+                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
+                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
         ) {
             return Platform.ANDROID;
         }
         if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)
-                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
                 || "XCUITest".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
                 || "UIAutomation".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
+                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
         ) {
             return Platform.IOS;
         }
