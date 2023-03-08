@@ -36,6 +36,7 @@ import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
@@ -147,9 +148,20 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     public boolean isSelected() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.findWebElement(webElement -> {
-            final String checked = webElement.getAttribute("checked");
             final String selected = webElement.getAttribute("selected");
-            atomicBoolean.set(checked.equalsIgnoreCase("true") || selected.equalsIgnoreCase("true"));
+            final String value = webElement.getAttribute("value");
+            String checked = "";
+            try {
+                // Does only work in mobile browser not in apps
+                checked = webElement.getAttribute("checked");
+            } catch (WebDriverException e) {
+                log().warn(e.getMessage());
+            }
+            atomicBoolean.set(
+                    "true".equalsIgnoreCase(checked)
+                    ||"true".equalsIgnoreCase(selected)
+                    || "1".equals(value)
+            );
         });
         return atomicBoolean.get();
     }
@@ -161,6 +173,9 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
     }
 
+    /**
+     * Appium on apps does not support webElement.getAttribute("value"), but webElement.getText() is working
+     */
     @Override
     public void type(String text) {
         if (text == null) {
