@@ -49,7 +49,7 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'iPhone X')");
         request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
-        request.getDesiredCapabilities().setCapability(MobileCapabilityType.AUTOMATION_NAME, "XCUITest");
+        request.setAppiumEngine("XCUITest");
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
 
         WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
@@ -62,7 +62,7 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'Samsung Galaxy S20')");
         request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
-        request.getDesiredCapabilities().setCapability(MobileCapabilityType.AUTOMATION_NAME, "UiAutomator2");
+        request.setAppiumEngine("UiAutomator2");
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
 
         WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);

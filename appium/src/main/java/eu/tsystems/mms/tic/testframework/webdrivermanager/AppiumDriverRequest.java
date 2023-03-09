@@ -23,6 +23,7 @@ package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
+import io.appium.java_client.remote.MobileCapabilityType;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -57,5 +58,13 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     public void setAccessKey(String accessKey) {
         this.getDesiredCapabilities().setCapability(ACCESS_KEY, accessKey);
+    }
+
+    public void setAppiumEngine(String engine) {
+        this.getDesiredCapabilities().setCapability(MobileCapabilityType.AUTOMATION_NAME, engine);
+    }
+
+    public String getAppiumEngine() {
+        return this.getDesiredCapabilities().getCapability(MobileCapabilityType.AUTOMATION_NAME).toString();
     }
 }
