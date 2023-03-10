@@ -26,11 +26,13 @@ import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
+import eu.tsystems.mms.tic.testframework.utils.AppiumExecutionUtils;
+import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 
 /**
  * Add AppiumDriverFactory and WinAppDriverFactory
- *
+ * <p>
  * Date: 24.06.2020
  * Time: 10:29
  *
@@ -43,5 +45,6 @@ public class DriverUi_Appium extends AbstractModule {
         Multibinder<WebDriverFactory> webDriverFactoryBinder = Multibinder.newSetBinder(binder(), WebDriverFactory.class);
         webDriverFactoryBinder.addBinding().to(AppiumDriverFactory.class).in(Scopes.SINGLETON);
         webDriverFactoryBinder.addBinding().to(WinAppDriverFactory.class).in(Scopes.SINGLETON);
+        bind(ExecutionUtils.class).to(AppiumExecutionUtils.class).in(Scopes.SINGLETON);
     }
 }

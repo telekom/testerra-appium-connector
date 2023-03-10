@@ -22,12 +22,14 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.LongPressOptions;
@@ -41,6 +43,8 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -52,6 +56,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implements Loggable, WebDriverManagerProvider {
 
     private AppiumDriver appiumDriver;
+
+    private ExecutionUtils executionUtils = Testerra.getInjector().getInstance(ExecutionUtils.class);
 
     public AppiumGuiElementCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
@@ -144,26 +150,32 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         //        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
     }
 
+    // TODO: Move to ExecutionUtils?
+    private <T, R> Supplier<R> createSupplier(Function<T,R> fn, T val) {
+        return () -> fn.apply(val);
+    }
+
     @Override
     public boolean isSelected() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.findWebElement(webElement -> {
             final String selected = webElement.getAttribute("selected");
 //            final String text = webElement.getText();
-            String value = "";
-            String checked = "";
-            try {
-                // Does only work in mobile browser not in Android apps
-                value = webElement.getAttribute("value");
-            } catch (WebDriverException e) {
-                log().warn("Get attribute 'value' from WebElement is not supported on this platform.");
-            }
-            try {
-                // Does only work in mobile browser not in apps
-                checked = webElement.getAttribute("checked");
-            } catch (WebDriverException e) {
-                log().warn("Get attribute 'checked' from WebElement is not supported on this platform.");
-            }
+            String value = executionUtils.getFailsafe(createSupplier(webElement::getAttribute, "value")).orElse("");
+            String checked =executionUtils.getFailsafe(createSupplier(webElement::getAttribute, "checked")).orElse("");
+            log().info("Value checked: " + checked);
+//            try {
+//                // Does only work in mobile browser not in Android apps
+//                value = webElement.getAttribute("value");
+//            } catch (WebDriverException e) {
+//                log().warn("Get attribute 'value' from WebElement is not supported on this platform.");
+//            }
+//            try {
+//                // Does only work in mobile browser not in apps
+//                checked = webElement.getAttribute("checked");
+//            } catch (WebDriverException e) {
+//                log().warn("Get attribute 'checked' from WebElement is not supported on this platform.");
+//            }
             atomicBoolean.set(
                     "true".equalsIgnoreCase(checked)
                     ||"true".equalsIgnoreCase(selected)
