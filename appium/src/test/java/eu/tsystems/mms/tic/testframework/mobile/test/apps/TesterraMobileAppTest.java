@@ -1,3 +1,23 @@
+/*
+ * Testerra
+ *
+ * (C) 2023, Martin Großmann, T-Systems MMS GmbH, Deutsche Telekom AG
+ *
+ * Deutsche Telekom AG and all other contributors /
+ * copyright owners license this file to you under the Apache
+ * License, Version 2.0 (the "License"); you may not use this
+ * file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing,
+ * software distributed under the License is distributed on an
+ * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+ * KIND, either express or implied.  See the License for the
+ * specific language governing permissions and limitations
+ * under the License.
+ */
 package eu.tsystems.mms.tic.testframework.mobile.test.apps;
 
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
@@ -7,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
+import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -26,22 +47,16 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
     @Test
     public void testT01AndroidApp() throws MalformedURLException {
         AppiumDriverRequest request = new AppiumDriverRequest();
-        request.setDeviceQuery("contains(@name, 'Galaxy S20') and @version='13.0'");
+        request.setDeviceQuery("contains(@name, 'Galaxy S20')");
         request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
 
         request.getDesiredCapabilities().setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
         request.getDesiredCapabilities().setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");
         request.getDesiredCapabilities().setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".HomeActivity");
+        request.setAppiumEngine("UiAutomator2");
 
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
         TimerUtils.sleep(4000);
-
-//        UITestUtils.takeScreenshot(webDriver, true);
-
-//        File scrFile = ((TakesScreenshot) webDriver).getScreenshotAs(OutputType.FILE);
-//        Screenshot screenshot = new Screenshot();
-//        screenshot.setFile(scrFile);
-//        UITestUtils.takeScreenshot(webDriver, screenshot);
     }
 
     @Test
@@ -55,6 +70,8 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
         WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
         switchWiFi(wifiSettingsPage);
         TimerUtils.sleep(5000);
+
+        UITestUtils.takeScreenshots();
     }
 
     @Test
