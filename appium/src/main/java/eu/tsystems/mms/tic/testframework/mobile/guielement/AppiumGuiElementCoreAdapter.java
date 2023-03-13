@@ -157,7 +157,6 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 //            final String text = webElement.getText();
             String value = executionUtils.getFailsafe(() -> webElement.getAttribute("value")).orElse("");
             String checked = executionUtils.getFailsafe(() -> webElement.getAttribute("checked")).orElse("");
-            log().info("Value checked: " + checked);
 
             atomicBoolean.set(
                     "true".equalsIgnoreCase(checked)
