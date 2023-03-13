@@ -38,7 +38,6 @@ import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebDriverException;
 import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
@@ -150,36 +149,20 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         //        return ((complete && viewportRect.contains(elementRect)) || viewportRect.intersects(elementRect));
     }
 
-    // TODO: Move to ExecutionUtils?
-    private <T, R> Supplier<R> createSupplier(Function<T,R> fn, T val) {
-        return () -> fn.apply(val);
-    }
-
     @Override
     public boolean isSelected() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.findWebElement(webElement -> {
             final String selected = webElement.getAttribute("selected");
 //            final String text = webElement.getText();
-            String value = executionUtils.getFailsafe(createSupplier(webElement::getAttribute, "value")).orElse("");
-            String checked =executionUtils.getFailsafe(createSupplier(webElement::getAttribute, "checked")).orElse("");
+            String value = executionUtils.getFailsafe(() -> webElement.getAttribute("value")).orElse("");
+            String checked = executionUtils.getFailsafe(() -> webElement.getAttribute("checked")).orElse("");
             log().info("Value checked: " + checked);
-//            try {
-//                // Does only work in mobile browser not in Android apps
-//                value = webElement.getAttribute("value");
-//            } catch (WebDriverException e) {
-//                log().warn("Get attribute 'value' from WebElement is not supported on this platform.");
-//            }
-//            try {
-//                // Does only work in mobile browser not in apps
-//                checked = webElement.getAttribute("checked");
-//            } catch (WebDriverException e) {
-//                log().warn("Get attribute 'checked' from WebElement is not supported on this platform.");
-//            }
+
             atomicBoolean.set(
                     "true".equalsIgnoreCase(checked)
-                    ||"true".equalsIgnoreCase(selected)
-                    || "1".equals(value)
+                            || "true".equalsIgnoreCase(selected)
+                            || "1".equals(value)
             );
         });
         return atomicBoolean.get();
