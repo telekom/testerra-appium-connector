@@ -45,7 +45,7 @@ import java.net.MalformedURLException;
 public class TesterraMobileAppTest extends AbstractAppiumTest {
 
     @Test
-    public void testT01AndroidApp() throws MalformedURLException {
+    public void testT01AndroidApp() {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'Galaxy S20')");
         request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
@@ -70,6 +70,23 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
         WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
         switchWiFi(wifiSettingsPage);
         TimerUtils.sleep(5000);
+
+        UITestUtils.takeScreenshots();
+    }
+
+    @Test
+    public void testT12NativeAndWebAccessIOS() {
+        AppiumDriverRequest request = new AppiumDriverRequest();
+        request.setDeviceQuery("contains(@name, 'iPhone X')");
+        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
+        request.setAppiumEngine("XCUITest");
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
+
+
+
+        WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
+        switchWiFi(wifiSettingsPage);
+
 
         UITestUtils.takeScreenshots();
     }
