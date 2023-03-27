@@ -23,9 +23,7 @@
 package eu.tsystems.mms.tic.testframework.mobile.systemundertest.page;
 
 import eu.tsystems.mms.tic.testframework.pageobjects.Check;
-import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
-import eu.tsystems.mms.tic.testframework.pageobjects.Locate;
-import eu.tsystems.mms.tic.testframework.pageobjects.factory.PageFactory;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 
@@ -40,10 +38,10 @@ import org.openqa.selenium.WebDriver;
 public class StartPage extends AbstractInternetPage {
 
     @Check
-    private GuiElement linkLogin = new GuiElement(this.getWebDriver(), Locate.by(By.linkText("Form Authentication")));
+    private UiElement linkLogin = find(By.linkText("Form Authentication"));
 
     @Check
-    private GuiElement linkTables = new GuiElement(this.getWebDriver(), Locate.by(By.linkText("Sortable Data Tables")));
+    private UiElement linkTables = find(By.linkText("Sortable Data Tables"));
 
     /**
      * Constructor for existing sessions.
@@ -51,21 +49,18 @@ public class StartPage extends AbstractInternetPage {
      * @param driver .
      */
     public StartPage(WebDriver driver) {
-
         super(driver);
     }
 
     public LoginPage goToLoginPage() {
-
         this.linkLogin.scrollIntoView();
         this.linkLogin.click();
-        return PageFactory.create(LoginPage.class, this.getWebDriver());
+        return createPage(LoginPage.class);
     }
 
     public TablePage goToTablePage() {
-
         this.linkTables.scrollIntoView();
         this.linkTables.click();
-        return PageFactory.create(TablePage.class, this.getWebDriver());
+        return createPage(TablePage.class);
     }
 }
