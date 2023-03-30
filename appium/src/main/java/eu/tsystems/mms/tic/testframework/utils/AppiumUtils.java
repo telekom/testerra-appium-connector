@@ -76,14 +76,17 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         }
 
         Set<String> contextHandles = appiumDriver.get().getContextHandles();
-//        LOGGER.info(String.format("Available contexts: %s", contextHandles));
+        log().info("Available contexts: {}", contextHandles);
         contextHandles.stream()
                 .filter(contextHandle -> AppiumContext.parse(contextHandle).equals(desiredContext))
                 .findFirst()
                 .ifPresentOrElse(handle -> {
                     log().info("Switch to context {} ({})", handle, desiredContext);
                     appiumDriver.get().context(handle);
-                }, () -> log().error("Couldn't find a {} context in {}", desiredContext, contextHandles));
+                }, () -> {
+                    log().error("Couldn't find a {} context in {}", desiredContext, contextHandles);
+                    throw new RuntimeException(String.format("Cannot switch in %s, because it does not exist. (%s)", desiredContext, contextHandles));
+                });
 
     }
 
