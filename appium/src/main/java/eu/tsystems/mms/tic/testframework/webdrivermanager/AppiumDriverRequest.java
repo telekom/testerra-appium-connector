@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testframework.webdrivermanager;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -53,7 +54,9 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     }
 
     public void setDeviceQuery(String deviceQuery) {
-        this.getDesiredCapabilities().setCapability(DEVICE_QUERY, deviceQuery);
+        if (StringUtils.isNotBlank(deviceQuery)) {
+            this.getDesiredCapabilities().setCapability(DEVICE_QUERY, deviceQuery);
+        }
     }
 
     public void setAccessKey(String accessKey) {
@@ -66,5 +69,29 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
 
     public String getAppiumEngine() {
         return this.getDesiredCapabilities().getCapability(MobileCapabilityType.AUTOMATION_NAME).toString();
+    }
+
+    public void setDeviceName(String deviceName) {
+        this.getDesiredCapabilities().setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+    }
+
+    public String getDeviceName() {
+        return this.getDesiredCapabilities().getCapability(MobileCapabilityType.DEVICE_NAME).toString();
+    }
+
+    public void setPlatformVersion(String platformVersion) {
+        this.getDesiredCapabilities().setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+    }
+
+    public String getPlatformVersion() {
+        return this.getDesiredCapabilities().getCapability(MobileCapabilityType.PLATFORM_VERSION).toString();
+    }
+
+    public void setDeviceId(String id) {
+        this.getDesiredCapabilities().setCapability(MobileCapabilityType.UDID, id);
+    }
+
+    public String getDeviceId() {
+        return this.getDesiredCapabilities().getCapability(MobileCapabilityType.UDID).toString();
     }
 }

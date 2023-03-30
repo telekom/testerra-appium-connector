@@ -28,8 +28,8 @@ import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.Report;
 import eu.tsystems.mms.tic.testframework.report.TesterraListener;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
-import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
+import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
@@ -57,8 +57,8 @@ import java.net.URL;
  */
 public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Loggable, PropertyManagerProvider {
 
-    //    protected IOSDriver<IOSElement> driver = null;
-    protected AndroidDriver<AndroidElement> driver = null;
+    protected IOSDriver<IOSElement> driver = null;
+//    protected AndroidDriver<AndroidElement> driver = null;
 
     @BeforeMethod
     public void setUp() throws MalformedURLException {
@@ -70,15 +70,16 @@ public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Logga
         dc.setCapability("accessKey", accessKey);
         dc.setCapability("appiumVersion", "1.22.3");
 //        dc.setCapability("deviceQuery", "contains(@name, 'Samsung Galaxy S20')");
-        dc.setCapability("deviceQuery", "contains(@name, 'Google Pixel 6')");
+//        dc.setCapability("deviceQuery", "contains(@name, 'Google Pixel 6')");
 //        dc.setCapability("deviceQuery", AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID);
-        //        dc.setBrowserName(MobileBrowserType.SAFARI);
-        dc.setBrowserName(MobileBrowserType.CHROME);
+        dc.setCapability(MobileCapabilityType.UDID, "1572207ead3e951f5f53345a7554cb393f326a2c");
+                dc.setBrowserName(MobileBrowserType.SAFARI);
+//        dc.setBrowserName(MobileBrowserType.CHROME);
         URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
-        //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
         log().info(dc.toString());
 
-        driver = new AndroidDriver<>(url, dc);
+        driver = new IOSDriver<>(url, dc);
+//        driver = new AndroidDriver<>(url, dc);
     }
 
     @Test
