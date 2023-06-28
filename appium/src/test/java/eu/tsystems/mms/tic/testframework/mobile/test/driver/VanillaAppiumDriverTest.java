@@ -31,7 +31,6 @@ import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.IOSElement;
 import io.appium.java_client.remote.MobileBrowserType;
-import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.By;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.ScreenOrientation;
@@ -72,19 +71,20 @@ public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Logga
 //        dc.setCapability("deviceQuery", "contains(@name, 'Samsung Galaxy S20')");
 //        dc.setCapability("deviceQuery", "contains(@name, 'Google Pixel 6')");
 //        dc.setCapability("deviceQuery", AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID);
-        dc.setCapability(MobileCapabilityType.UDID, "1572207ead3e951f5f53345a7554cb393f326a2c");
-                dc.setBrowserName(MobileBrowserType.SAFARI);
+        dc.setCapability("deviceQuery", "contains(@name, 'Apple iPhone X (')");
+//        dc.setCapability(MobileCapabilityType.UDID, "...");
+        dc.setBrowserName(MobileBrowserType.SAFARI);
 //        dc.setBrowserName(MobileBrowserType.CHROME);
         URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
         log().info(dc.toString());
 
         driver = new IOSDriver<>(url, dc);
 //        driver = new AndroidDriver<>(url, dc);
+
     }
 
     @Test
     public void testT01_DoGoogleSearch() {
-
         driver.rotate(ScreenOrientation.PORTRAIT);
         driver.get("https://www.google.com");
         new WebDriverWait(driver, 10).until(driver1 -> {
@@ -100,7 +100,6 @@ public class VanillaAppiumDriverTest extends AbstractAppiumTest implements Logga
 
     @AfterMethod
     public void tearDown() {
-
         log().info("Report URL: " + driver.getCapabilities().getCapability("reportUrl"));
         driver.quit();
     }
