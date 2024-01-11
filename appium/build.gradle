@@ -5,7 +5,11 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.9.0'
     implementation 'org.apache.commons:commons-lang3:3.12.0'
 
+    // For AppiumClassFinder
+    implementation 'org.reflections:reflections:0.9.12'
+
     testImplementation 'io.testerra:driver-ui:' + testerraTestVersion
+//    testImplementation 'io.testerra:driver-ui'
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion
     testImplementation 'io.appium:java-client:7.3.0'
 }

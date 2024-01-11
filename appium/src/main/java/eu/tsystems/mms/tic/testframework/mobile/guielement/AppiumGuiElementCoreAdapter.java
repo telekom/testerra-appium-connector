@@ -22,12 +22,14 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.LongPressOptions;
@@ -40,6 +42,8 @@ import org.openqa.selenium.WebElement;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.function.Function;
+import java.util.function.Supplier;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -51,6 +55,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
 public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implements Loggable, WebDriverManagerProvider {
 
     private AppiumDriver appiumDriver;
+
+    private ExecutionUtils executionUtils = Testerra.getInjector().getInstance(ExecutionUtils.class);
 
     public AppiumGuiElementCoreAdapter(GuiElementData guiElementData) {
         super(guiElementData);
@@ -147,9 +153,16 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     public boolean isSelected() {
         AtomicBoolean atomicBoolean = new AtomicBoolean(false);
         this.findWebElement(webElement -> {
-            final String checked = webElement.getAttribute("checked");
             final String selected = webElement.getAttribute("selected");
-            atomicBoolean.set(checked.equalsIgnoreCase("true") || selected.equalsIgnoreCase("true"));
+//            final String text = webElement.getText();
+            String value = executionUtils.getFailsafe(() -> webElement.getAttribute("value")).orElse("");
+            String checked = executionUtils.getFailsafe(() -> webElement.getAttribute("checked")).orElse("");
+
+            atomicBoolean.set(
+                    "true".equalsIgnoreCase(checked)
+                            || "true".equalsIgnoreCase(selected)
+                            || "1".equals(value)
+            );
         });
         return atomicBoolean.get();
     }
@@ -159,5 +172,43 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     public boolean isSelectable() {
 
         throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
+    }
+
+    /**
+     * Appium on apps does not support webElement.getAttribute("value"), but webElement.getText() is working
+     */
+    @Override
+    public void type(String text) {
+        if (text == null) {
+            log().warn("Text to type is null. Typing nothing.");
+            return;
+        }
+        if (text.isEmpty()) {
+            log().warn("Text to type is empty!");
+        }
+
+        findWebElement(webElement -> {
+            webElement.clear();
+            webElement.sendKeys(text);
+
+//            String valueProperty = webElement.getAttribute("value");
+            String valueProperty = webElement.getText();
+            if (valueProperty != null) {
+                if (!valueProperty.equals(text)) {
+                    log().warn("Writing text to input field didn't work. Trying again.");
+
+                    webElement.clear();
+                    webElement.sendKeys(text);
+
+//                    if (!webElement.getAttribute("value").equals(text)) {
+                    if (!webElement.getText().equals(text)) {
+                        log().error("Writing text to input field didn't work on second try!");
+                    }
+                }
+            } else {
+                log().warn("Cannot perform value check after type() because " + this.toString() +
+                        " doesn't have a value property. Consider using sendKeys() instead.");
+            }
+        });
     }
 }

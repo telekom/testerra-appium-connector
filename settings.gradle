@@ -2,5 +2,5 @@ rootProject.name = 'testerra-appium-connector'
 include 'appium'
 include 'appium-seetest'
 
-//includeBuild("../testerra")
+//includeBuild("../github_testerra")
 
