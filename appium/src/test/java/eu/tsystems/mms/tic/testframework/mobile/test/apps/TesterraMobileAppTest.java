@@ -48,7 +48,7 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
     public void testT01AndroidApp() {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'Galaxy S20')");
-        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
+        request.getDesiredCapabilities().setCapability("appiumVersion", "2.2.2");
 
         request.getDesiredCapabilities().setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
         request.getDesiredCapabilities().setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");

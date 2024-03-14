@@ -100,7 +100,7 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
         IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
-            String automationEngine = optional.get().getCapabilities().get(MobileCapabilityType.AUTOMATION_NAME).toString();
+            String automationEngine = optional.get().getCapabilities().getCapability(MobileCapabilityType.AUTOMATION_NAME).toString();
             if (StringUtils.isNotBlank(automationEngine)) {
                 return automationEngine;
             } else {

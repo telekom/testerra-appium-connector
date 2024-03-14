@@ -28,10 +28,10 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -42,20 +42,21 @@ import java.util.Optional;
 public class MobileOsChecker {
 
     public Platform getPlatform(WebDriverRequest webDriverRequest) {
-        Map<String, Object> capabilities = webDriverRequest.getCapabilities();
+        Capabilities capabilities = webDriverRequest.getCapabilities();
+
         if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)
-                || "Espresso".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UiAutomator2".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UiAutomator".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
+                || "Espresso".equals(capabilities.getCapability(MobileCapabilityType.AUTOMATION_NAME))
+                || "UiAutomator2".equals(capabilities.getCapability(MobileCapabilityType.AUTOMATION_NAME))
+                || "UiAutomator".equals(capabilities.getCapability(MobileCapabilityType.AUTOMATION_NAME))
+                || capabilities.getCapability(AndroidMobileCapabilityType.APP_PACKAGE) != null
+                || capabilities.getCapability(AndroidMobileCapabilityType.APP_ACTIVITY) != null
         ) {
             return Platform.ANDROID;
         }
         if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)
-                || "XCUITest".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UIAutomation".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
+                || "XCUITest".equals(capabilities.getCapability(MobileCapabilityType.AUTOMATION_NAME))
+                || "UIAutomation".equals(capabilities.getCapability(MobileCapabilityType.AUTOMATION_NAME))
+                || capabilities.getCapability(IOSMobileCapabilityType.BUNDLE_ID) != null
         ) {
             return Platform.IOS;
         }

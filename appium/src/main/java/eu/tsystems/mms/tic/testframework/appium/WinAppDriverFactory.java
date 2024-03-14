@@ -21,8 +21,8 @@
 
 package eu.tsystems.mms.tic.testframework.appium;
 
-import eu.tsystems.mms.tic.testframework.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.common.IProperties;
+import eu.tsystems.mms.tic.testframework.core.WinAppDriverCoreAdapter;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
@@ -33,15 +33,14 @@ import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WinAppDriverRequest;
 import io.appium.java_client.windows.WindowsDriver;
-import io.appium.java_client.windows.WindowsElement;
-import java.net.URL;
-import java.util.Arrays;
-import java.util.List;
-import java.util.concurrent.TimeUnit;
-import java.util.concurrent.atomic.AtomicReference;
+import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
+
+import java.net.URL;
+import java.util.Arrays;
+import java.util.List;
 
 public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestControllerProvider, Sleepy {
 
@@ -68,7 +67,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
         }
     }
 
-    private WindowsDriver<WindowsElement> startNewWindowsDriver(WinAppDriverRequest appDriverRequest, SessionContext sessionContext) {
+    private WindowsDriver startNewWindowsDriver(WinAppDriverRequest appDriverRequest, SessionContext sessionContext) {
         final URL finalWinAppServerUrl = appDriverRequest.getServerUrl().get();
         sessionContext.setNodeUrl(finalWinAppServerUrl);
 
@@ -80,7 +79,7 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
             desiredCapabilities.setCapability(WinAppDriverRequest.APP_ID, appId);
         });
 
-        WindowsDriver<WindowsElement> windowsDriver = new WindowsDriver<>(finalWinAppServerUrl, desiredCapabilities);
+        WindowsDriver windowsDriver = new WindowsDriver(finalWinAppServerUrl, desiredCapabilities);
         //CONTROL.retryFor(appDriverRequest.getStartupTimeoutSeconds(), windowsDriver::getTitle, this::sleep);
         return windowsDriver;
     }
@@ -94,8 +93,8 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
     }
 
     @Override
-    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext)  {
-        WinAppDriverRequest appDriverRequest = (WinAppDriverRequest)webDriverRequest;
+    public WebDriver createWebDriver(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
+        WinAppDriverRequest appDriverRequest = (WinAppDriverRequest) webDriverRequest;
 
         /**
          * Try to reuse an already opened application
@@ -113,11 +112,13 @@ public class WinAppDriverFactory implements WebDriverFactory, Loggable, TestCont
                 appDriverRequest.getServerUrl().ifPresent(desktopDriverRequest::setServerUrl);
             }
 
-            WindowsDriver<WindowsElement> desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
+            WindowsDriver desktopDriver = startNewWindowsDriver(desktopDriverRequest, sessionContext);
 
             log().info(String.format("Try to create driver on running application by window title \"%s\"", reuseableWindowTitle));
             CONTROL.waitFor(appDriverRequest.getReuseTimeoutSeconds(), () -> {
-                WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle);
+                // TODO: Verify migration
+                // WebElement elementByName = desktopDriver.findElementByName(reuseableWindowTitle); --> migrate to Appium 8.x
+                WebElement elementByName = desktopDriver.findElement(By.name(reuseableWindowTitle));
                 String nativeWindowHandle = elementByName.getAttribute("NativeWindowHandle");
                 int nativeWindowHandleId = Integer.parseInt(nativeWindowHandle);
                 if (nativeWindowHandleId > 0) {

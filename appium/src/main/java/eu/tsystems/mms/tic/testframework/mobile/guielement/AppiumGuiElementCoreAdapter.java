@@ -31,14 +31,17 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementDat
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.PerformsTouchActions;
 import io.appium.java_client.TouchAction;
 import io.appium.java_client.touch.LongPressOptions;
 import io.appium.java_client.touch.TapOptions;
 import io.appium.java_client.touch.WaitOptions;
 import io.appium.java_client.touch.offset.ElementOption;
 import io.appium.java_client.touch.offset.PointOption;
+import org.apache.commons.lang3.NotImplementedException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.PointerInput;
 
 import java.time.Duration;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -80,41 +83,47 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         throw new MobileActionNotSupportedException("hover() is not supported on mobile element.s");
     }
 
-    @Override
-    public void contextClick() {
-        this.findWebElement(webElement -> {
-            final ElementOption elementOption = new ElementOption().withElement(webElement);
-            final TouchAction action = new TouchAction<>(appiumDriver);
+    // TODO: Migrate to W3C actions
+//    @Override
+//    public void contextClick() {
+//        this.findWebElement(webElement -> {
+//            final ElementOption elementOption = new ElementOption().withElement(webElement);
+//            // new
+////            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+//            final TouchAction action = new TouchAction(appiumDriver);
+//
+//            action.longPress(new LongPressOptions().withElement(elementOption));
+//            action.perform();
+//        });
+//    }
 
-            action.longPress(new LongPressOptions().withElement(elementOption));
-            action.perform();
-        });
-    }
+    // TODO: Migrate to W3C actions
+//    @Override
+//    public void doubleClick() {
+//        this.findWebElement(webElement -> {
+//            final ElementOption elementOption = new ElementOption().withElement(webElement);
+//            final TouchAction action = new TouchAction<>(appiumDriver);
+//
+//            final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
+//            action.tap(tapOptions).perform();
+//        });
+//    }
 
-    @Override
-    public void doubleClick() {
-        this.findWebElement(webElement -> {
-            final ElementOption elementOption = new ElementOption().withElement(webElement);
-            final TouchAction action = new TouchAction<>(appiumDriver);
-
-            final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
-            action.tap(tapOptions).perform();
-        });
-    }
-
+    // TODO: Migrate to W3C actions
     @Override
     public void swipe(int offsetX, int offsetY) {
-        this.findWebElement(webElement -> {
-            TouchAction touchAction = new TouchAction(appiumDriver);
-
-            final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(webElement));
-            touchAction.tap(tapOption);
-            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-            touchAction.moveTo(new PointOption().withCoordinates(offsetX, offsetY));
-            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-            touchAction.release();
-            touchAction.perform();
-        });
+        throw new NotImplementedException("Implement me with W3C actions");
+//        this.findWebElement(webElement -> {
+//            TouchAction touchAction = new TouchAction(appiumDriver);
+//
+//            final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(webElement));
+//            touchAction.tap(tapOption);
+//            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
+//            touchAction.moveTo(new PointOption().withCoordinates(offsetX, offsetY));
+//            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
+//            touchAction.release();
+//            touchAction.perform();
+//        });
     }
 
     @Override

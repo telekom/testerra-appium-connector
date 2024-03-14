@@ -27,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import io.appium.java_client.AppiumDriver;
+import io.appium.java_client.remote.SupportsContextSwitching;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
@@ -66,7 +67,10 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         if (appiumDriver.isEmpty()) {
             throw new RuntimeException("Current Webdriver is not an Appium driver.");
         }
-        String currentContext = appiumDriver.get().getContext();
+
+        SupportsContextSwitching contextSwitchingDriver = (SupportsContextSwitching) appiumDriver.get();
+
+        String currentContext = contextSwitchingDriver.getContext();
         AppiumContext parsedInitialContext = AppiumContext.parse(currentContext);
         log().info("Current context: {} ({})", currentContext, parsedInitialContext);
 
@@ -75,14 +79,14 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
             return;
         }
 
-        Set<String> contextHandles = appiumDriver.get().getContextHandles();
+        Set<String> contextHandles = contextSwitchingDriver.getContextHandles();
         log().info("Available contexts: {}", contextHandles);
         contextHandles.stream()
                 .filter(contextHandle -> AppiumContext.parse(contextHandle).equals(desiredContext))
                 .findFirst()
                 .ifPresentOrElse(handle -> {
                     log().info("Switch to context {} ({})", handle, desiredContext);
-                    appiumDriver.get().context(handle);
+                    contextSwitchingDriver.context(handle);
                 }, () -> {
                     log().error("Couldn't find a {} context in {}", desiredContext, contextHandles);
                     throw new RuntimeException(String.format("Cannot switch in %s, because it does not exist. (%s)", desiredContext, contextHandles));
