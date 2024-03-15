@@ -28,7 +28,9 @@ import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.SupportsContextSwitching;
+import io.appium.java_client.remote.SupportsRotation;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Arrays;
@@ -57,6 +59,12 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         } else {
             throw new RuntimeException("Cannot start application " + bundleId + " at " + platform);
         }
+    }
+
+    public void rotate(WebDriver driver, ScreenOrientation screenOrientation) {
+        WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).ifPresent(appiumDriver -> {
+            ((SupportsRotation) appiumDriver).rotate(screenOrientation);
+        });
     }
 
     /**
