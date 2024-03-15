@@ -1,6 +1,6 @@
 dependencies {
     compileOnly 'io.testerra:driver-ui:' + testerraCompileVersion
-    compileOnly 'io.appium:java-client:7.3.0'
+    compileOnly 'io.appium:java-client:' + appiumJavaClientVersion
     compileOnly project(':appium')
 
     // Rest client
@@ -11,7 +11,7 @@ dependencies {
     testImplementation 'io.testerra:driver-ui-desktop:' + testerraTestVersion
     testImplementation 'io.testerra:report-ng:' + testerraTestVersion
     testImplementation project(':appium')
-    testImplementation 'io.appium:java-client:7.3.0'
+    testImplementation 'io.appium:java-client:' + appiumJavaClientVersion
 }
 
 test {
