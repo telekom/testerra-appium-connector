@@ -37,9 +37,12 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {
-        super();
-        setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
-//        this.setBrowser(Browsers.mobile);
+        this.setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
+
+        if (StringUtils.isBlank(this.getBrowser())) {
+            this.setBrowser(Browsers.mobile);
+        }
+
     }
 
     @Override

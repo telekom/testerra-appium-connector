@@ -73,7 +73,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             finalRequest = new AppiumDriverRequest();
             finalRequest.setSessionKey(webDriverRequest.getSessionKey());
             finalRequest.setBrowser(webDriverRequest.getBrowser());
-            finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
+//            finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
         }
 
         MutableCapabilities requestCapabilities = finalRequest.getMutableCapabilities();
