@@ -20,7 +20,7 @@
 
 This module provides additional features for [Testerra Framework](https://github.com/telekom/testerra) for automated tests.
 
-Appium connector uses the open source standard Appium to run web tests based on Testerra on mobile devices.
+Appium connector uses the open source standard Appium to run web and app tests based on Testerra on mobile devices.
 
 It will register with Testerra Hooking system and uses the event bus to react on Testerra events.
 
