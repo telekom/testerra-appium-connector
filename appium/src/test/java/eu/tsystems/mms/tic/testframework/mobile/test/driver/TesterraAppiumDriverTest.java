@@ -77,7 +77,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
         final String device = "Apple iPhone X";
         request.setBrowser(Browsers.mobile_safari);
         request.setDeviceQuery(String.format("contains(@name, '%s')", device));
-        request.getMutableCapabilities().setCapability("appium:appiumVersion", "2.2.2");
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
 
         final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver(request);
 

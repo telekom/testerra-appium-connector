@@ -21,6 +21,7 @@
 
 package eu.tsystems.mms.tic.testframework.webdrivermanager;
 
+import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import io.appium.java_client.remote.MobileCapabilityType;
@@ -30,7 +31,7 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Optional;
 
-public class AppiumDriverRequest extends SeleniumWebDriverRequest {
+public class AppiumDriverRequest extends SeleniumWebDriverRequest implements AppiumCapabilityHelper {
 
     public static final String DEVICE_QUERY = "deviceQuery";
     public static final String ACCESS_KEY = "accessKey";
@@ -72,7 +73,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     }
 
     public String getAppiumEngine() {
-        return this.getMutableCapabilities().getCapability(MobileCapabilityType.AUTOMATION_NAME).toString();
+        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)).toString();
     }
 
     public void setDeviceName(String deviceName) {
@@ -80,7 +81,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     }
 
     public String getDeviceName() {
-        return this.getMutableCapabilities().getCapability(MobileCapabilityType.DEVICE_NAME).toString();
+        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.DEVICE_NAME)).toString();
     }
 
     public void setPlatformVersion(String platformVersion) {
@@ -88,7 +89,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     }
 
     public String getPlatformVersion() {
-        return this.getMutableCapabilities().getCapability(MobileCapabilityType.PLATFORM_VERSION).toString();
+        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.PLATFORM_VERSION)).toString();
     }
 
     public void setDeviceId(String id) {
@@ -96,6 +97,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest {
     }
 
     public String getDeviceId() {
-        return this.getMutableCapabilities().getCapability(MobileCapabilityType.UDID).toString();
+        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.UDID)).toString();
     }
 }
