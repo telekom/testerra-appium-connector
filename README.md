@@ -28,12 +28,16 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-| Appium connector | Testerra    | Notes                        | 
-|------------------|-------------|------------------------------|
+| Appium connector | Testerra    | Notes                                | 
+|------------------|-------------|--------------------------------------|
 | `>=1.1`          | `>=1.3`     | 
-| `2.0 - 2.2`      | `2.0 - 2.3` |                              |
-| `2.3`            | `2.4`       | Support of Appium Client 8.x |
+| `2.0 - 2.2`      | `2.0 - 2.3` |                                      |
+| `2.3`            | `2.4`       | Support of Appium Client 8.5.1/8.6.0 |
+| `2.4`            | `>=2.6`     | (not released)                       |
 
+Important notes:
+* Please check the matrix at https://github.com/appium/java-client?tab=readme-ov-file#compatibility-matrix if Appium Java Client matches to Selenium version
+* Please check the Testerra releaes at https://github.com/telekom/testerra/releases which Selenium vesion is used
 
 ### Usage
 
