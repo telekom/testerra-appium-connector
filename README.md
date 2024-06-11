@@ -50,7 +50,7 @@ Gradle:
 implementation 'io.testerra:appium:2.3'
 // Used Testerra version
 implementation 'io.testerra:driver-ui:2.4'
-implementation 'io.appium:java-client:8.5.1'
+implementation 'io.appium:java-client:8.6.0'
 ```
 
 Maven:
@@ -71,7 +71,7 @@ Maven:
 <dependency>
     <groupId>io.appium</groupId>
     <artifactId>java-client</artifactId>
-    <version>8.5.1</version>
+    <version>8.6.0</version>
     <!-- Needed for correct Testerra logging -->
     <exclusions>
         <exclusion>
@@ -92,15 +92,15 @@ This module is deployed and published to Maven Central. All JAR files are signed
 
 The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-| Property                      | Description                                         |
-| ----------------------------- | --------------------------------------------------- |
-| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
-| `deployUrl`                   | Maven repository URL                                |
-| `deployUsername`              | Maven repository username                           |
-| `deployPassword`              | Maven repository password                           |
-| `signing.keyId`               | GPG private key ID (short form)                     |
-| `signing.password`            | GPG private key password                            |
-| `signing.secretKeyRingFile`   | Path to GPG private key                             |
+| Property                    | Description                                         |
+|-----------------------------|-----------------------------------------------------|
+| `moduleVersion`             | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                 | Maven repository URL                                |
+| `deployUsername`            | Maven repository username                           |
+| `deployPassword`            | Maven repository password                           |
+| `signing.keyId`             | GPG private key ID (short form)                     |
+| `signing.password`          | GPG private key password                            |
+| `signing.secretKeyRingFile` | Path to GPG private key                             |
 
 If all properties are set, call the following to build, deploy and release this module:
 ```shell
