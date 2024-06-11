@@ -21,9 +21,10 @@
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
 import eu.tsystems.mms.tic.testframework.common.Testerra;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
 import eu.tsystems.mms.tic.testframework.pageobjects.DefaultUiElementHighlighter;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
-import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 
@@ -41,8 +42,9 @@ public class AppiumUiElementHighlighter extends DefaultUiElementHighlighter {
         IExecutionContextController instance = Testerra.getInjector().getInstance(IExecutionContextController.class);
         instance.getCurrentSessionContext().ifPresent(sessionContext -> {
             // Highlighting is only working in browsers but not in apps
-            String browser = sessionContext.getWebDriverRequest().getBrowser();
-            if (StringUtils.isNotEmpty(browser)) {
+            MobileOsChecker mobileOsChecker = new MobileOsChecker();
+            Platform platform = mobileOsChecker.getPlatform(driver);
+            if (!mobileOsChecker.isAppTest(sessionContext.getWebDriverRequest(), platform)) {
                 super.highlight(driver, webElement, color);
             }
         });
