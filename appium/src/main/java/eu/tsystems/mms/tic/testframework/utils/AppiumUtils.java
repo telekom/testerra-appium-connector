@@ -25,15 +25,22 @@ import com.google.common.collect.Lists;
 import eu.tsystems.mms.tic.testframework.appium.AppiumContext;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.remote.SupportsContextSwitching;
 import io.appium.java_client.remote.SupportsRotation;
+import org.openqa.selenium.Dimension;
 import org.openqa.selenium.Platform;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 
+import java.time.Duration;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -67,16 +74,34 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         });
     }
 
+    public void swipe(UiElement uiElement, Point offset) {
+        AppiumDriver appiumDriver = this.getAppiumDriver(uiElement.getWebDriver());
+        uiElement.findWebElement(webElement -> {
+            Point sourceLocation = webElement.getLocation();
+            Dimension sourceSize = webElement.getSize();
+            int centerX = sourceLocation.getX() + sourceSize.getWidth() / 2;
+            int centerY = sourceLocation.getY() + sourceSize.getHeight() / 2;
+            int endX = centerX + offset.getX();
+            int endY = centerY + offset.getY();
+
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+            org.openqa.selenium.interactions.Sequence swipe = new Sequence(finger, 0);
+
+            swipe.addAction(finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), centerX, centerY));
+            swipe.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+            swipe.addAction(finger.createPointerMove(Duration.ofMillis(600), PointerInput.Origin.viewport(), endX, endY));
+            swipe.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+            appiumDriver.perform(List.of(swipe));
+        });
+    }
+
     /**
      * Switch the Appium Context if available
      */
     public void switchContext(WebDriver driver, AppiumContext desiredContext) {
-        Optional<AppiumDriver> appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class);
-        if (appiumDriver.isEmpty()) {
-            throw new RuntimeException("Current Webdriver is not an Appium driver.");
-        }
+        AppiumDriver appiumDriver = this.getAppiumDriver(driver);
 
-        SupportsContextSwitching contextSwitchingDriver = (SupportsContextSwitching) appiumDriver.get();
+        SupportsContextSwitching contextSwitchingDriver = (SupportsContextSwitching) appiumDriver;
 
         String currentContext = contextSwitchingDriver.getContext();
         AppiumContext parsedInitialContext = AppiumContext.parse(currentContext);
@@ -100,6 +125,11 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
                     throw new RuntimeException(String.format("Cannot switch in %s, because it does not exist. (%s)", desiredContext, contextHandles));
                 });
 
+    }
+
+    public AppiumDriver getAppiumDriver(WebDriver webDriver) {
+        return WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
+                .orElseThrow(() -> new RuntimeException("Current Webdriver is not an Appium driver."));
     }
 
 }

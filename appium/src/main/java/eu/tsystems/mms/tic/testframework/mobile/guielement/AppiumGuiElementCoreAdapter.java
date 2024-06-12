@@ -29,6 +29,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDr
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
 import org.apache.commons.lang3.NotImplementedException;
@@ -113,11 +114,9 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 //        });
 //    }
 
-    // TODO: Migrate to W3C actions
     @Override
     public void swipe(int offsetX, int offsetY) {
-        throw new NotImplementedException("Implement me with W3C actions");
-//        this.findWebElement(webElement -> {
+        new AppiumUtils().swipe(this.guiElementData.getGuiElement(), new Point(offsetX, offsetY));
 //            TouchAction touchAction = new TouchAction(appiumDriver);
 //
 //            final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(webElement));
@@ -127,7 +126,6 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 //            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
 //            touchAction.release();
 //            touchAction.perform();
-//        });
     }
 
     @Override
