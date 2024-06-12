@@ -73,7 +73,6 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             finalRequest = new AppiumDriverRequest();
             finalRequest.setSessionKey(webDriverRequest.getSessionKey());
             finalRequest.setBrowser(webDriverRequest.getBrowser());
-//            finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
         }
 
         MutableCapabilities requestCapabilities = finalRequest.getMutableCapabilities();
@@ -107,7 +106,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                 log().info("No mobile browser requested.");
         }
 
-        // Any additional defined desired capabilities are merged into browser options
+        // Any additional defined desired capabilities are merged into base options
         baseOptions = baseOptions.merge(finalRequest.getDesiredCapabilities());
         baseOptions = baseOptions.merge(finalRequest.getMutableCapabilities());
         finalRequest.setCapabilities(baseOptions);
@@ -132,12 +131,6 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) webDriverRequest;
         Capabilities requestCapabilities = appiumDriverRequest.getCapabilities();
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
-//        DesiredCapabilities finalCapabilities = new DesiredCapabilities(requestCapabilities);
-
-//        IExecutionContextController executionContextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
-//        DefaultCapabilityUtils utils = new DefaultCapabilityUtils();
-
-//        utils.putIfAbsent(requestCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
         Platform mobilePlatform = new MobileOsChecker().getPlatform(webDriverRequest);
@@ -156,7 +149,6 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             sessionContext.setActualBrowserName(appiumDeviceQuery.getBrowserName());
         } else {
             throw new RuntimeException("Cannot create new Appium session - ambiguous capabilities found:\n " + requestCapabilities.toString());
-//            throw new RuntimeException("Mobile Browser not supported: " + webDriverRequest.getBrowser());
         }
         return appiumDriver;
     }
