@@ -31,22 +31,18 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementDat
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.PerformsTouchActions;
-import io.appium.java_client.TouchAction;
-import io.appium.java_client.touch.LongPressOptions;
-import io.appium.java_client.touch.TapOptions;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.ElementOption;
-import io.appium.java_client.touch.offset.PointOption;
 import org.apache.commons.lang3.NotImplementedException;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Pause;
 import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -78,24 +74,32 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 
     @Override
     public void hover() {
-
         // Caused by: org.openqa.selenium.WebDriverException: Not Implemented (Method 'mouseMoveTo' is not implemented)
-        throw new MobileActionNotSupportedException("hover() is not supported on mobile element.s");
+        throw new MobileActionNotSupportedException("hover() is not supported on mobile elements.");
     }
 
-    // TODO: Migrate to W3C actions
-//    @Override
-//    public void contextClick() {
-//        this.findWebElement(webElement -> {
-//            final ElementOption elementOption = new ElementOption().withElement(webElement);
-//            // new
-////            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
-//            final TouchAction action = new TouchAction(appiumDriver);
-//
-//            action.longPress(new LongPressOptions().withElement(elementOption));
-//            action.perform();
-//        });
-//    }
+    @Override
+    public void contextClick() {
+        this.findWebElement(webElement -> {
+            Point sourceLocation = webElement.getLocation();
+            Dimension sourceSize = webElement.getSize();
+            int centerX = sourceLocation.getX() + sourceSize.getWidth() / 2;
+            int centerY = sourceLocation.getY() + sourceSize.getHeight() / 2;
+
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+            Sequence tap = new Sequence(finger, 1);
+            tap.addAction(finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), centerX, centerY));
+            tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+
+            // Default in iOS: 500ms
+            // https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_uikit_gestures/handling_long-press_gestures
+            // Default in Android: 1_000ms
+            // https://developer.android.com/develop/ui/views/touch-and-input/input-events
+            tap.addAction(new Pause(finger, Duration.ofMillis(1_000)));
+            tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+            this.appiumDriver.perform(List.of(tap));
+        });
+    }
 
     // TODO: Migrate to W3C actions
 //    @Override
