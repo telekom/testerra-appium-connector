@@ -41,7 +41,6 @@ import org.openqa.selenium.interactions.Sequence;
 import java.time.Duration;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Optional;
 import java.util.Set;
 
 /**
@@ -51,11 +50,32 @@ import java.util.Set;
  */
 public class AppiumUtils implements WebDriverManagerProvider, Loggable {
 
+    public enum Swipe {
+        LEFT,
+        RIGHT,
+        UP,
+        DOWN;
+    }
+
+    /**
+     * Run a shell command, especially at Android devices
+     *
+     * @param driver
+     * @param command
+     * @param args
+     * @return
+     */
     public String runCommand(WebDriver driver, String command, String... args) {
         log().info("Shell command (native): {}, {}", command, Arrays.toString(args)); // ImmutableList does NOT work here...
         return String.valueOf(JSUtils.executeScript(driver, "mobile: shell", ImmutableMap.of("command", command, "args", Lists.newArrayList(args))));
     }
 
+    /**
+     * Helper method to start a native app from iOS system. To start installed custom apps use the default way with AppiumDriverRequest
+     *
+     * @param driver Current webdriver instance
+     * @param bundleId Bundle ID of native app
+     */
     public void launchIOSApp(WebDriver driver, String bundleId) {
         log().info("Start application '{}'", bundleId);
         MobileOsChecker checker = new MobileOsChecker();
@@ -74,8 +94,12 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         });
     }
 
+    /**
+     * Perform a swipe action, start point is an element and end point is calculated based on the offset.
+     */
     public void swipe(UiElement uiElement, Point offset) {
         AppiumDriver appiumDriver = this.getAppiumDriver(uiElement.getWebDriver());
+
         uiElement.findWebElement(webElement -> {
             Point sourceLocation = webElement.getLocation();
             Dimension sourceSize = webElement.getSize();
@@ -84,15 +108,73 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
             int endX = centerX + offset.getX();
             int endY = centerY + offset.getY();
 
-            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
-            org.openqa.selenium.interactions.Sequence swipe = new Sequence(finger, 0);
-
-            swipe.addAction(finger.createPointerMove(Duration.ZERO, PointerInput.Origin.viewport(), centerX, centerY));
-            swipe.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
-            swipe.addAction(finger.createPointerMove(Duration.ofMillis(600), PointerInput.Origin.viewport(), endX, endY));
-            swipe.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
-            appiumDriver.perform(List.of(swipe));
+            this.swipeAction(appiumDriver, Duration.ofMillis(500), centerX, centerY, endX, endY);
         });
+    }
+
+    /**
+     * Perform a swipe action, start point is the center of an element. Possible directions are
+     * Swipe.LEFT, Swipe.RIGHT, Swipe.UP and Swipe.DOWN.
+     */
+    public void swipe(UiElement startElement, Swipe direction) {
+        startElement.findWebElement(webElement -> {
+            Point sourceLocation = webElement.getLocation();
+            Dimension sourceSize = webElement.getSize();
+            int startX = sourceLocation.getX() + sourceSize.getWidth() / 2;
+            int startY = sourceLocation.getY() + sourceSize.getHeight() / 2;
+
+            this.swipeAction(startElement.getWebDriver(), startX, startY, direction);
+        });
+    }
+
+    /**
+     * Perform a swipe action. Start point is the center of the screen. Possible directions are
+     * Swipe.LEFT, Swipe.RIGHT, Swipe.UP and Swipe.DOWN.
+     */
+    public void swipe(WebDriver driver, Swipe direction) {
+        Dimension screenDim = driver.manage().window().getSize();
+        int startX = screenDim.getWidth() / 2;
+        int startY = screenDim.getHeight() / 2;
+        this.swipeAction(driver, startX, startY, direction);
+    }
+
+    private void swipeAction(WebDriver driver, int startX, int startY, Swipe direction) {
+        AppiumDriver appiumDriver = this.getAppiumDriver(driver);
+        final Duration intensity = Duration.ofMillis(500);
+        // Length of swipe action according screen resolution
+        final double screenMultiplier = 0.4;
+
+        Dimension screenDim = appiumDriver.manage().window().getSize();
+        final int diffX = (int) (screenDim.getWidth() * screenMultiplier);
+        final int diffY = (int) (screenDim.getHeight() * screenMultiplier);
+
+        int endX = startX;
+        int endY = startY;
+        switch (direction) {
+            case LEFT:
+                endX = Math.max(startX - diffX, 1);
+                break;
+            case RIGHT:
+                endX = Math.max(startX + diffX, screenDim.getWidth() - 1);
+                break;
+            case UP:
+                endY = Math.max(startY - diffY, 1);
+                break;
+            case DOWN:
+                endY = Math.max(startY + diffY, screenDim.getHeight() - 1);
+        }
+
+        this.swipeAction(appiumDriver, intensity, startX, startY, endX, endY);
+    }
+
+    private void swipeAction(AppiumDriver driver, Duration intensity, int startX, int startY, int endX, int endY) {
+        PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+        Sequence swipe = new Sequence(finger, 1);
+        swipe.addAction(finger.createPointerMove(intensity, PointerInput.Origin.viewport(), startX, startY));
+        swipe.addAction(finger.createPointerDown(0));
+        swipe.addAction(finger.createPointerMove(intensity, PointerInput.Origin.viewport(), endX, endY));
+        swipe.addAction(finger.createPointerUp(0));
+        driver.perform(List.of(swipe));
     }
 
     /**
@@ -127,6 +209,9 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
 
     }
 
+    /**
+     * Unwrap the current WebDriver instance and returns a native AppiumDriver instance.
+     */
     public AppiumDriver getAppiumDriver(WebDriver webDriver) {
         return WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
                 .orElseThrow(() -> new RuntimeException("Current Webdriver is not an Appium driver."));

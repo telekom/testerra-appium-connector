@@ -117,15 +117,6 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     @Override
     public void swipe(int offsetX, int offsetY) {
         new AppiumUtils().swipe(this.guiElementData.getGuiElement(), new Point(offsetX, offsetY));
-//            TouchAction touchAction = new TouchAction(appiumDriver);
-//
-//            final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(webElement));
-//            touchAction.tap(tapOption);
-//            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-//            touchAction.moveTo(new PointOption().withCoordinates(offsetX, offsetY));
-//            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-//            touchAction.release();
-//            touchAction.perform();
     }
 
     @Override
