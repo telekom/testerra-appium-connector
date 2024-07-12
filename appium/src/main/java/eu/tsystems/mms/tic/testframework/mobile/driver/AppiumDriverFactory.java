@@ -31,7 +31,6 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementDat
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
-import eu.tsystems.mms.tic.testframework.utils.DefaultCapabilityUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
@@ -41,10 +40,13 @@ import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.remote.MobileBrowserType;
+import io.appium.java_client.remote.options.BaseOptions;
 import org.apache.commons.lang3.StringUtils;
+import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.events.EventFiringWebDriver;
 
 import java.net.URL;
@@ -71,24 +73,23 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             finalRequest = new AppiumDriverRequest();
             finalRequest.setSessionKey(webDriverRequest.getSessionKey());
             finalRequest.setBrowser(webDriverRequest.getBrowser());
-            finalRequest.setBrowserVersion(webDriverRequest.getBrowserVersion());
         }
 
-        DesiredCapabilities requestCapabilities = finalRequest.getDesiredCapabilities();
+        MutableCapabilities requestCapabilities = finalRequest.getMutableCapabilities();
+        BaseOptions baseOptions = new BaseOptions<>();
 
-        // general caps
         IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
-        requestCapabilities.setCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
+        baseOptions.setCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
 
         if (requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY) == null
                 || StringUtils.isBlank(requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY).toString())) {
             switch (webDriverRequest.getBrowser()) {
                 case Browsers.mobile_safari: {
-                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_IOS.asString());
+                    baseOptions.setCapability(AppiumDriverRequest.DEVICE_QUERY, AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_IOS.asString());
                     break;
                 }
                 case Browsers.mobile_chrome: {
-                    finalRequest.setDeviceQuery(AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString());
+                    baseOptions.setCapability(AppiumDriverRequest.DEVICE_QUERY, AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString());
                     break;
                 }
             }
@@ -96,14 +97,19 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
         switch (webDriverRequest.getBrowser()) {
             case Browsers.mobile_chrome:
-                requestCapabilities.setBrowserName(MobileBrowserType.CHROME);
+                baseOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.CHROME);
                 break;
             case Browsers.mobile_safari:
-                requestCapabilities.setBrowserName(MobileBrowserType.SAFARI);
+                baseOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.SAFARI);
                 break;
             default:
                 log().info("No mobile browser requested.");
         }
+
+        // Any additional defined desired capabilities are merged into base options
+        baseOptions = baseOptions.merge(finalRequest.getDesiredCapabilities());
+        baseOptions = baseOptions.merge(finalRequest.getMutableCapabilities());
+        finalRequest.setCapabilities(baseOptions);
 
         return finalRequest;
     }
@@ -123,44 +129,26 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
 
     private WebDriver startNewAppiumSession(WebDriverRequest webDriverRequest, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) webDriverRequest;
-        DesiredCapabilities requestCapabilities = appiumDriverRequest.getDesiredCapabilities();
+        Capabilities requestCapabilities = appiumDriverRequest.getCapabilities();
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
-        DesiredCapabilities finalCapabilities = new DesiredCapabilities(requestCapabilities);
-
-        IExecutionContextController executionContextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
-        DefaultCapabilityUtils utils = new DefaultCapabilityUtils();
-        // TODO: Move to prepareWebDriverRequest
-        utils.putIfAbsent(finalCapabilities, AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContextController.getExecutionContext().getRunConfig().getReportName());
 
         AppiumDriver appiumDriver = null;
         Platform mobilePlatform = new MobileOsChecker().getPlatform(webDriverRequest);
         switch (mobilePlatform) {
             case IOS:
-                appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
+                appiumDriver = new IOSDriver(appiumUrl, requestCapabilities);
                 break;
             case ANDROID:
-                appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
+                appiumDriver = new AndroidDriver(appiumUrl, requestCapabilities);
                 break;
         }
 
-//        switch (webDriverRequest.getBrowser()) {
-//            case Browsers.mobile_safari: {
-//                finalCapabilities.setBrowserName(MobileBrowserType.SAFARI);
-//                appiumDriver = new IOSDriver<>(appiumUrl, finalCapabilities);
-//                break;
-//            }
-//            case Browsers.mobile_chrome: {
-//                finalCapabilities.setBrowserName(MobileBrowserType.CHROME);
-//                appiumDriver = new AndroidDriver<>(appiumUrl, finalCapabilities);
-//                break;
-//            }
-//        }
         if (appiumDriver != null) {
             AppiumDeviceQuery appiumDeviceQuery = new AppiumDeviceQuery(appiumDriver.getCapabilities());
-            sessionContext.setActualBrowserName(appiumDeviceQuery.toString());
+            sessionContext.setUserAgent(appiumDeviceQuery.toString());
+            sessionContext.setActualBrowserName(appiumDeviceQuery.getBrowserName());
         } else {
-            throw new RuntimeException("Cannot create new Appium session - ambiguous capabilities found:\n " + finalCapabilities.toString());
-//            throw new RuntimeException("Mobile Browser not supported: " + webDriverRequest.getBrowser());
+            throw new RuntimeException("Cannot create new Appium session - ambiguous capabilities found:\n " + requestCapabilities.toString());
         }
         return appiumDriver;
     }
@@ -174,7 +162,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
                 .ifPresent(driver -> driverString.set(driver.getClass().toString()));
 
         // In case of app automation it es not possible to call a URL
-        if (StringUtils.isNotBlank(appiumDriverRequest.getDesiredCapabilities().getBrowserName())) {
+        if (StringUtils.isNotBlank(appiumDriverRequest.getBrowser())) {
             appiumDriverRequest.getBaseUrl().ifPresent(url -> {
                 log().info("Open {} on {}", url, driverString.get());
                 webDriver.get(url.toString());

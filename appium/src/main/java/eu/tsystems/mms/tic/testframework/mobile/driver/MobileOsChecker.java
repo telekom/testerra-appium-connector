@@ -20,6 +20,7 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
@@ -28,10 +29,10 @@ import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.IOSMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
+import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
-import java.util.Map;
 import java.util.Optional;
 
 /**
@@ -39,27 +40,15 @@ import java.util.Optional;
  *
  * @author mgn
  */
-public class MobileOsChecker {
+public class MobileOsChecker implements AppiumCapabilityHelper {
 
     public Platform getPlatform(WebDriverRequest webDriverRequest) {
-        Map<String, Object> capabilities = webDriverRequest.getCapabilities();
-        if (webDriverRequest.getBrowser().equals(Browsers.mobile_chrome)
-                || "Espresso".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UiAutomator2".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UiAutomator".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_PACKAGE)
-                || capabilities.containsKey(AndroidMobileCapabilityType.APP_ACTIVITY)
-        ) {
+        if (Browsers.mobile_chrome.equals(webDriverRequest.getBrowser()) || isAppTest(webDriverRequest, Platform.ANDROID)) {
             return Platform.ANDROID;
         }
-        if (webDriverRequest.getBrowser().equals(Browsers.mobile_safari)
-                || "XCUITest".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || "UIAutomation".equals(capabilities.get(MobileCapabilityType.AUTOMATION_NAME))
-                || capabilities.containsKey(IOSMobileCapabilityType.BUNDLE_ID)
-        ) {
+        if (Browsers.mobile_safari.equals(webDriverRequest.getBrowser()) || isAppTest(webDriverRequest, Platform.IOS)) {
             return Platform.IOS;
         }
-
         return Platform.ANY;
     }
 
@@ -70,6 +59,25 @@ public class MobileOsChecker {
             return getPlatform(optional.get());
         } else {
             return Platform.ANY;
+        }
+    }
+
+    // Returns true if WebDriverRequest contains typical app capabilities
+    public boolean isAppTest(WebDriverRequest webDriverRequest, Platform platform) {
+        Capabilities capabilities = webDriverRequest.getCapabilities();
+        switch (platform) {
+            case ANDROID:
+                return "Espresso".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
+                        || "UiAutomator2".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
+                        || "UiAutomator".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
+                        || capabilities.getCapability(getAppiumCap(AndroidMobileCapabilityType.APP_PACKAGE)) != null
+                        || capabilities.getCapability(getAppiumCap(AndroidMobileCapabilityType.APP_ACTIVITY)) != null;
+            case IOS:
+                return "XCUITest".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
+                        || "UIAutomation".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
+                        || capabilities.getCapability(getAppiumCap(IOSMobileCapabilityType.BUNDLE_ID)) != null;
+            default:
+                return false;
         }
     }
 

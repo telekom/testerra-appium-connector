@@ -29,21 +29,21 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDr
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
-import io.appium.java_client.TouchAction;
-import io.appium.java_client.touch.LongPressOptions;
-import io.appium.java_client.touch.TapOptions;
-import io.appium.java_client.touch.WaitOptions;
-import io.appium.java_client.touch.offset.ElementOption;
-import io.appium.java_client.touch.offset.PointOption;
+import org.apache.commons.lang3.NotImplementedException;
+import org.openqa.selenium.Dimension;
+import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
+import org.openqa.selenium.interactions.Pause;
+import org.openqa.selenium.interactions.PointerInput;
+import org.openqa.selenium.interactions.Sequence;
 
 import java.time.Duration;
+import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.function.Function;
-import java.util.function.Supplier;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -75,46 +75,48 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 
     @Override
     public void hover() {
-
         // Caused by: org.openqa.selenium.WebDriverException: Not Implemented (Method 'mouseMoveTo' is not implemented)
-        throw new MobileActionNotSupportedException("hover() is not supported on mobile element.s");
+        throw new MobileActionNotSupportedException("hover() is not supported on mobile elements.");
     }
 
     @Override
     public void contextClick() {
         this.findWebElement(webElement -> {
-            final ElementOption elementOption = new ElementOption().withElement(webElement);
-            final TouchAction action = new TouchAction<>(appiumDriver);
+            Point sourceLocation = webElement.getLocation();
+            Dimension sourceSize = webElement.getSize();
+            int centerX = sourceLocation.getX() + sourceSize.getWidth() / 2;
+            int centerY = sourceLocation.getY() + sourceSize.getHeight() / 2;
 
-            action.longPress(new LongPressOptions().withElement(elementOption));
-            action.perform();
+            PointerInput finger = new PointerInput(PointerInput.Kind.TOUCH, "finger");
+            Sequence tap = new Sequence(finger, 1);
+            tap.addAction(finger.createPointerMove(Duration.ofMillis(0), PointerInput.Origin.viewport(), centerX, centerY));
+            tap.addAction(finger.createPointerDown(PointerInput.MouseButton.LEFT.asArg()));
+
+            // Default in iOS: 500ms
+            // https://developer.apple.com/documentation/uikit/touches_presses_and_gestures/handling_uikit_gestures/handling_long-press_gestures
+            // Default in Android: 1_000ms
+            // https://developer.android.com/develop/ui/views/touch-and-input/input-events
+            tap.addAction(new Pause(finger, Duration.ofMillis(1_000)));
+            tap.addAction(finger.createPointerUp(PointerInput.MouseButton.LEFT.asArg()));
+            this.appiumDriver.perform(List.of(tap));
         });
     }
 
-    @Override
-    public void doubleClick() {
-        this.findWebElement(webElement -> {
-            final ElementOption elementOption = new ElementOption().withElement(webElement);
-            final TouchAction action = new TouchAction<>(appiumDriver);
-
-            final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
-            action.tap(tapOptions).perform();
-        });
-    }
+    // TODO: Migrate to W3C actions
+//    @Override
+//    public void doubleClick() {
+//        this.findWebElement(webElement -> {
+//            final ElementOption elementOption = new ElementOption().withElement(webElement);
+//            final TouchAction action = new TouchAction<>(appiumDriver);
+//
+//            final TapOptions tapOptions = new TapOptions().withTapsCount(2).withElement(elementOption);
+//            action.tap(tapOptions).perform();
+//        });
+//    }
 
     @Override
     public void swipe(int offsetX, int offsetY) {
-        this.findWebElement(webElement -> {
-            TouchAction touchAction = new TouchAction(appiumDriver);
-
-            final TapOptions tapOption = new TapOptions().withElement(new ElementOption().withElement(webElement));
-            touchAction.tap(tapOption);
-            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-            touchAction.moveTo(new PointOption().withCoordinates(offsetX, offsetY));
-            touchAction.waitAction(new WaitOptions().withDuration(Duration.ofMillis(1500)));
-            touchAction.release();
-            touchAction.perform();
-        });
+        new AppiumUtils().swipe(this.guiElementData.getGuiElement(), new Point(offsetX, offsetY));
     }
 
     @Override

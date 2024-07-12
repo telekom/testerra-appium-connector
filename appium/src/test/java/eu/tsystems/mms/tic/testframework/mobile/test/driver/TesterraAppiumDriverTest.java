@@ -27,11 +27,11 @@ import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
-import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
@@ -48,28 +48,25 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
 
     @Test
     public void testT01_startDefaultSession() {
+        AppiumDriverRequest request = new AppiumDriverRequest();
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
+        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver(request);
 
-        final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
-        WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).ifPresent(appiumDriver -> {
-            appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
-        });
+        new AppiumUtils().rotate(driver, ScreenOrientation.LANDSCAPE);
+
         driver.get("https://the-internet.herokuapp.com/dropdown");
+        UITestUtils.takeScreenshots();
     }
 
     @Test
     public void testT02_startMultipleSessions() {
 
         final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
-        AppiumDriver appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).get();
-
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        new AppiumUtils().rotate(driver, ScreenOrientation.LANDSCAPE);
         driver.get("https://the-internet.herokuapp.com/dropdown");
 
         final WebDriver driver2 = WEB_DRIVER_MANAGER.getWebDriver("second");
-        AppiumDriver appiumDriver2 = WEB_DRIVER_MANAGER.unwrapWebDriver(driver2, AppiumDriver.class).get();
-
-        appiumDriver2.rotate(ScreenOrientation.PORTRAIT);
-        driver2.get("https://the-internet.herokuapp.com/checkboxes");
+        new AppiumUtils().rotate(driver2, ScreenOrientation.PORTRAIT);
 
         Assert.assertNotEquals(driver, driver2, "Driver equals");
     }
@@ -80,6 +77,7 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
         final String device = "Apple iPhone X";
         request.setBrowser(Browsers.mobile_safari);
         request.setDeviceQuery(String.format("contains(@name, '%s')", device));
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
 
         final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver(request);
 
@@ -103,15 +101,13 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
     public void testT05_takeScreenshot() {
 
         final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
-        AppiumDriver appiumDriver = WEB_DRIVER_MANAGER.unwrapWebDriver(driver, AppiumDriver.class).get();
-
         driver.get("https://the-internet.herokuapp.com/");
 
-        appiumDriver.rotate(ScreenOrientation.LANDSCAPE);
+        new AppiumUtils().rotate(driver, ScreenOrientation.LANDSCAPE);
         final Screenshot screenshotLandScape = UITestUtils.takeScreenshot(driver, true);
         Assert.assertNotNull(screenshotLandScape, "Screenshot created.");
 
-        appiumDriver.rotate(ScreenOrientation.PORTRAIT);
+        new AppiumUtils().rotate(driver, ScreenOrientation.PORTRAIT);
         final Screenshot screenshotPortrait = UITestUtils.takeScreenshot(driver, true);
         Assert.assertNotNull(screenshotPortrait, "Screenshot created.");
     }

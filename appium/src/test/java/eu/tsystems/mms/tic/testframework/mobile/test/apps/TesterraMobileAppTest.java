@@ -47,12 +47,13 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
     @Test
     public void testT01AndroidApp() {
         AppiumDriverRequest request = new AppiumDriverRequest();
+        request.setBrowser("mobile");
         request.setDeviceQuery("contains(@name, 'Galaxy S20')");
-        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
 
-        request.getDesiredCapabilities().setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
-        request.getDesiredCapabilities().setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");
-        request.getDesiredCapabilities().setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".HomeActivity");
+        request.getMutableCapabilities().setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
+        request.getMutableCapabilities().setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");
+        request.getMutableCapabilities().setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".HomeActivity");
         request.setAppiumEngine("UiAutomator2");
 
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);

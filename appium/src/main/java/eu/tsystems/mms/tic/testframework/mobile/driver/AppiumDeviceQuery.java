@@ -45,7 +45,8 @@ public class AppiumDeviceQuery {
     }
 
     public AppiumDeviceQuery(Capabilities capabilities) {
-        this.setOs((String) capabilities.getCapability("platformName"));
+        this.setOs(capabilities.getPlatformName().toString());
+//        this.setOs((String) capabilities.getCapability("platformName"));
         this.setVersion((String) capabilities.getCapability("platformVersion"));
         this.setManufacture((String) capabilities.getCapability("deviceManufacture"));
         this.setModel((String) capabilities.getCapability("deviceModel"));

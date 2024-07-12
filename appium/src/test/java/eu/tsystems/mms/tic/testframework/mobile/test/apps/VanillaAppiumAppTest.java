@@ -24,7 +24,6 @@ import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.android.AndroidElement;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.remote.DesiredCapabilities;
@@ -43,7 +42,7 @@ import java.net.URL;
  */
 public class VanillaAppiumAppTest extends AbstractAppiumTest {
 
-    protected AndroidDriver<AndroidElement> driver = null;
+    protected AndroidDriver driver = null;
 
     @BeforeMethod
     public void setUp() throws MalformedURLException {
@@ -61,7 +60,7 @@ public class VanillaAppiumAppTest extends AbstractAppiumTest {
         dc.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UIAutomator2");
         URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
         //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
-        driver = new AndroidDriver<>(url, dc);
+        driver = new AndroidDriver(url, dc);
     }
 
     @Test

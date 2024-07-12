@@ -20,6 +20,7 @@
  */
 package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
+import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.internal.NameableChild;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
@@ -47,7 +48,10 @@ import java.util.Optional;
  *
  * @author mgn
  */
-public class CreateAppiumGuiElementAction extends AbstractFieldAction implements UiElementFinderFactoryProvider, Loggable {
+public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
+        UiElementFinderFactoryProvider,
+        Loggable,
+        AppiumCapabilityHelper {
 
     public CreateAppiumGuiElementAction(Field field, AbstractPage declaringPage) {
         super(field, declaringPage);
@@ -100,9 +104,9 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
         IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
-            String automationEngine = optional.get().getCapabilities().get(MobileCapabilityType.AUTOMATION_NAME).toString();
-            if (StringUtils.isNotBlank(automationEngine)) {
-                return automationEngine;
+            Object automationEngine = optional.get().getCapabilities().getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME));
+            if (automationEngine != null && StringUtils.isNotBlank(automationEngine.toString())) {
+                return automationEngine.toString();
             } else {
                 // Use default values for automation engine
                 switch (platform) {

@@ -26,6 +26,10 @@ import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
+import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumUiElementHighlighter;
+import eu.tsystems.mms.tic.testframework.mobile.pageobject.AppiumPageFactory;
+import eu.tsystems.mms.tic.testframework.pageobjects.UiElementHighlighter;
+import eu.tsystems.mms.tic.testframework.pageobjects.internal.PageFactory;
 import eu.tsystems.mms.tic.testframework.utils.AppiumExecutionUtils;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
@@ -46,5 +50,9 @@ public class DriverUi_Appium extends AbstractModule {
         webDriverFactoryBinder.addBinding().to(AppiumDriverFactory.class).in(Scopes.SINGLETON);
         webDriverFactoryBinder.addBinding().to(WinAppDriverFactory.class).in(Scopes.SINGLETON);
         bind(ExecutionUtils.class).to(AppiumExecutionUtils.class).in(Scopes.SINGLETON);
+        // Support for device specific pages
+        bind(PageFactory.class).to(AppiumPageFactory.class).in(Scopes.SINGLETON);
+        // Prevent error while trying element highlighting in apps
+        bind(UiElementHighlighter.class).to(AppiumUiElementHighlighter.class).in(Scopes.SINGLETON);
     }
 }

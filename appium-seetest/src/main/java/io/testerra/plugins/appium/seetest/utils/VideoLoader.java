@@ -28,7 +28,6 @@ import eu.tsystems.mms.tic.testframework.report.model.context.Video;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.Sequence;
 import io.testerra.plugins.appium.seetest.request.VideoRequest;
-import org.apache.http.HttpStatus;
 
 import java.io.File;
 import java.io.IOException;
@@ -81,7 +80,7 @@ public class VideoLoader implements Loggable {
                         .header("Authorization", "Bearer " + AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString())
                         .build();
                 HttpResponse<Path> httpResponse = client.send(request, HttpResponse.BodyHandlers.ofFile(videoFile.toPath()));
-                if (httpResponse.statusCode() != HttpStatus.SC_OK) {
+                if (httpResponse.statusCode() != 200) {
                     log().info("Download status code: {}", httpResponse.statusCode());
                     log().info("Wait for video is ready for download...");
                 } else {

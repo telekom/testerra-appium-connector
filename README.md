@@ -28,10 +28,16 @@ It will register with Testerra Hooking system and uses the event bus to react on
 
 ### Requirements
 
-| Appium connector | Testerra    |
-|------------------|-------------|
-| `>=1.1`          | `>=1.3`     |
-| `2.0 - 2.2`      | `2.0 - 2.3` |
+| Appium connector | Testerra    | Notes                                | 
+|------------------|-------------|--------------------------------------|
+| `>=1.1`          | `>=1.3`     | 
+| `2.0 - 2.2`      | `2.0 - 2.3` |                                      |
+| `2.3`            | `2.4`       | Support of Appium Client 8.5.1/8.6.0 |
+| `2.4`            | `>=2.6`     | (not released)                       |
+
+Important notes:
+* Please check the matrix at https://github.com/appium/java-client?tab=readme-ov-file#compatibility-matrix if Appium Java Client matches to Selenium version
+* Please check the Testerra releaes at https://github.com/telekom/testerra/releases which Selenium vesion is used
 
 ### Usage
 
@@ -41,10 +47,10 @@ Gradle:
 
 ```groovy
 // Version from this module
-implementation 'io.testerra:appium:2.2'
+implementation 'io.testerra:appium:2.3'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2.2'
-implementation 'io.appium:java-client:7.3.0'
+implementation 'io.testerra:driver-ui:2.4'
+implementation 'io.appium:java-client:8.6.0'
 ```
 
 Maven:
@@ -54,18 +60,18 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2.2</version>
+    <version>2.3</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.2</version>
+    <version>2.4</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
     <artifactId>java-client</artifactId>
-    <version>7.3.0</version>
+    <version>8.6.0</version>
     <!-- Needed for correct Testerra logging -->
     <exclusions>
         <exclusion>
@@ -86,15 +92,15 @@ This module is deployed and published to Maven Central. All JAR files are signed
 
 The following properties have to be set via command line or ``~/.gradle/gradle.properties``
 
-| Property                      | Description                                         |
-| ----------------------------- | --------------------------------------------------- |
-| `moduleVersion`               | Version of deployed module, default is `1-SNAPSHOT` |
-| `deployUrl`                   | Maven repository URL                                |
-| `deployUsername`              | Maven repository username                           |
-| `deployPassword`              | Maven repository password                           |
-| `signing.keyId`               | GPG private key ID (short form)                     |
-| `signing.password`            | GPG private key password                            |
-| `signing.secretKeyRingFile`   | Path to GPG private key                             |
+| Property                    | Description                                         |
+|-----------------------------|-----------------------------------------------------|
+| `moduleVersion`             | Version of deployed module, default is `1-SNAPSHOT` |
+| `deployUrl`                 | Maven repository URL                                |
+| `deployUsername`            | Maven repository username                           |
+| `deployPassword`            | Maven repository password                           |
+| `signing.keyId`             | GPG private key ID (short form)                     |
+| `signing.password`          | GPG private key password                            |
+| `signing.secretKeyRingFile` | Path to GPG private key                             |
 
 If all properties are set, call the following to build, deploy and release this module:
 ```shell

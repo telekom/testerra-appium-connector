@@ -19,7 +19,7 @@
  * under the License.
  *
  */
-package eu.tsystems.mms.tic.testerra.plugins.appium.seetest;
+package io.testerra.plugins.appium.seetest.ioc;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
