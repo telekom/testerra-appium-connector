@@ -131,7 +131,7 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
             int startX = sourceLocation.getX() + sourceSize.getWidth() / 2;
             int startY = sourceLocation.getY() + sourceSize.getHeight() / 2;
             Point startPoint = new Point(startX, startY);
-            // TODO: change
+
             this.swipeAction(startElement.getWebDriver(), direction, startPoint);
         });
     }
