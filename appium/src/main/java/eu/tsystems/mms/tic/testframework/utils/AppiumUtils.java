@@ -57,13 +57,18 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         DOWN;
     }
 
-    // Relative positions to the screen dimension of standard swipe actions
+    // Relative start and end positions to the screen dimension of standard swipe actions
     // for example scroll down:
-    // - 0.2 * screenHeight -> start y
-    // - 0.8 * screenHeight -> end y
-    // - x is center of screen
+    //      - 0.2 * screenHeight -> start y (SCREEN_SWIPE_START)
+    //      - 0.5 * screenHeight -> end y (SCREEN_MULTIPLIER)
+    //      - x is center of screen
+    // for example scroll left:
+    //      - 0.8 * screenWidth -> start x (SCREEN_SWIPE_END)
+    //      - 0.5 * screenWidth -> end x (SCREEN_MULTIPLIER)
+    //      - y is center of screen
     private static final double SCREEN_SWIPE_START = 0.2;
     private static final double SCREEN_SWIPE_END = 0.8;
+    private static final double SCREEN_MULTIPLIER = 0.5;
 
     /**
      * Run a shell command, especially at Android devices
@@ -152,13 +157,11 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         AppiumDriver appiumDriver = this.getAppiumDriver(driver);
         final Duration intensity = Duration.ofMillis(500);
         // Length of swipe action according screen resolution
-        final double screenMultiplier = 0.5;
+
 
         Dimension screenDim = appiumDriver.manage().window().getSize();
-//        final int centerX = screenDim.getWidth() / 2;
-//        final int centerY = screenDim.getHeight() / 2;
-        final int diffX = (int) (screenDim.getWidth() * screenMultiplier);
-        final int diffY = (int) (screenDim.getHeight() * screenMultiplier);
+        final int diffX = (int) (screenDim.getWidth() * SCREEN_MULTIPLIER);
+        final int diffY = (int) (screenDim.getHeight() * SCREEN_MULTIPLIER);
 
         int startX = startPoint.getX();
         int startY = startPoint.getY();
