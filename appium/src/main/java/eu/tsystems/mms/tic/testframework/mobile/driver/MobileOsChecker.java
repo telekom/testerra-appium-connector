@@ -24,12 +24,11 @@ import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.IOSMobileCapabilityType;
-import io.appium.java_client.remote.MobileCapabilityType;
 import org.openqa.selenium.Capabilities;
+import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
@@ -65,17 +64,29 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
     // Returns true if WebDriverRequest contains typical app capabilities
     public boolean isAppTest(WebDriverRequest webDriverRequest, Platform platform) {
         Capabilities capabilities = webDriverRequest.getCapabilities();
+        MutableCapabilities mutableCapabilities = ((AbstractWebDriverRequest) webDriverRequest).getMutableCapabilities();
+
         switch (platform) {
             case ANDROID:
-                return "Espresso".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
-                        || "UiAutomator2".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
-                        || "UiAutomator".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
-                        || capabilities.getCapability(getAppiumCap(AndroidMobileCapabilityType.APP_PACKAGE)) != null
-                        || capabilities.getCapability(getAppiumCap(AndroidMobileCapabilityType.APP_ACTIVITY)) != null;
+                // should be instance of UiAutomator2Options --> platform already set
+                return "Espresso".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                        || "UiAutomator2".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                        || "UiAutomator".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                        || getCap(capabilities, APPIUM_APP_PACKAGE) != null
+                        || getCap(capabilities, APPIUM_APP_ACTIVITY) != null
+                        || "Espresso".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
+                        || "UiAutomator2".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
+                        || "UiAutomator".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
+                        || getCap(mutableCapabilities, APPIUM_APP_PACKAGE) != null
+                        || getCap(mutableCapabilities, APPIUM_APP_ACTIVITY) != null;
             case IOS:
-                return "XCUITest".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
-                        || "UIAutomation".equals(capabilities.getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)))
-                        || capabilities.getCapability(getAppiumCap(IOSMobileCapabilityType.BUNDLE_ID)) != null;
+                // should be instance of XCUITestOptions --> platform already set
+                return "XCUITest".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                        || "UIAutomation".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                        || getCap(capabilities, APPIUM_BUNDLE_ID) != null
+                        || "XCUITest".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
+                        || "UIAutomation".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
+                        || getCap(mutableCapabilities, APPIUM_BUNDLE_ID) != null;
             default:
                 return false;
         }

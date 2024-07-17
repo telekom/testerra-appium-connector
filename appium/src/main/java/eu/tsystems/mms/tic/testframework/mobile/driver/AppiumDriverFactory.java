@@ -22,8 +22,11 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.driver;
 
+import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
+import eu.tsystems.mms.tic.testframework.internal.metrics.MetricsController;
+import eu.tsystems.mms.tic.testframework.internal.metrics.MetricsType;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumGuiElementCoreAdapter;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
@@ -34,11 +37,15 @@ import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.EventLoggingDriverListener;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.VisualEventDriverListener;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.android.options.UiAutomator2Options;
 import io.appium.java_client.ios.IOSDriver;
+import io.appium.java_client.ios.options.XCUITestOptions;
 import io.appium.java_client.remote.MobileBrowserType;
 import io.appium.java_client.remote.options.BaseOptions;
 import org.apache.commons.lang3.StringUtils;
@@ -47,7 +54,8 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.remote.CapabilityType;
-import org.openqa.selenium.support.events.EventFiringWebDriver;
+import org.openqa.selenium.support.events.EventFiringDecorator;
+import org.testng.TestException;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -61,7 +69,7 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverFactory implements WebDriverFactory, Loggable {
+public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCapabilityHelper {
 
     @Override
     public WebDriverRequest prepareWebDriverRequest(WebDriverRequest webDriverRequest) {
@@ -76,40 +84,80 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         }
 
         MutableCapabilities requestCapabilities = finalRequest.getMutableCapabilities();
-        BaseOptions baseOptions = new BaseOptions<>();
-
         IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
-        baseOptions.setCapability(AppiumDriverRequest.CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
 
-        if (requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY) == null
-                || StringUtils.isBlank(requestCapabilities.getCapability(AppiumDriverRequest.DEVICE_QUERY).toString())) {
-            switch (webDriverRequest.getBrowser()) {
-                case Browsers.mobile_safari: {
-                    baseOptions.setCapability(AppiumDriverRequest.DEVICE_QUERY, AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_IOS.asString());
-                    break;
+        Platform platform = new MobileOsChecker().getPlatform(webDriverRequest);
+        Capabilities userAgentCapabilities = null;
+
+        // Configure mobile options
+        switch (platform) {
+
+            case ANDROID: {
+                UiAutomator2Options androidOptions = new UiAutomator2Options();
+                if (Browsers.mobile_chrome.equals(webDriverRequest.getBrowser())) {
+                    androidOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.CHROME);
                 }
-                case Browsers.mobile_chrome: {
-                    baseOptions.setCapability(AppiumDriverRequest.DEVICE_QUERY, AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString());
-                    break;
+                userAgentCapabilities = androidOptions;
+                break;
+            }
+
+            case IOS: {
+                XCUITestOptions iosOptions = new XCUITestOptions();
+                if (Browsers.mobile_safari.equals(webDriverRequest.getBrowser())) {
+                    iosOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.SAFARI);
                 }
+                userAgentCapabilities = iosOptions;
+                break;
+            }
+
+            default:
+                throw new TestException("Cannot find platform for your webdriver request.");
+        }
+
+        BaseOptions otherOptions = new BaseOptions<>();
+
+        if (finalRequest.getDeviceQuery() == null || StringUtils.isEmpty(finalRequest.getDeviceQuery())) {
+            switch (platform) {
+                case ANDROID:
+                    final String androidQuery = AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_ANDROID.asString();
+                    if (StringUtils.isNotEmpty(androidQuery)) {
+                        otherOptions.setCapability(APPIUM_DEVICE_QUERY, androidQuery);
+                    }
+                    break;
+                case IOS:
+                    final String iosQuery = AppiumProperties.MOBILE_APPIUM_DEVICE_QUERY_IOS.asString();
+                    if (StringUtils.isNotEmpty(iosQuery)) {
+                        otherOptions.setCapability(APPIUM_DEVICE_QUERY, iosQuery);
+                    }
+                    break;
             }
         }
 
-        switch (webDriverRequest.getBrowser()) {
-            case Browsers.mobile_chrome:
-                baseOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.CHROME);
-                break;
-            case Browsers.mobile_safari:
-                baseOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.SAFARI);
-                break;
-            default:
-                log().info("No mobile browser requested.");
-        }
+        otherOptions.setCapability(APPIUM_CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
+
+        // TODO: Handle app capabilities from test.properties
+//                // case iOS
+//                XCUITestOptions iosAppOptions = new XCUITestOptions();
+//                iosAppOptions.setApp("");
+//                iosAppOptions.setBundleId("");
+//                // case Android
+//                UiAutomator2Options androidAppOptions = new UiAutomator2Options();
+//                androidAppOptions.setApp("");
+//                androidAppOptions.setAppPackage("");
+//                androidAppOptions.setAppActivity("");
+//
 
         // Any additional defined desired capabilities are merged into base options
-        baseOptions = baseOptions.merge(finalRequest.getDesiredCapabilities());
-        baseOptions = baseOptions.merge(finalRequest.getMutableCapabilities());
-        finalRequest.setCapabilities(baseOptions);
+        userAgentCapabilities = userAgentCapabilities.merge(otherOptions);
+
+        userAgentCapabilities = userAgentCapabilities.merge(finalRequest.getDesiredCapabilities());
+        userAgentCapabilities = userAgentCapabilities.merge(finalRequest.getMutableCapabilities());
+
+        if (finalRequest.getCapabilities() != null) {
+            finalRequest.setCapabilities(finalRequest.getCapabilities().merge(userAgentCapabilities));
+        } else {
+            finalRequest.setCapabilities(userAgentCapabilities);
+        }
 
         return finalRequest;
     }
@@ -120,7 +168,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
             return startNewAppiumSession(webDriverRequest, sessionContext);
         } catch (Exception e) {
             // In case of an exception there is a second retry
-            int ms = Testerra.Properties.WEBDRIVER_TIMEOUT_SECONDS_RETRY.asLong().intValue() * 1000;
+            int ms = Testerra.Properties.SELENIUM_WEBDRIVER_CREATE_RETRY.asLong().intValue() * 1000;
             log().error("Error starting WebDriver. Trying again in {} seconds", (ms / 1000), e);
             TimerUtils.sleep(ms);
             return startNewAppiumSession(webDriverRequest, sessionContext);
@@ -133,7 +181,10 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
         URL appiumUrl = appiumDriverRequest.getServerUrl().get();
 
         AppiumDriver appiumDriver = null;
-        Platform mobilePlatform = new MobileOsChecker().getPlatform(webDriverRequest);
+        Platform mobilePlatform = requestCapabilities.getCapability(CapabilityType.PLATFORM_NAME) != null ?
+                Platform.extractFromSysProperty(requestCapabilities.getCapability(CapabilityType.PLATFORM_NAME).toString())
+                : new MobileOsChecker().getPlatform(webDriverRequest);
+
         switch (mobilePlatform) {
             case IOS:
                 appiumDriver = new IOSDriver(appiumUrl, requestCapabilities);
@@ -154,20 +205,36 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable {
     }
 
     @Override
-    public void setupNewWebDriverSession(EventFiringWebDriver webDriver, SessionContext sessionContext) {
+    public WebDriver setupNewWebDriverSession(WebDriver webDriver, SessionContext sessionContext) {
         AppiumDriverRequest appiumDriverRequest = (AppiumDriverRequest) sessionContext.getWebDriverRequest();
         AtomicReference<String> driverString = new AtomicReference<>("AppiumDriver");
         Testerra.getInjector().getInstance(IWebDriverManager.class)
                 .unwrapWebDriver(webDriver, AppiumDriver.class)
                 .ifPresent(driver -> driverString.set(driver.getClass().toString()));
 
+        VisualEventDriverListener visualListener = new VisualEventDriverListener();
+        WebDriver decoratedDriver = new EventFiringDecorator(
+                new EventLoggingDriverListener(),
+                visualListener
+        ).decorate(webDriver);
+
         // In case of app automation it es not possible to call a URL
         if (StringUtils.isNotBlank(appiumDriverRequest.getBrowser())) {
-            appiumDriverRequest.getBaseUrl().ifPresent(url -> {
-                log().info("Open {} on {}", url, driverString.get());
-                webDriver.get(url.toString());
+            appiumDriverRequest.getBaseUrl().ifPresent(baseUrl -> {
+                try {
+                    log().info("Open {} on {}", baseUrl, driverString.get());
+                    sessionContext.setBaseUrl(baseUrl.toString());
+                    MetricsController metricsController = Testerra.getInjector().getInstance(MetricsController.class);
+                    metricsController.start(sessionContext, MetricsType.BASEURL_LOAD);
+                    decoratedDriver.get(baseUrl.toString());
+                    metricsController.stop(sessionContext, MetricsType.BASEURL_LOAD);
+                } catch (Exception e) {
+                    log().error("Unable to open baseUrl", e);
+                }
             });
         }
+
+        return decoratedDriver;
     }
 
     @Override

@@ -24,9 +24,7 @@ import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import io.appium.java_client.android.AndroidDriver;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.MobileCapabilityType;
-import org.openqa.selenium.remote.DesiredCapabilities;
+import io.appium.java_client.android.options.UiAutomator2Options;
 import org.testng.Assert;
 import org.testng.annotations.AfterMethod;
 import org.testng.annotations.BeforeMethod;
@@ -49,18 +47,18 @@ public class VanillaAppiumAppTest extends AbstractAppiumTest {
         final String accessKey = AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString();
         Assert.assertNotNull(accessKey, "No access key loaded");
 
-        DesiredCapabilities dc = new DesiredCapabilities();
-        dc.setCapability("testName", "Demo Tests");
-        dc.setCapability("accessKey", accessKey);
-        dc.setCapability("deviceQuery", "contains(@name, 'Galaxy S20') and @version='13.0'");
-        dc.setCapability("appiumVersion", "1.22.3");
-        dc.setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
-        dc.setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");
-        dc.setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".HomeActivity");
-        dc.setCapability(MobileCapabilityType.AUTOMATION_NAME, "UIAutomator2");
         URL url = new URL(AppiumProperties.MOBILE_GRID_URL.asString());
-        //        driver = new IOSDriver<>(new URL(PropertyManager.getProperty("tt.mobile.grid.url")), dc);
-        driver = new AndroidDriver(url, dc);
+
+        UiAutomator2Options options = new UiAutomator2Options();
+        options.setCapability("testName", "Demo Tests");
+        options.setCapability("accessKey", accessKey);
+        options.setCapability("deviceQuery", "contains(@name, 'Galaxy S20') and @version='13.0'");
+        options.setCapability("appiumVersion", "2.2.2");
+
+        options.setApp("cloud:com.telekom.mms.cqa.mdc.androidapp/.HomeActivity");
+        options.setAppPackage("com.telekom.mms.cqa.mdc.androidapp");
+        options.setAppActivity(".HomeActivity");
+        driver = new AndroidDriver(url, options);
     }
 
     @Test

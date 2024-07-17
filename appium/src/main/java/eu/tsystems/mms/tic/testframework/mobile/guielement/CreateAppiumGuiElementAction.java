@@ -34,7 +34,6 @@ import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
 import io.appium.java_client.pagefactory.DefaultElementByBuilder;
-import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
@@ -101,10 +100,12 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
     }
 
     private String getAutomationEngine(WebDriver driver, Platform platform) {
+        // TODO: Use platform specific options for iOS and Android --> automationName is part of it, see also AppiumDriverFactory
+
         IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
-            Object automationEngine = optional.get().getCapabilities().getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME));
+            Object automationEngine = optional.get().getCapabilities().getCapability(getAppiumCap("automationName"));
             if (automationEngine != null && StringUtils.isNotBlank(automationEngine.toString())) {
                 return automationEngine.toString();
             } else {
