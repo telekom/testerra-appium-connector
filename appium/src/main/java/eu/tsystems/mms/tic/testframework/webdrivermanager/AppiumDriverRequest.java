@@ -60,7 +60,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     public String getDeviceQuery() {
-        return this.getMutableCapabilities().getCapability(APPIUM_DEVICE_QUERY).toString();
+        return (String) this.getMutableCapabilities().getCapability(APPIUM_DEVICE_QUERY);
     }
 
     public void setAccessKey(String accessKey) {
@@ -72,7 +72,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     public String getAppiumEngine() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_AUTOMATION_NAME)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_AUTOMATION_NAME));
     }
 
     public void setDeviceName(String deviceName) {
@@ -80,7 +80,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     public String getDeviceName() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_DEVICE_NAME)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_DEVICE_NAME));
     }
 
     public void setPlatformVersion(String platformVersion) {
@@ -88,7 +88,7 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     public String getPlatformVersion() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_PLATFORM_VERSION)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_PLATFORM_VERSION));
     }
 
     public void setDeviceId(String id) {
@@ -96,6 +96,6 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     public String getDeviceId() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_UDID)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_UDID));
     }
 }

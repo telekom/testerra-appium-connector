@@ -33,6 +33,7 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCor
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementData;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
@@ -48,11 +49,12 @@ import io.appium.java_client.ios.IOSDriver;
 import io.appium.java_client.ios.options.XCUITestOptions;
 import io.appium.java_client.remote.MobileBrowserType;
 import io.appium.java_client.remote.options.BaseOptions;
+import io.appium.java_client.safari.options.SafariOptions;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.Capabilities;
-import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
+import org.openqa.selenium.chrome.ChromeOptions;
 import org.openqa.selenium.remote.CapabilityType;
 import org.openqa.selenium.support.events.EventFiringDecorator;
 import org.testng.TestException;
@@ -69,7 +71,11 @@ import java.util.concurrent.atomic.AtomicReference;
  *
  * @author Eric Kubenka
  */
-public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCapabilityHelper {
+public class AppiumDriverFactory implements
+        WebDriverFactory,
+        Loggable,
+        AppiumCapabilityHelper,
+        WebDriverManagerProvider {
 
     @Override
     public WebDriverRequest prepareWebDriverRequest(WebDriverRequest webDriverRequest) {
@@ -83,9 +89,6 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCa
             finalRequest.setBrowser(webDriverRequest.getBrowser());
         }
 
-        MutableCapabilities requestCapabilities = finalRequest.getMutableCapabilities();
-        IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
-
         Platform platform = new MobileOsChecker().getPlatform(webDriverRequest);
         Capabilities userAgentCapabilities = null;
 
@@ -96,7 +99,15 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCa
                 UiAutomator2Options androidOptions = new UiAutomator2Options();
                 if (Browsers.mobile_chrome.equals(webDriverRequest.getBrowser())) {
                     androidOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.CHROME);
+                    ChromeOptions chromeOptions = new ChromeOptions();
+                    WEB_DRIVER_MANAGER.getUserAgentConfig(Browsers.mobile_chrome)
+                            .ifPresent(userAgentConfig -> userAgentConfig.configure(chromeOptions));
+                    androidOptions = androidOptions.merge(chromeOptions);
                 }
+                UiAutomator2Options customAndroidOptions = new UiAutomator2Options();
+                WEB_DRIVER_MANAGER.getUserAgentConfig(Browsers.android)
+                        .ifPresent(userAgentConfig -> userAgentConfig.configure(customAndroidOptions));
+                androidOptions = androidOptions.merge(customAndroidOptions);
                 userAgentCapabilities = androidOptions;
                 break;
             }
@@ -105,7 +116,16 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCa
                 XCUITestOptions iosOptions = new XCUITestOptions();
                 if (Browsers.mobile_safari.equals(webDriverRequest.getBrowser())) {
                     iosOptions.setCapability(CapabilityType.BROWSER_NAME, MobileBrowserType.SAFARI);
+                    SafariOptions safariOptions = new SafariOptions();
+
+                    WEB_DRIVER_MANAGER.getUserAgentConfig(Browsers.mobile_safari)
+                            .ifPresent(userAgentConfig -> userAgentConfig.configure(safariOptions));
+                    iosOptions = iosOptions.merge(safariOptions);
                 }
+                XCUITestOptions customIosOptions = new XCUITestOptions();
+                WEB_DRIVER_MANAGER.getUserAgentConfig(Browsers.ios)
+                        .ifPresent(userAgentConfig -> userAgentConfig.configure(customIosOptions));
+                iosOptions = iosOptions.merge(customIosOptions);
                 userAgentCapabilities = iosOptions;
                 break;
             }
@@ -133,6 +153,7 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCa
             }
         }
 
+        IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
         otherOptions.setCapability(APPIUM_CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
 
         // TODO: Handle app capabilities from test.properties
@@ -239,7 +260,13 @@ public class AppiumDriverFactory implements WebDriverFactory, Loggable, AppiumCa
 
     @Override
     public List<String> getSupportedBrowsers() {
-        return Arrays.asList(Browsers.mobile_chrome, Browsers.mobile_safari, Browsers.mobile);
+        return Arrays.asList(
+                Browsers.mobile_chrome,
+                Browsers.mobile_safari,
+                Browsers.mobile,
+                Browsers.android,
+                Browsers.ios
+        );
     }
 
     @Override

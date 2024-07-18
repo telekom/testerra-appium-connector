@@ -61,15 +61,22 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
         }
     }
 
-    // Returns true if WebDriverRequest contains typical app capabilities
+    /**
+     * Returns true if WebDriverRequest contains typical app capabilities.
+     *
+     * The method checks all possible caps and there values to find out the platform.
+     */
     public boolean isAppTest(WebDriverRequest webDriverRequest, Platform platform) {
         Capabilities capabilities = webDriverRequest.getCapabilities();
         MutableCapabilities mutableCapabilities = ((AbstractWebDriverRequest) webDriverRequest).getMutableCapabilities();
 
         switch (platform) {
             case ANDROID:
-                // should be instance of UiAutomator2Options --> platform already set
-                return "Espresso".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                return capabilities.getPlatformName() == Platform.ANDROID // if instance of UiAutomator2Options --> platform already set
+                        || mutableCapabilities.getPlatformName() == Platform.ANDROID
+                        || webDriverRequest.getBrowser().equalsIgnoreCase(Browsers.android)
+                        || capabilities.getBrowserName().equalsIgnoreCase(Browsers.android)
+                        || "Espresso".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || "UiAutomator2".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || "UiAutomator".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(capabilities, APPIUM_APP_PACKAGE) != null
@@ -80,8 +87,11 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
                         || getCap(mutableCapabilities, APPIUM_APP_PACKAGE) != null
                         || getCap(mutableCapabilities, APPIUM_APP_ACTIVITY) != null;
             case IOS:
-                // should be instance of XCUITestOptions --> platform already set
-                return "XCUITest".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
+                return capabilities.getPlatformName() == Platform.IOS // if instance of XCUITestOptions --> platform already set
+                        || mutableCapabilities.getPlatformName() == Platform.IOS
+                        || webDriverRequest.getBrowser().equalsIgnoreCase(Browsers.ios)
+                        || capabilities.getBrowserName().equalsIgnoreCase(Browsers.ios)
+                        || "XCUITest".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || "UIAutomation".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(capabilities, APPIUM_BUNDLE_ID) != null
                         || "XCUITest".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
