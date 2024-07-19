@@ -238,6 +238,7 @@ public class AppiumDriverFactory implements
                 new EventLoggingDriverListener(),
                 visualListener
         ).decorate(webDriver);
+        visualListener.driver = decoratedDriver;    // Needed to interact with current session
 
         // In case of app automation it es not possible to call a URL
         if (StringUtils.isNotBlank(appiumDriverRequest.getBrowser())) {
