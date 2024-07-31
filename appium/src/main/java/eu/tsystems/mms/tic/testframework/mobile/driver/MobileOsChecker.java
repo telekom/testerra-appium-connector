@@ -78,12 +78,10 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
                         || capabilities.getBrowserName().equalsIgnoreCase(Browsers.android)
                         || "Espresso".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || "UiAutomator2".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
-                        || "UiAutomator".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(capabilities, APPIUM_APP_PACKAGE) != null
                         || getCap(capabilities, APPIUM_APP_ACTIVITY) != null
                         || "Espresso".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
                         || "UiAutomator2".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
-                        || "UiAutomator".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(mutableCapabilities, APPIUM_APP_PACKAGE) != null
                         || getCap(mutableCapabilities, APPIUM_APP_ACTIVITY) != null;
             case IOS:
@@ -92,10 +90,8 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
                         || webDriverRequest.getBrowser().equalsIgnoreCase(Browsers.ios)
                         || capabilities.getBrowserName().equalsIgnoreCase(Browsers.ios)
                         || "XCUITest".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
-                        || "UIAutomation".equalsIgnoreCase(getCap(capabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(capabilities, APPIUM_BUNDLE_ID) != null
                         || "XCUITest".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
-                        || "UIAutomation".equalsIgnoreCase(getCap(mutableCapabilities, APPIUM_AUTOMATION_NAME))
                         || getCap(mutableCapabilities, APPIUM_BUNDLE_ID) != null;
             default:
                 return false;
