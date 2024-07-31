@@ -70,9 +70,9 @@ Maven:
     <version>2.8</version>
 </dependency>
 <dependency>
-<groupId>io.testerra</groupId>
-<artifactId>report-ng</artifactId>
-<version>2.8</version>
+    <groupId>io.testerra</groupId>
+    <artifactId>report-ng</artifactId>
+    <version>2.8</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>

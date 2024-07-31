@@ -156,18 +156,6 @@ public class AppiumDriverFactory implements
         IExecutionContextController executionContext = Testerra.getInjector().getInstance(IExecutionContextController.class);
         otherOptions.setCapability(APPIUM_CAPABILITY_NAME_TEST_NAME, executionContext.getExecutionContext().getRunConfig().getReportName());
 
-        // TODO: Handle app capabilities from test.properties
-//                // case iOS
-//                XCUITestOptions iosAppOptions = new XCUITestOptions();
-//                iosAppOptions.setApp("");
-//                iosAppOptions.setBundleId("");
-//                // case Android
-//                UiAutomator2Options androidAppOptions = new UiAutomator2Options();
-//                androidAppOptions.setApp("");
-//                androidAppOptions.setAppPackage("");
-//                androidAppOptions.setAppActivity("");
-//
-
         // Any additional defined desired capabilities are merged into base options
         userAgentCapabilities = userAgentCapabilities.merge(otherOptions);
 
