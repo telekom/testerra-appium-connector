@@ -22,6 +22,7 @@
 
 package eu.tsystems.mms.tic.testframework.mobile.test;
 
+import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
@@ -38,6 +39,7 @@ import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 public class AbstractAppiumTest extends TesterraTest implements
         WebDriverManagerProvider,
         PageFactoryProvider,
-        Loggable {
+        Loggable,
+        AppiumCapabilityHelper {
 
 }

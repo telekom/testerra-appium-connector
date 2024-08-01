@@ -22,18 +22,18 @@ This module provides additional features for [Testerra Framework](https://github
 
 Appium connector uses the open source standard Appium to run web and app tests based on Testerra on mobile devices.
 
-It will register with Testerra Hooking system and uses the event bus to react on Testerra events.
+This connector fully supports the Mobile Device Cloud of Deutsche Telekom MMS GmbH to run automated tests on real mobile devices. More information can be found here: https://mobiledevice.cloud/.
 
 ## Setup
 
 ### Requirements
 
-| Appium connector | Testerra    | Notes                                | 
-|------------------|-------------|--------------------------------------|
-| `>=1.1`          | `>=1.3`     | 
-| `2.0 - 2.2`      | `2.0 - 2.3` |                                      |
-| `2.3`            | `2.4`       | Support of Appium Client 8.5.1/8.6.0 |
-| `2.4`            | `>=2.6`     | (not released)                       |
+| Appium connector | Testerra    | Notes                                     | 
+|------------------|-------------|-------------------------------------------|
+| `>=1.1`          | `>=1.3`     |                                           |
+| `2.0 - 2.2`      | `2.0 - 2.3` |                                           |
+| `2.3`            | `2.4`       | Supports Appium Client 8.5.1/8.6.0        |
+| `2.4`            | `>=2.6`     | Supports Appium Client 9.x (not released) |
 
 Important notes:
 * Please check the matrix at https://github.com/appium/java-client?tab=readme-ov-file#compatibility-matrix if Appium Java Client matches to Selenium version
@@ -47,10 +47,11 @@ Gradle:
 
 ```groovy
 // Version from this module
-implementation 'io.testerra:appium:2.3'
+implementation 'io.testerra:appium:2.4'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2.4'
-implementation 'io.appium:java-client:8.6.0'
+implementation 'io.testerra:driver-ui:2.8'
+implementation 'io.testerra:report-ng:2.8'
+implementation 'io.appium:java-client:9.2.3'
 ```
 
 Maven:
@@ -60,18 +61,23 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2.3</version>
+    <version>2.4</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.4</version>
+    <version>2.8</version>
+</dependency>
+<dependency>
+    <groupId>io.testerra</groupId>
+    <artifactId>report-ng</artifactId>
+    <version>2.8</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
     <artifactId>java-client</artifactId>
-    <version>8.6.0</version>
+    <version>9.2.3</version>
     <!-- Needed for correct Testerra logging -->
     <exclusions>
         <exclusion>

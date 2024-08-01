@@ -1,7 +1,7 @@
 /*
  * Testerra
  *
- * (C) 2021, Mike Reiche, T-Systems MMS GmbH, Deutsche Telekom AG
+ * (C) 2024, Martin Großmann, Deutsche Telekom MMS GmbH, Deutsche Telekom AG
  *
  * Deutsche Telekom AG and all other contributors /
  * copyright owners license this file to you under the Apache
@@ -17,22 +17,18 @@
  * KIND, either express or implied.  See the License for the
  * specific language governing permissions and limitations
  * under the License.
+ *
  */
+package eu.tsystems.mms.tic.testframework.mobile.driver;
 
-package eu.tsystems.mms.tic.testframework.appium;
+import eu.tsystems.mms.tic.testframework.useragents.UserAgentConfig;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.ios.options.XCUITestOptions;
 
 /**
- * A list ob supported browsers
+ * Created on 2024-07-18
+ *
+ * @author mgn
  */
-public class Browsers {
-    public static final String windows = "windows";
-    public static final String mobile_chrome = "mobile_chrome";
-    public static final String mobile_safari = "mobile_safari";
-
-    // Value for app tests
-    public static final String android = "android";
-    public static final String ios = "ios";
-
-    // Default value for AppiumDriverRequest
-    public static final String mobile = "mobile";
+public interface AndroidConfig extends UserAgentConfig<UiAutomator2Options> {
 }

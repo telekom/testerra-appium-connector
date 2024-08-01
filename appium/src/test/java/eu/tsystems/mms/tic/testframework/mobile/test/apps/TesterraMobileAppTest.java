@@ -29,13 +29,11 @@ import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.TimerUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
-import io.appium.java_client.remote.AndroidMobileCapabilityType;
-import io.appium.java_client.remote.MobileCapabilityType;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.ios.options.XCUITestOptions;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 import org.testng.annotations.Test;
-
-import java.net.MalformedURLException;
 
 /**
  * Created on 2023-02-07
@@ -45,27 +43,62 @@ import java.net.MalformedURLException;
 public class TesterraMobileAppTest extends AbstractAppiumTest {
 
     @Test
-    public void testT01AndroidApp() {
+    public void testT01AndroidAppWithOptions() {
         AppiumDriverRequest request = new AppiumDriverRequest();
-        request.setBrowser("mobile");
         request.setDeviceQuery("contains(@name, 'Galaxy S20')");
         request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
 
-        request.getMutableCapabilities().setCapability(MobileCapabilityType.APP, "cloud:eu.tsystems.mms.tic.mdc.app.android/.HomeActivity");
-        request.getMutableCapabilities().setCapability(AndroidMobileCapabilityType.APP_PACKAGE, "eu.tsystems.mms.tic.mdc.app.android");
-        request.getMutableCapabilities().setCapability(AndroidMobileCapabilityType.APP_ACTIVITY, ".HomeActivity");
+        // Always prefer usage of options
+        UiAutomator2Options options = new UiAutomator2Options();
+        options.setApp("cloud:com.telekom.mms.cqa.mdc.androidapp/.HomeActivity");
+        options.setAppPackage("com.telekom.mms.cqa.mdc.androidapp");
+        options.setAppActivity(".HomeActivity");
+        request.setCapabilities(options);
+
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
+        TimerUtils.sleep(4000);
+        UITestUtils.takeScreenshots();
+    }
+
+    @Test
+    public void testT02AndroidAppWithCaps() {
+        AppiumDriverRequest request = new AppiumDriverRequest();
+        request.setDeviceQuery("contains(@name, 'Galaxy S20')");
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
+
+        request.getMutableCapabilities().setCapability(APPIUM_APP, "cloud:com.telekom.mms.cqa.mdc.androidapp/.HomeActivity");
+        request.getMutableCapabilities().setCapability(APPIUM_APP_PACKAGE, "com.telekom.mms.cqa.mdc.androidapp");
+        request.getMutableCapabilities().setCapability(APPIUM_APP_ACTIVITY, ".HomeActivity");
         request.setAppiumEngine("UiAutomator2");
 
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
         TimerUtils.sleep(4000);
+        UITestUtils.takeScreenshots();
+    }
+
+    @Test
+    public void testT03IOSAppWithOptions() {
+        AppiumDriverRequest request = new AppiumDriverRequest();
+        request.setDeviceQuery("contains(@name, 'iPhone X')");
+        XCUITestOptions options = new XCUITestOptions();
+        options.setCapability("appiumVersion", "2.2.2");
+        options.setApp("cloud:com.telekom.mms.cqa.mdc.iosapp");
+        options.setBundleId("com.telekom.mms.cqa.mdc.iosapp");
+        request.setCapabilities(options);
+
+        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
+        TimerUtils.sleep(4000);
+        UITestUtils.takeScreenshots();
     }
 
     @Test
     public void testT10NativeIOSSettings() {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'iPhone X')");
-        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
-        request.setAppiumEngine("XCUITest");
+        XCUITestOptions options = new XCUITestOptions();
+        options.setCapability("appiumVersion", "2.2.2");
+        request.setCapabilities(options);
+
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
 
         WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
@@ -76,27 +109,10 @@ public class TesterraMobileAppTest extends AbstractAppiumTest {
     }
 
     @Test
-    public void testT12NativeAndWebAccessIOS() {
-        AppiumDriverRequest request = new AppiumDriverRequest();
-        request.setDeviceQuery("contains(@name, 'iPhone X')");
-        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
-        request.setAppiumEngine("XCUITest");
-        WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
-
-
-
-        WifiSettingsPage wifiSettingsPage = openWifiSettings(webDriver);
-        switchWiFi(wifiSettingsPage);
-
-
-        UITestUtils.takeScreenshots();
-    }
-
-    @Test
     public void testT11NativeAndroidSettings() {
         AppiumDriverRequest request = new AppiumDriverRequest();
         request.setDeviceQuery("contains(@name, 'Samsung Galaxy S20')");
-        request.getDesiredCapabilities().setCapability("appiumVersion", "1.22.3");
+        request.getMutableCapabilities().setCapability("appiumVersion", "2.2.2");
         request.setAppiumEngine("UiAutomator2");
         WebDriver webDriver = WEB_DRIVER_MANAGER.getWebDriver(request);
 

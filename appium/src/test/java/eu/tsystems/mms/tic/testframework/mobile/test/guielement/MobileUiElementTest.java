@@ -23,16 +23,22 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.guielement;
 
 import eu.tsystems.mms.tic.testframework.annotations.Fails;
+import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.mobile.driver.SafariMobileConfig;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.pageobjects.TestableUiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElementFinder;
+import eu.tsystems.mms.tic.testframework.report.model.steps.TestStep;
 import eu.tsystems.mms.tic.testframework.testing.AssertProvider;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
+import eu.tsystems.mms.tic.testframework.useragents.ChromeConfig;
+
 import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.support.ui.Select;
+import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Test;
 
 import java.util.List;
@@ -42,10 +48,21 @@ import java.util.List;
  */
 public class MobileUiElementTest extends AbstractAppiumTest implements UiElementFinderFactoryProvider, AssertProvider {
 
-    private final UiElementFinder finder = UI_ELEMENT_FINDER_FACTORY.create(WEB_DRIVER_MANAGER.getWebDriver());
+    @BeforeClass
+    public void initBrowser()  {
+        WEB_DRIVER_MANAGER.setUserAgentConfig(Browsers.mobile_chrome, (ChromeConfig) options -> {
+            options.setAcceptInsecureCerts(true);
+        });
+
+        WEB_DRIVER_MANAGER.setUserAgentConfig(Browsers.mobile_safari, (SafariMobileConfig) options -> {
+           options.acceptInsecureCerts();
+        });
+    }
 
     @Test
     public void testT01_isPresent() {
+        TestStep.begin("");
+
         final WebDriver driver = WEB_DRIVER_MANAGER.getWebDriver();
         driver.get("https://the-internet.herokuapp.com/login");
 
@@ -269,6 +286,7 @@ public class MobileUiElementTest extends AbstractAppiumTest implements UiElement
     // scroll into view
 
     private UiElement find(By by) {
+        UiElementFinder finder = UI_ELEMENT_FINDER_FACTORY.create(WEB_DRIVER_MANAGER.getWebDriver());
         return finder.find(by);
     }
 

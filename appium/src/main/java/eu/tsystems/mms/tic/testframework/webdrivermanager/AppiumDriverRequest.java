@@ -24,7 +24,6 @@ package eu.tsystems.mms.tic.testframework.webdrivermanager;
 import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
-import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.lang3.StringUtils;
 
 import java.net.MalformedURLException;
@@ -32,10 +31,6 @@ import java.net.URL;
 import java.util.Optional;
 
 public class AppiumDriverRequest extends SeleniumWebDriverRequest implements AppiumCapabilityHelper {
-
-    public static final String DEVICE_QUERY = "deviceQuery";
-    public static final String ACCESS_KEY = "accessKey";
-    public static final String CAPABILITY_NAME_TEST_NAME = "testName";
 
     public AppiumDriverRequest() {
         this.setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
@@ -60,43 +55,47 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
 
     public void setDeviceQuery(String deviceQuery) {
         if (StringUtils.isNotBlank(deviceQuery)) {
-            this.getMutableCapabilities().setCapability(DEVICE_QUERY, deviceQuery);
+            this.getMutableCapabilities().setCapability(APPIUM_DEVICE_QUERY, deviceQuery);
         }
     }
 
+    public String getDeviceQuery() {
+        return (String) this.getMutableCapabilities().getCapability(APPIUM_DEVICE_QUERY);
+    }
+
     public void setAccessKey(String accessKey) {
-        this.getMutableCapabilities().setCapability(ACCESS_KEY, accessKey);
+        this.getMutableCapabilities().setCapability(APPIUM_ACCESS_KEY, accessKey);
     }
 
     public void setAppiumEngine(String engine) {
-        this.getMutableCapabilities().setCapability(MobileCapabilityType.AUTOMATION_NAME, engine);
+        this.getMutableCapabilities().setCapability(APPIUM_AUTOMATION_NAME, engine);
     }
 
     public String getAppiumEngine() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_AUTOMATION_NAME));
     }
 
     public void setDeviceName(String deviceName) {
-        this.getMutableCapabilities().setCapability(MobileCapabilityType.DEVICE_NAME, deviceName);
+        this.getMutableCapabilities().setCapability(APPIUM_DEVICE_NAME, deviceName);
     }
 
     public String getDeviceName() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.DEVICE_NAME)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_DEVICE_NAME));
     }
 
     public void setPlatformVersion(String platformVersion) {
-        this.getMutableCapabilities().setCapability(MobileCapabilityType.PLATFORM_VERSION, platformVersion);
+        this.getMutableCapabilities().setCapability(APPIUM_PLATFORM_VERSION, platformVersion);
     }
 
     public String getPlatformVersion() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.PLATFORM_VERSION)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_PLATFORM_VERSION));
     }
 
     public void setDeviceId(String id) {
-        this.getMutableCapabilities().setCapability(MobileCapabilityType.UDID, id);
+        this.getMutableCapabilities().setCapability(APPIUM_UDID, id);
     }
 
     public String getDeviceId() {
-        return this.getMutableCapabilities().getCapability(getAppiumCap(MobileCapabilityType.UDID)).toString();
+        return (String) this.getMutableCapabilities().getCapability(getAppiumCap(APPIUM_UDID));
     }
 }
