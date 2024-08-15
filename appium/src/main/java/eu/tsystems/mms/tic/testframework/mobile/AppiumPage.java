@@ -45,7 +45,7 @@ public class AppiumPage extends Page {
 
     @Override
     protected Optional<List<AbstractFieldAction>> addCustomFieldActions(Field field, AbstractPage declaringPage) {
-        log().info("Custom field action");
+        log().debug("Custom field action for {}", field.getName());
         CreateAppiumGuiElementAction action = new CreateAppiumGuiElementAction(field, declaringPage);
         SetNameFieldAction nameFieldAction = new SetNameFieldAction(field, declaringPage);
         return Optional.of(List.of(action, nameFieldAction));
