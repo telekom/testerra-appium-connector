@@ -33,8 +33,9 @@ import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
+import io.appium.java_client.android.options.UiAutomator2Options;
+import io.appium.java_client.ios.options.XCUITestOptions;
 import io.appium.java_client.pagefactory.DefaultElementByBuilder;
-import io.appium.java_client.remote.MobileCapabilityType;
 import org.apache.commons.lang3.StringUtils;
 import org.openqa.selenium.By;
 import org.openqa.selenium.Platform;
@@ -83,13 +84,11 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
         By mobileBy = byBuilder.buildBy();
 
         try {
-
             UiElementFinder uiElementFinder = UI_ELEMENT_FINDER_FACTORY.create(this.declaringPage.getWebDriver());
             UiElement uiElement = uiElementFinder.find(mobileBy);
             if (uiElement instanceof NameableChild) {
                 ((NameableChild) uiElement).setParent(this.declaringPage);
             }
-
             field.set(this.declaringPage, uiElement);
         } catch (IllegalAccessException e) {
             throw new RuntimeException("Cannot create new " + mobilePlatform + " element", e);
@@ -104,16 +103,17 @@ public class CreateAppiumGuiElementAction extends AbstractFieldAction implements
         IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
-            Object automationEngine = optional.get().getCapabilities().getCapability(getAppiumCap(MobileCapabilityType.AUTOMATION_NAME));
+            Object automationEngine = optional.get().getCapabilities().getCapability(getAppiumCap(APPIUM_AUTOMATION_NAME));
             if (automationEngine != null && StringUtils.isNotBlank(automationEngine.toString())) {
                 return automationEngine.toString();
             } else {
-                // Use default values for automation engine
+                // Use default values for automation engine from option classes.
+                // getAutomationName() returns optional, but new created instances of options have always the correct value.
                 switch (platform) {
                     case ANDROID:
-                        return "UiAutomator2";
+                        return new UiAutomator2Options().getAutomationName().get();
                     case IOS:
-                        return "XCUITest";
+                        return new XCUITestOptions().getAutomationName().get();
                     default:
                         throw new RuntimeException("Cannot get automation engine: Invalid platform " + platform);
                 }
