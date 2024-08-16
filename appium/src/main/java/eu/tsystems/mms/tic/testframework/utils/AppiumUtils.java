@@ -60,15 +60,14 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
     // Relative start and end positions to the screen dimension of standard swipe actions
     // for example scroll down:
     //      - 0.2 * screenHeight -> start y (SCREEN_SWIPE_START)
-    //      - 0.5 * screenHeight -> end y (SCREEN_MULTIPLIER)
+    //      - 0.8 * screenHeight -> end y (SCREEN_SWIPE_END)
     //      - x is center of screen
     // for example scroll left:
     //      - 0.8 * screenWidth -> start x (SCREEN_SWIPE_END)
-    //      - 0.5 * screenWidth -> end x (SCREEN_MULTIPLIER)
+    //      - 0.2 * screenWidth -> end x (SCREEN_SWIPE_START)
     //      - y is center of screen
     private static final double SCREEN_SWIPE_START = 0.2;
     private static final double SCREEN_SWIPE_END = 0.8;
-    private static final double SCREEN_MULTIPLIER = 0.5;
 
     /**
      * Run a shell command, especially at Android devices
@@ -156,12 +155,8 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
     private void swipeAction(WebDriver driver, Swipe direction, Point startPoint) {
         AppiumDriver appiumDriver = this.getAppiumDriver(driver);
         final Duration intensity = Duration.ofMillis(500);
-        // Length of swipe action according screen resolution
-
 
         Dimension screenDim = appiumDriver.manage().window().getSize();
-        final int diffX = (int) (screenDim.getWidth() * SCREEN_MULTIPLIER);
-        final int diffY = (int) (screenDim.getHeight() * SCREEN_MULTIPLIER);
 
         int startX = startPoint.getX();
         int startY = startPoint.getY();
@@ -169,18 +164,24 @@ public class AppiumUtils implements WebDriverManagerProvider, Loggable {
         int endY = startY;
         switch (direction) {
             case LEFT:
+                // move finger from left to right
                 startX = (int) (screenDim.getWidth() * SCREEN_SWIPE_END);
                 endX = (int) (screenDim.getWidth() * SCREEN_SWIPE_START);
-//                endX = Math.max(startX - diffX, 1);
                 break;
             case RIGHT:
-                endX = Math.max(startX + diffX, screenDim.getWidth() - 1);
+                // move finger from right to left
+                startX = (int) (screenDim.getWidth() * SCREEN_SWIPE_START);
+                endX = (int) (screenDim.getWidth() * SCREEN_SWIPE_END);
                 break;
             case UP:
-                endY = Math.max(startY - diffY, 1);
+                // move finger from top to bottom
+                startY = (int) (screenDim.getHeight() * SCREEN_SWIPE_START);
+                endY = (int) (screenDim.getHeight() * SCREEN_SWIPE_END);
                 break;
             case DOWN:
-                endY = Math.max(startY + diffY, screenDim.getHeight() - 1);
+                // move finger from bottom to top
+                startY = (int) (screenDim.getHeight() * SCREEN_SWIPE_END);
+                endY = (int) (screenDim.getHeight() * SCREEN_SWIPE_START);
         }
 
         this.swipeAction(appiumDriver, intensity, startX, startY, endX, endY);
