@@ -113,6 +113,27 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
 //        });
 //    }
 
+    /**
+     * This is only a simple method without re-checks (see Testerra eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore.type()).
+     * <p>
+     * Android apps does not support 'webElement.getAttribute("value")', 'webElement.getText()' and 'webElement.getAttribute("value")' have always empty results at Chrome and Safari
+     */
+    @Override
+    public void type(String text) {
+        if (text == null) {
+            log().warn("Text to type is null. Typing nothing.");
+            return;
+        }
+        if (text.isEmpty()) {
+            log().warn("Text to type is empty!");
+        }
+
+        findWebElement(webElement -> {
+            webElement.clear();
+            webElement.sendKeys(text);
+        });
+    }
+
     @Override
     public void swipe(int offsetX, int offsetY) {
         new AppiumUtils().swipe(this.guiElementData.getGuiElement(), new Point(offsetX, offsetY));
