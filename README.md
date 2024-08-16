@@ -28,12 +28,12 @@ This connector fully supports the Mobile Device Cloud of Deutsche Telekom MMS Gm
 
 ### Requirements
 
-| Appium connector | Testerra    | Notes                                     | 
-|------------------|-------------|-------------------------------------------|
-| `>=1.1`          | `>=1.3`     |                                           |
-| `2.0 - 2.2`      | `2.0 - 2.3` |                                           |
-| `2.3`            | `2.4`       | Supports Appium Client 8.5.1/8.6.0        |
-| `2.4`            | `>=2.6`     | Supports Appium Client 9.x (not released) |
+| Appium connector | Testerra    | Notes                                   | 
+|------------------|-------------|-----------------------------------------|
+| `>=1.1`          | `>=1.3`     |                                         |
+| `2.0 - 2.2`      | `2.0 - 2.3` |                                         |
+| `2.3`            | `2.4`       | Supports Appium Client 8.5.1/8.6.0      |
+| `2.4`            | `>=2.6`     | Supports Appium Client 9.x              |
 
 Important notes:
 * Please check the matrix at https://github.com/appium/java-client?tab=readme-ov-file#compatibility-matrix if Appium Java Client matches to Selenium version
