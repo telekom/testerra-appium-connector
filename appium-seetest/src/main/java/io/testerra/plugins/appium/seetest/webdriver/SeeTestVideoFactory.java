@@ -32,6 +32,7 @@ import io.testerra.plugins.appium.seetest.utils.SeeTestClientHelper;
 import org.openqa.selenium.WebDriver;
 
 import java.net.URL;
+import java.util.Objects;
 import java.util.Optional;
 import java.util.function.Consumer;
 
@@ -65,7 +66,9 @@ public class SeeTestVideoFactory implements
                         + ".mp4";
 
                 String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
-                        .map(driver -> driver.getCapabilities().getCapability("reportTestId").toString())
+                        .map(driver -> driver.getCapabilities().getCapability("reportTestId"))
+                        .map(Objects::nonNull)
+                        .map(Object::toString)
                         .orElse("na");
 
                 final VideoRequest videoRequest = new VideoRequest(sessionContext.get(), fileName, reportTestId);
