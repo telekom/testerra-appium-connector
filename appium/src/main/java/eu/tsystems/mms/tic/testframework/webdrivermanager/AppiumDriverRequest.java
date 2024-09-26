@@ -32,6 +32,8 @@ import java.util.Optional;
 
 public class AppiumDriverRequest extends SeleniumWebDriverRequest implements AppiumCapabilityHelper {
 
+    private URL mobileServerUrl;
+
     public AppiumDriverRequest() {
         this.setAccessKey(AppiumProperties.MOBILE_GRID_ACCESS_KEY.asString());
 
@@ -42,15 +44,26 @@ public class AppiumDriverRequest extends SeleniumWebDriverRequest implements App
     }
 
     @Override
+    public void setServerUrl(String url) throws MalformedURLException {
+        mobileServerUrl = new URL(url);
+    }
+
+    @Override
+    public void setServerUrl(URL url) {
+        this.mobileServerUrl = url;
+    }
+
+    @Override
     public Optional<URL> getServerUrl() {
-        if (!super.getServerUrl().isPresent()) {
+        Optional<URL> serverUrl = Optional.ofNullable(this.mobileServerUrl);
+        if (serverUrl.isEmpty()) {
             try {
                 this.setServerUrl(AppiumProperties.MOBILE_GRID_URL.asString());
             } catch (MalformedURLException e) {
                 throw new RuntimeException("Unable to retrieve default Appium URL from properties", e);
             }
         }
-        return super.getServerUrl();
+        return Optional.ofNullable(this.mobileServerUrl);
     }
 
     public void setDeviceQuery(String deviceQuery) {
