@@ -67,7 +67,7 @@ public class SeeTestVideoFactory implements
 
                 String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
                         .map(driver -> driver.getCapabilities().getCapability("reportTestId"))
-                        .map(Objects::nonNull)
+                        .filter(Objects::nonNull)
                         .map(Object::toString)
                         .orElse("na");
 
