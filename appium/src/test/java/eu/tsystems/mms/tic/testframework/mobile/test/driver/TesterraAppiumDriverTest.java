@@ -23,20 +23,26 @@
 package eu.tsystems.mms.tic.testframework.mobile.test.driver;
 
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
+import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.mobile.test.AbstractAppiumTest;
 import eu.tsystems.mms.tic.testframework.report.model.context.Screenshot;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
+import eu.tsystems.mms.tic.testframework.utils.AppiumProperties;
 import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.JSUtils;
 import eu.tsystems.mms.tic.testframework.utils.UITestUtils;
 import eu.tsystems.mms.tic.testframework.utils.WebDriverUtils;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AppiumDriverRequest;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.DesktopWebDriverRequest;
 import org.openqa.selenium.Rectangle;
 import org.openqa.selenium.ScreenOrientation;
 import org.openqa.selenium.WebDriver;
 import org.testng.Assert;
 import org.testng.annotations.Test;
+
+import java.net.URL;
+import java.util.Optional;
 
 /**
  * Date: 24.06.2020
@@ -140,6 +146,24 @@ public class TesterraAppiumDriverTest extends AbstractAppiumTest implements WebD
         // TODO throws error ... may change it in testerra.
         //        final Rectangle viewportRectangle = WebDriverUtils.getViewport(driver);
         //        Assert.assertNotNull(viewportRectangle, "WebDriver Viewport created");
+    }
+
+    @Test
+    public void testT10_Appium_and_desktop_driver() {
+        final String seleniumUrlString = "http://localhost:4444/wd/hub";
+        final String appiumUrlString = AppiumProperties.MOBILE_GRID_URL.asString();
+        PropertyManagerProvider.PROPERTY_MANAGER.setTestLocalProperty("tt.selenium.server.url", seleniumUrlString);
+
+        DesktopWebDriverRequest desktopWebDriverRequest = new DesktopWebDriverRequest();
+        AppiumDriverRequest appiumDriverRequest = new AppiumDriverRequest();
+
+        // Check server urls
+        Optional<URL> seleniumUrl = desktopWebDriverRequest.getServerUrl();
+        Optional<URL> appiumUrl = appiumDriverRequest.getServerUrl();
+        Assert.assertNotEquals(seleniumUrl, appiumUrl);
+        Assert.assertEquals(seleniumUrl.get().toString(), seleniumUrlString);
+        Assert.assertEquals(appiumUrl.get().toString(), appiumUrlString);
+
     }
 
 }
