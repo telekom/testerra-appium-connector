@@ -11,3 +11,5 @@ build
 gradlew
 gradlew.bat
 /appium-seetest/src/test/resources/test.properties
+/appium/src/test/resources/local.properties
+/appium-seetest/src/test/resources/local.properties
