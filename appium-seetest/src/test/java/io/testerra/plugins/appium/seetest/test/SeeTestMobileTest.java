@@ -36,7 +36,7 @@ import org.testng.annotations.Test;
  *
  * @author mgn
  */
-public class SeeTestMobileTest extends TesterraTest implements WebDriverManagerProvider, UiElementFinderFactoryProvider {
+public class SeeTestMobileTest extends AbstractAppiumTest {
 
     private final UiElementFinder finder = UI_ELEMENT_FINDER_FACTORY.create(WEB_DRIVER_MANAGER.getWebDriver());
 

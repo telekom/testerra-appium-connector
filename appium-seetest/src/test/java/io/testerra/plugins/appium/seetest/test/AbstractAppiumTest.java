@@ -20,7 +20,7 @@
  *
  */
 
-package eu.tsystems.mms.tic.testframework.mobile.test;
+package io.testerra.plugins.appium.seetest.test;
 
 import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;

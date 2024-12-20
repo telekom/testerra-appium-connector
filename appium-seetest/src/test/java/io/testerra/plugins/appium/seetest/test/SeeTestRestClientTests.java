@@ -25,7 +25,7 @@ import java.util.Optional;
  *
  * @author mgn
  */
-public class SeeTestRestClientTests extends TesterraTest implements WebDriverManagerProvider, PropertyManagerProvider {
+public class SeeTestRestClientTests extends AbstractAppiumTest {
 
     IExecutionContextController contextController = Testerra.getInjector().getInstance(IExecutionContextController.class);
 
