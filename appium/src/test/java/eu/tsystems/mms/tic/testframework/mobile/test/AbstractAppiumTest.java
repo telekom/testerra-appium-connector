@@ -27,6 +27,7 @@ import eu.tsystems.mms.tic.testframework.common.PropertyManagerProvider;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.testing.PageFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.TesterraTest;
+import eu.tsystems.mms.tic.testframework.testing.UiElementFinderFactoryProvider;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import org.testng.annotations.BeforeSuite;
 
@@ -43,7 +44,8 @@ public class AbstractAppiumTest extends TesterraTest implements
         PageFactoryProvider,
         PropertyManagerProvider,
         Loggable,
-        AppiumCapabilityHelper {
+        AppiumCapabilityHelper,
+        UiElementFinderFactoryProvider {
 
     @BeforeSuite
     public void init() {

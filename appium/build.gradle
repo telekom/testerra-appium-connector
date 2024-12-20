@@ -30,6 +30,10 @@ test() {
     useTestNG() {
         suites(suiteFiles as String[])
     }
+
+    options {
+        systemProperties(System.getProperties())
+    }
 }
 
 configurations.all {

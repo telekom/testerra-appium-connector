@@ -24,6 +24,7 @@ import eu.tsystems.mms.tic.testframework.appium.AppiumCapabilityHelper;
 import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
+import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
@@ -33,6 +34,7 @@ import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
 import java.util.Optional;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 /**
  * Created on 2023-03-02
@@ -59,6 +61,20 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
         } else {
             return Platform.ANY;
         }
+    }
+
+    /**
+     * Returns true if current driver session was created with typical app capabilities.
+     */
+    public boolean isAppTest(WebDriver driver) {
+        AtomicBoolean appTest = new AtomicBoolean(false);
+        IExecutionContextController instance = Testerra.getInjector().getInstance(IExecutionContextController.class);
+        instance.getCurrentSessionContext().ifPresent(sessionContext -> {
+            MobileOsChecker mobileOsChecker = new MobileOsChecker();
+            Platform platform = mobileOsChecker.getPlatform(driver);
+            appTest.set(mobileOsChecker.isAppTest(sessionContext.getWebDriverRequest(), platform));
+        });
+        return appTest.get();
     }
 
     /**
@@ -97,5 +113,6 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
                 return false;
         }
     }
+
 
 }

@@ -13,7 +13,7 @@ ext {
     testerraCompileVersion = '2.8'
     // Unit tests use the latest Testerra version
 //    testerraTestVersion = '[2,3-SNAPSHOT)'
-    testerraTestVersion = '2.8'
+    testerraTestVersion = '2.10'
     moduleVersion = '2-SNAPSHOT'
     if (System.properties.containsKey('moduleVersion')) {
         moduleVersion = System.getProperty('moduleVersion')
