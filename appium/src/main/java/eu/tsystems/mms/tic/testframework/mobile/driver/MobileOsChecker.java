@@ -28,6 +28,8 @@ import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextControlle
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
+import io.appium.java_client.android.AndroidDriver;
+import io.appium.java_client.ios.IOSDriver;
 import org.openqa.selenium.Capabilities;
 import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
@@ -55,6 +57,14 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
 
     public Platform getPlatform(WebDriver driver) {
         IWebDriverManager instance = Testerra.getInjector().getInstance(IWebDriverManager.class);
+        WebDriver originDriver = instance.getOriginalFromDecorated(driver);
+        if (originDriver instanceof AndroidDriver) {
+            return Platform.ANDROID;
+        }
+        if (originDriver instanceof IOSDriver) {
+            return Platform.IOS;
+        }
+        // When checks before under any circumstances are not working the WebDriverRequest is used.
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
             return getPlatform(optional.get());
@@ -79,7 +89,7 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
 
     /**
      * Returns true if WebDriverRequest contains typical app capabilities.
-     *
+     * <p>
      * The method checks all possible caps and there values to find out the platform.
      */
     public boolean isAppTest(WebDriverRequest webDriverRequest, Platform platform) {
