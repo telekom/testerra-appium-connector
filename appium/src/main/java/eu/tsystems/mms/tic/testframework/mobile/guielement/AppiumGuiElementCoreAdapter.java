@@ -199,6 +199,10 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
         throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
     }
 
+    /**
+     * In case of app tests the Selenium WebElement screenshot method is used.
+     * In case of mobile browser tests the default screenshot method is used which can also handle elements in iframes
+     */
     @Override
     public File takeScreenshot() {
         MobileOsChecker checker = new MobileOsChecker();
