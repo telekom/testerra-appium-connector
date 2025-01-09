@@ -25,6 +25,7 @@ import eu.tsystems.mms.tic.testframework.appium.Browsers;
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.report.utils.IExecutionContextController;
+import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.AbstractWebDriverRequest;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
 import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverRequest;
@@ -35,6 +36,7 @@ import org.openqa.selenium.MutableCapabilities;
 import org.openqa.selenium.Platform;
 import org.openqa.selenium.WebDriver;
 
+import java.util.AbstractMap;
 import java.util.Optional;
 import java.util.concurrent.atomic.AtomicBoolean;
 
@@ -43,7 +45,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * @author mgn
  */
-public class MobileOsChecker implements AppiumCapabilityHelper {
+public class MobileOsChecker implements AppiumCapabilityHelper, WebDriverManagerProvider {
 
     public Platform getPlatform(WebDriverRequest webDriverRequest) {
         if (Browsers.mobile_chrome.equals(webDriverRequest.getBrowser()) || isAppTest(webDriverRequest, Platform.ANDROID)) {
@@ -79,11 +81,38 @@ public class MobileOsChecker implements AppiumCapabilityHelper {
     public boolean isAppTest(WebDriver driver) {
         AtomicBoolean appTest = new AtomicBoolean(false);
         IExecutionContextController instance = Testerra.getInjector().getInstance(IExecutionContextController.class);
-        instance.getCurrentSessionContext().ifPresent(sessionContext -> {
-            MobileOsChecker mobileOsChecker = new MobileOsChecker();
-            Platform platform = mobileOsChecker.getPlatform(driver);
-            appTest.set(mobileOsChecker.isAppTest(sessionContext.getWebDriverRequest(), platform));
+        WebDriver originDriver = WEB_DRIVER_MANAGER.getOriginalFromDecorated(driver);
+
+        // WEB_DRIVER_MANAGER.getSessionContext(driver) does not work because in AppiumGuiElementCoreAdapter the origin non-decorated driver is used.
+        // WEB_DRIVER_MANAGER only stores the decorated one.
+        // There we have to iterate through linked SessionContexts of current MethodContext and find a matching driver
+
+//        instance.getCurrentMethodContext().ifPresent(methodContext -> {
+//            methodContext.readSessionContexts().forEach(sessionContext -> {
+//                Optional<WebDriver> driverOfSessionContenxt = WEB_DRIVER_MANAGER.getWebDriver(sessionContext);
+//                if (driverOfSessionContenxt.isPresent()) {
+//                    WebDriver originDriverOfSession = WEB_DRIVER_MANAGER.getOriginalFromDecorated(driverOfSessionContenxt.get());
+//                    if (originDriverOfSession == originDriver) {
+//                        Platform platform = this.getPlatform(driver);
+//                        appTest.set(this.isAppTest(sessionContext.getWebDriverRequest(), platform));
+//                    }
+//                }
+//            });
+//        });
+
+        instance.getCurrentMethodContext().ifPresent(methodContext -> {
+            methodContext.readSessionContexts()
+                    .map(sessionContext -> WEB_DRIVER_MANAGER.getWebDriver(sessionContext)
+                            .map(driverOfSession -> new AbstractMap.SimpleEntry<>(sessionContext, driverOfSession)))
+                    .flatMap(Optional::stream)
+                    .filter(entry -> WEB_DRIVER_MANAGER.getOriginalFromDecorated(entry.getValue()) == originDriver)
+                    .findFirst()
+                    .ifPresent(entry -> {
+                        Platform platform = this.getPlatform(driver);
+                        appTest.set(this.isAppTest(entry.getKey().getWebDriverRequest(), platform));
+                    });
         });
+
         return appTest.get();
     }
 
