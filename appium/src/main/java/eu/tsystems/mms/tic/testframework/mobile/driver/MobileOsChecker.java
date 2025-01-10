@@ -84,29 +84,15 @@ public class MobileOsChecker implements AppiumCapabilityHelper, WebDriverManager
         WebDriver originDriver = WEB_DRIVER_MANAGER.getOriginalFromDecorated(driver);
 
         // WEB_DRIVER_MANAGER.getSessionContext(driver) does not work because in AppiumGuiElementCoreAdapter the origin non-decorated driver is used.
-        // WEB_DRIVER_MANAGER only stores the decorated one.
+        // WEB_DRIVER_MANAGER only stores the decorated one!
         // There we have to iterate through linked SessionContexts of current MethodContext and find a matching driver
-
-//        instance.getCurrentMethodContext().ifPresent(methodContext -> {
-//            methodContext.readSessionContexts().forEach(sessionContext -> {
-//                Optional<WebDriver> driverOfSessionContenxt = WEB_DRIVER_MANAGER.getWebDriver(sessionContext);
-//                if (driverOfSessionContenxt.isPresent()) {
-//                    WebDriver originDriverOfSession = WEB_DRIVER_MANAGER.getOriginalFromDecorated(driverOfSessionContenxt.get());
-//                    if (originDriverOfSession == originDriver) {
-//                        Platform platform = this.getPlatform(driver);
-//                        appTest.set(this.isAppTest(sessionContext.getWebDriverRequest(), platform));
-//                    }
-//                }
-//            });
-//        });
-
         instance.getCurrentMethodContext().ifPresent(methodContext -> {
             methodContext.readSessionContexts()
                     .map(sessionContext -> WEB_DRIVER_MANAGER.getWebDriver(sessionContext)
                             .map(driverOfSession -> new AbstractMap.SimpleEntry<>(sessionContext, driverOfSession)))
                     .flatMap(Optional::stream)
                     .filter(entry -> WEB_DRIVER_MANAGER.getOriginalFromDecorated(entry.getValue()) == originDriver)
-                    .findFirst()
+                    .findFirst()    // There could only be one or no result after driver check
                     .ifPresent(entry -> {
                         Platform platform = this.getPlatform(driver);
                         appTest.set(this.isAppTest(entry.getKey().getWebDriverRequest(), platform));
