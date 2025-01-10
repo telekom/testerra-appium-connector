@@ -66,7 +66,7 @@ public class MobileOsChecker implements AppiumCapabilityHelper, WebDriverManager
         if (originDriver instanceof IOSDriver) {
             return Platform.IOS;
         }
-        // When checks before under any circumstances are not working the WebDriverRequest is used.
+        // When checks before are not working under any circumstances the WebDriverRequest is used.
         Optional<WebDriverRequest> optional = instance.getSessionContext(driver).map(SessionContext::getWebDriverRequest);
         if (optional.isPresent()) {
             return getPlatform(optional.get());

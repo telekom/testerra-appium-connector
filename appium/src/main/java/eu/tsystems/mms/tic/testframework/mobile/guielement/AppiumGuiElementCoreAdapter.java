@@ -146,7 +146,6 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     @Override
     public boolean isVisible(boolean complete) {
 
-//        scrollIntoView();
         return this.isDisplayed();
 
         // the testerra way of doing this is not supported on mobile devices, because sometimes the element rect get exorbitant height/width values
