@@ -24,6 +24,7 @@ package eu.tsystems.mms.tic.testframework.mobile.guielement;
 
 import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
+import eu.tsystems.mms.tic.testframework.mobile.driver.MobileOsChecker;
 import eu.tsystems.mms.tic.testframework.pageobjects.GuiElement;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.AbstractWebDriverCore;
 import eu.tsystems.mms.tic.testframework.pageobjects.internal.core.GuiElementCore;
@@ -33,6 +34,7 @@ import eu.tsystems.mms.tic.testframework.utils.AppiumUtils;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.Dimension;
+import org.openqa.selenium.OutputType;
 import org.openqa.selenium.Point;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -40,9 +42,11 @@ import org.openqa.selenium.interactions.Pause;
 import org.openqa.selenium.interactions.PointerInput;
 import org.openqa.selenium.interactions.Sequence;
 
+import java.io.File;
 import java.time.Duration;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
+import java.util.concurrent.atomic.AtomicReference;
 
 /**
  * Implements {@link GuiElementCore} to fullfill Testerra {@link GuiElement} functionality.
@@ -142,7 +146,6 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     @Override
     public boolean isVisible(boolean complete) {
 
-        scrollIntoView();
         return this.isDisplayed();
 
         // the testerra way of doing this is not supported on mobile devices, because sometimes the element rect get exorbitant height/width values
@@ -193,6 +196,22 @@ public class AppiumGuiElementCoreAdapter extends AbstractWebDriverCore implement
     @Deprecated
     public boolean isSelectable() {
         throw new MobileActionNotSupportedException("isSelectable() is not supported on mobile elements");
+    }
+
+    /**
+     * In case of app tests the Selenium WebElement screenshot method is used.
+     * In case of mobile browser tests the default screenshot method is used which can also handle elements in iframes
+     */
+    @Override
+    public File takeScreenshot() {
+        MobileOsChecker checker = new MobileOsChecker();
+        if (checker.isAppTest(this.appiumDriver)) {
+            AtomicReference<File> atomicReference = new AtomicReference<>();
+            this.findWebElement(webElement -> atomicReference.set(webElement.getScreenshotAs(OutputType.FILE)));
+            return atomicReference.get();
+        } else {
+            return super.takeScreenshot();
+        }
     }
 
 }
