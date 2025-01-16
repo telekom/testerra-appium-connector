@@ -30,10 +30,10 @@ This connector fully supports the Mobile Device Cloud of Deutsche Telekom MMS Gm
 
 | Appium connector | Testerra    | Notes                                   | 
 |------------------|-------------|-----------------------------------------|
-| `>=1.1`          | `>=1.3`     |                                         |
+| `>= 1.1`         | `>= 1.3`    |                                         |
 | `2.0 - 2.2`      | `2.0 - 2.3` |                                         |
 | `2.3`            | `2.4`       | Supports Appium Client 8.5.1/8.6.0      |
-| `2.4`            | `>=2.6`     | Supports Appium Client 9.x              |
+| `>= 2.4`         | `>= 2.6`    | Supports Appium Client 9.x              |
 
 Important notes:
 * Please check the matrix at https://github.com/appium/java-client?tab=readme-ov-file#compatibility-matrix if Appium Java Client matches to Selenium version
@@ -47,10 +47,10 @@ Gradle:
 
 ```groovy
 // Version from this module
-implementation 'io.testerra:appium:2.4'
+implementation 'io.testerra:appium:2.5'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2.8'
-implementation 'io.testerra:report-ng:2.8'
+implementation 'io.testerra:driver-ui:2.10'
+implementation 'io.testerra:report-ng:2.10'
 implementation 'io.appium:java-client:9.2.3'
 ```
 
@@ -61,18 +61,18 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2.4</version>
+    <version>2.5</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.8</version>
+    <version>2.10</version>
 </dependency>
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>report-ng</artifactId>
-    <version>2.8</version>
+    <version>2.10</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
