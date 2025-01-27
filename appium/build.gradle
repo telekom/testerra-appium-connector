@@ -3,7 +3,7 @@ dependencies {
     compileOnly 'io.appium:java-client:' + appiumJavaClientVersion
 
     implementation 'com.google.code.gson:gson:2.9.0'
-    implementation 'org.apache.commons:commons-lang3:3.12.0'
+//    implementation 'org.apache.commons:commons-lang3:3.12.0'
 
     // For AppiumClassFinder
     implementation 'org.reflections:reflections:0.9.12'
