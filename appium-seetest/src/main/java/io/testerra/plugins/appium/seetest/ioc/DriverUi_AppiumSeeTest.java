@@ -55,7 +55,7 @@ public class DriverUi_AppiumSeeTest extends AbstractModule implements
     public void init() {
         // VIDEO disabled by properties. Not doing anything here.
         if (!VIDEO_ACTIVE) {
-            log().warn("SeeTest video download disabled. {} is set to true.", Testerra.Properties.SCREENCASTER_ACTIVE);
+            log().warn("SeeTest video download disabled. {} is set to false.", Testerra.Properties.SCREENCASTER_ACTIVE);
             return;
         }
 

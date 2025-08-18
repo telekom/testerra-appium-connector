@@ -66,7 +66,11 @@ public class SeeTestVideoFactory implements
                         + ".mp4";
 
                 String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
-                        .map(driver -> driver.getCapabilities().getCapability("reportTestId"))
+                        .map(driver -> {
+                            Object cap1 = driver.getCapabilities().getCapability("reportTestId");
+                            Object cap2 = driver.getCapabilities().getCapability("digitalai:reportTestId");
+                            return cap1 != null ? cap1 : cap2;
+                        })
                         .filter(Objects::nonNull)
                         .map(Object::toString)
                         .orElse("na");
