@@ -21,6 +21,7 @@
  */
 package io.testerra.plugins.appium.seetest.collector;
 
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.Status;
 import eu.tsystems.mms.tic.testframework.report.model.context.ExecutionContext;
@@ -49,15 +50,16 @@ public class SeeTestVideoCollector implements
 
     private final VideoRequestStorage videoRequestStorage = VideoRequestStorage.get();
 
-    private final boolean VIDEO_ACTIVE_ON_SUCCESS = SeeTestProperties.VIDEO_ON_SUCCESS.asBool();
-    private final boolean VIDEO_ACTIVE_ON_FAILED = SeeTestProperties.VIDEO_ON_FAILED.asBool();
-
     /**
      * This method will be called for each WebDriver that is still active after a Test method
      * Will store the associated {@link VideoRequest} for downloading videos later.
      */
     @Override
     public void accept(WebDriver webDriver) {
+        if (!Testerra.Properties.SCREENCASTER_ACTIVE.asBool()) {
+            return;
+        }
+
         WEB_DRIVER_MANAGER.getSessionContext(webDriver).ifPresent(sessionContext -> {
             // Exklusive session
             if (sessionContext.getParentContext() instanceof ExecutionContext) {
@@ -67,8 +69,8 @@ public class SeeTestVideoCollector implements
                 if (sessionContext.readMethodContexts().anyMatch(methodContext -> {
                     if (methodContext.getTestNgResult().isPresent()) {
                         ITestResult testResult = methodContext.getTestNgResult().get();
-                        return !testResult.isSuccess() && VIDEO_ACTIVE_ON_FAILED
-                                || VIDEO_ACTIVE_ON_SUCCESS
+                        return !testResult.isSuccess() && SeeTestProperties.VIDEO_ON_FAILED.asBool()
+                                || SeeTestProperties.VIDEO_ON_SUCCESS.asBool()
                                 || testResult.getStatus() == ITestResult.SKIP && methodContext.getStatus() == Status.RETRIED;
                     }
                     return false;
