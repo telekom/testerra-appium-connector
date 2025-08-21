@@ -1,13 +1,10 @@
 plugins {
-    id "io.codearte.nexus-staging" version "0.30.0"
+    id "org.danilopianini.publish-on-central" version "9.0.2"
 }
-
-apply plugin: 'io.codearte.nexus-staging'
 
 ext {
     // Tested with
     appiumJavaClientVersion = '9.2.3'
-//    appiumJavaClientVersion = '8.6.0'
 
     // Minimum required Testerra version
     testerraCompileVersion = '2.8'
@@ -25,21 +22,17 @@ ext {
 
 allprojects {
     apply plugin: 'java-library'
+    apply plugin: 'maven-publish'
+    apply plugin: 'signing'
 
     sourceCompatibility = JavaVersion.VERSION_11
     targetCompatibility = JavaVersion.VERSION_11
 
     compileJava.options.encoding = 'UTF-8'
     compileTestJava.options.encoding = 'UTF-8'
-}
-
-subprojects {
 
     group 'io.testerra'
     version moduleVersion
-
-    apply plugin: 'maven-publish'
-    apply plugin: 'signing'
 
     repositories {
         mavenCentral()
@@ -60,16 +53,18 @@ subprojects {
         ignoreFailures = true
     }
 
-    tasks.whenTaskAdded { t ->
+}
+
+// Deactivate JAR publishing for the root project
+project.afterEvaluate {
+    println "Deactivate publishing for " + project.name
+    project.tasks.each { t ->
         if (t.name.startsWith("publish")) {
-            boolean e = t.project.publish.enabled
-            if (!e) {
-                println "Not running publish for " + t.project.name
-                t.enabled = false
-            }
+            t.enabled = false
         }
     }
 }
+
 
 // Do not move this integration because `group` and `version` is needed for publishing
 apply from: rootProject.file('publish.gradle')
