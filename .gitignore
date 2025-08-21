@@ -1,6 +1,5 @@
 test-report
 .gradle
-gradle
 *.iml
 .idea
 target
@@ -8,8 +7,6 @@ licenses
 *.zip
 out
 build
-gradlew
-gradlew.bat
 /appium-seetest/src/test/resources/test.properties
 /appium/src/test/resources/local.properties
 /appium-seetest/src/test/resources/local.properties
