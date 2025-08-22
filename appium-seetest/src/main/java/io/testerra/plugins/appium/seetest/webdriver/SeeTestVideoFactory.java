@@ -21,6 +21,7 @@
  */
 package io.testerra.plugins.appium.seetest.webdriver;
 
+import eu.tsystems.mms.tic.testframework.common.Testerra;
 import eu.tsystems.mms.tic.testframework.logging.Loggable;
 import eu.tsystems.mms.tic.testframework.report.model.context.SessionContext;
 import eu.tsystems.mms.tic.testframework.testing.WebDriverManagerProvider;
@@ -52,6 +53,11 @@ public class SeeTestVideoFactory implements
     // After startup
     @Override
     public void accept(WebDriver webDriver) {
+        if (!Testerra.Properties.SCREENCASTER_ACTIVE.asBool()) {
+            log().warn("SeeTest video download disabled. {} is set to false.", Testerra.Properties.SCREENCASTER_ACTIVE);
+            return;
+        }
+
         Optional<SessionContext> sessionContext = WEB_DRIVER_MANAGER.getSessionContext(webDriver);
         Optional<String> remoteSessionId = sessionContext.flatMap(SessionContext::getRemoteSessionId);
         Optional<URL> serverUrl = sessionContext.map(SessionContext::getWebDriverRequest).flatMap(WebDriverRequest::getServerUrl);
@@ -66,7 +72,11 @@ public class SeeTestVideoFactory implements
                         + ".mp4";
 
                 String reportTestId = WEB_DRIVER_MANAGER.unwrapWebDriver(webDriver, AppiumDriver.class)
-                        .map(driver -> driver.getCapabilities().getCapability("reportTestId"))
+                        .map(driver -> {
+                            Object cap1 = driver.getCapabilities().getCapability("reportTestId");
+                            Object cap2 = driver.getCapabilities().getCapability("digitalai:reportTestId");
+                            return cap1 != null ? cap1 : cap2;
+                        })
                         .filter(Objects::nonNull)
                         .map(Object::toString)
                         .orElse("na");

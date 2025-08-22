@@ -35,7 +35,7 @@ import org.openqa.selenium.Capabilities;
 public class AppiumDeviceQuery {
     private String os;
     private String version;
-    private String manufacture;
+    private String manufacturer;
     private String model;
     private String browserName;
 
@@ -46,9 +46,8 @@ public class AppiumDeviceQuery {
 
     public AppiumDeviceQuery(Capabilities capabilities) {
         this.setOs(capabilities.getPlatformName().toString());
-//        this.setOs((String) capabilities.getCapability("platformName"));
         this.setVersion((String) capabilities.getCapability("platformVersion"));
-        this.setManufacture((String) capabilities.getCapability("deviceManufacture"));
+        this.setManufacturer((String) capabilities.getCapability("deviceManufacturer"));
         this.setModel((String) capabilities.getCapability("deviceModel"));
         this.setBrowserName(capabilities.getBrowserName());
     }
@@ -73,14 +72,14 @@ public class AppiumDeviceQuery {
         this.version = version;
     }
 
-    public String getManufacture() {
+    public String getManufacturer() {
 
-        return manufacture;
+        return manufacturer;
     }
 
-    public void setManufacture(String manufacture) {
+    public void setManufacturer(String manufacturer) {
 
-        this.manufacture = manufacture;
+        this.manufacturer = manufacturer;
     }
 
     public String getModel() {
@@ -107,7 +106,7 @@ public class AppiumDeviceQuery {
         return "AppiumDevice {" +
                 "os='" + os + '\'' +
                 ", version='" + version + '\'' +
-                ", manufacture='" + manufacture + '\'' +
+                ", manufacturer='" + manufacturer + '\'' +
                 ", model='" + model + '\'' +
                 ", browser='" + browserName + '\'' +
                 '}';
