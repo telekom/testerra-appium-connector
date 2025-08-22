@@ -47,10 +47,10 @@ Gradle:
 
 ```groovy
 // Version from this module
-implementation 'io.testerra:appium:2.5'
+implementation 'io.testerra:appium:2.6'
 // Used Testerra version
-implementation 'io.testerra:driver-ui:2.10'
-implementation 'io.testerra:report-ng:2.10'
+implementation 'io.testerra:driver-ui:2.11'
+implementation 'io.testerra:report-ng:2.11'
 implementation 'io.appium:java-client:9.2.3'
 ```
 
@@ -61,18 +61,18 @@ Maven:
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>appium</artifactId>
-    <version>2.5</version>
+    <version>2.6</version>
 </dependency>
 <!-- Used Testerra version -->
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>driver-ui</artifactId>
-    <version>2.10</version>
+    <version>2.11</version>
 </dependency>
 <dependency>
     <groupId>io.testerra</groupId>
     <artifactId>report-ng</artifactId>
-    <version>2.10</version>
+    <version>2.11</version>
 </dependency>
 <dependency>
     <groupId>io.appium</groupId>
