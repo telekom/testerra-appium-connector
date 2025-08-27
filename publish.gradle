@@ -41,7 +41,6 @@ allprojects {
     }
 
     publishOnCentral {
-        repoOwner.set("martingrossmann")
         projectDescription.set(rootProject.ext.libraryDescription)
 
         projectLongName.set(project.name)
