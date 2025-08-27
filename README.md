@@ -119,7 +119,7 @@ gradle publish
 Publishing releases the ``org.danilopianini.publish-on-central`` plugin is used:
 
 ````shell
-gradle buildReport publishMavenJavaPublicationToProjectLocalRepository zipMavenCentralPortalPublication releaseMavenCentralPortalPublication -DttVersion=2.1 
+gradle publishMavenJavaPublicationToProjectLocalRepository zipMavenCentralPortalPublication releaseMavenCentralPortalPublication -DmoduleVersion=2.1 
 ````
 
 ## Code of Conduct
