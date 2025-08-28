@@ -106,9 +106,9 @@ allprojects {
             // ORG_GRADLE_PROJECT_signingPassword: key password
             // ORG_GRADLE_PROJECT_signingKeyId: Key id
             // ORG_GRADLE_PROJECT_signingKey: signing key is stored in PEM format
-            def signingKey = findProperty("signingKey")
-            def signingPassword = findProperty("signingPassword")
-            def signingKeyId = findProperty("signingKeyId")
+            def signingKeyId = System.getenv("ORG_GRADLE_PROJECT_signingKeyId")
+            def signingKey = System.getenv("ORG_GRADLE_PROJECT_signingKey")
+            def signingPassword = System.getenv("ORG_GRADLE_PROJECT_signingPassword")
             useInMemoryPgpKeys(signingKeyId, signingKey, signingPassword)
             sign publishing.publications.mavenJava
         }
