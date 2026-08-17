@@ -25,7 +25,10 @@ import com.google.inject.AbstractModule;
 import com.google.inject.Scopes;
 import com.google.inject.multibindings.Multibinder;
 import eu.tsystems.mms.tic.testframework.appium.WinAppDriverFactory;
+import eu.tsystems.mms.tic.testframework.common.Testerra;
+import eu.tsystems.mms.tic.testframework.hooks.ModuleHook;
 import eu.tsystems.mms.tic.testframework.mobile.driver.AppiumDriverFactory;
+import eu.tsystems.mms.tic.testframework.mobile.driver.WebDriverAppiumCapabilties;
 import eu.tsystems.mms.tic.testframework.mobile.guielement.AppiumUiElementHighlighter;
 import eu.tsystems.mms.tic.testframework.mobile.pageobject.AppiumPageFactory;
 import eu.tsystems.mms.tic.testframework.pageobjects.UiElementHighlighter;
@@ -33,6 +36,8 @@ import eu.tsystems.mms.tic.testframework.pageobjects.internal.PageFactory;
 import eu.tsystems.mms.tic.testframework.utils.AppiumExecutionUtils;
 import eu.tsystems.mms.tic.testframework.utils.ExecutionUtils;
 import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.IWebDriverManager;
+import eu.tsystems.mms.tic.testframework.webdrivermanager.WebDriverCapabilities;
 
 /**
  * Add AppiumDriverFactory and WinAppDriverFactory
@@ -42,7 +47,7 @@ import eu.tsystems.mms.tic.testframework.webdriver.WebDriverFactory;
  *
  * @author Eric Kubenka
  */
-public class DriverUi_Appium extends AbstractModule {
+public class DriverUi_Appium extends AbstractModule implements ModuleHook {
 
     @Override
     protected void configure() {
@@ -54,5 +59,16 @@ public class DriverUi_Appium extends AbstractModule {
         bind(PageFactory.class).to(AppiumPageFactory.class).in(Scopes.SINGLETON);
         // Prevent error while trying element highlighting in apps
         bind(UiElementHighlighter.class).to(AppiumUiElementHighlighter.class).in(Scopes.SINGLETON);
+    }
+
+    @Override
+    public void init() {
+        IWebDriverManager webDriverManager = Testerra.getInjector().getInstance(IWebDriverManager.class);
+        webDriverManager.registerWebDriverRequestConfigurator(new WebDriverAppiumCapabilties());
+    }
+
+    @Override
+    public void terminate() {
+
     }
 }
